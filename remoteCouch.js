@@ -41,16 +41,16 @@ http.createServer(function (req, res) {
       res.writeHead(200, responseHeaders);
       res2.setEncoding('utf8');
       var res2Data = '';
-      res.write('START!');
+      //res.write('START!');
       res2.on('data', function (chunk) {
         res2Data += chunk;
         res.write(chunk);
-        res.write('DATA!');
-        res.end();//FIXME:this is wrong here
+        //res.write('DATA!');
+        //res.end();//FIXME:this is wrong here
       });
       res2.on('end', function() {
         console.log('\nC.DATA:'+res2Data);
-        res.write('END!');
+        //res.write('END!');
         res.end();
       });
     });
