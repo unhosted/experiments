@@ -26,35 +26,36 @@ function getContactsString() {
   var tabs = remoteStorage.getItem('tabs');
   var you = remoteStorage.getItem(you);
   var contactsStr = '<table id="contacts"></table>';
-  for(var contact in contacts) {
-    contactsStr += '<h2>'+contact+'</h2><ul>';
-
-   for(i in tabs) {
-       var iou = tabs[i];
-      if((iou.payee == contact) && (iou.status == 'requested')) {
+  for(var i in contacts) {
+    contactsStr += '<div id="'+i+'"><h2>'+contacts[i]+'</h2>'
+           +'<input type="submit" id="owe'+i+'" value="owe" onclick="owe('+i+');">'
+           +'<input type="submit" id="claim'+i+'" value="claim" onclick="claim('+i+');"><ul>';
+    for(j in tabs) {
+      var iou = tabs[j];
+      if((iou.payee == contacts[i]) && (iou.status == 'requested')) {
         contactsStr += '<li style="background-color:pink">[hurry:] [!]'+iou.amount+iou.currency+'</li>';
       }
-      if((iou.payer == contact) && (iou.status == 'sent')) {
+      if((iou.payer == contacts[i]) && (iou.status == 'sent')) {
         contactsStr += '<li style="background-color:green">[got it?] [&#10003;]'+iou.amount+iou.currency+'</li>';
       }
-      if((iou.payer == contact) && (iou.status == 'requested')) {
+      if((iou.payer == contacts[i]) && (iou.status == 'requested')) {
         contactStr += '<li style="background-color:green">[you said hurry] [!]'+iou.amount+iou.currency+'</li>';
       }
     }
     contactsStr += '</ul><hr><ul>';
-    for(i in tabs) {
-      var iou = tabs[i];
-      if((iou.payee == contact) && (iou.status == 'accepted')) {
+    for(j in tabs) {
+      var iou = tabs[j];
+      if((iou.payee == contacts[i]) && (iou.status == 'accepted')) {
         contactsStr += '<li style="background-color:pink">[you owe them]'+iou.amount+iou.currency+'</li>';
       }
-      if((iou.payer == contact) && (iou.status == 'accepted')) {
+      if((iou.payer == contacts[i]) && (iou.status == 'accepted')) {
         contactsStr += '<li style="background-color:green">[they owe you]'+iou.amount+iou.currency+'</li>';
       }
-      if((iou.payee == contact) && (iou.status == 'proposed')) {
+      if((iou.payee == contacts[i]) && (iou.status == 'proposed')) {
         contactsStr += '<li style="background-color:pink">[you proposed] [?]'+iou.amount+iou.currency+'</li>';
       }
     }
-    contactsStr += '</ul>';
+    contactsStr += '</ul></div>';
   }
   return contactsStr;
 }

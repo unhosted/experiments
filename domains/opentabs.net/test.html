@@ -7,10 +7,6 @@
     <script src="http://unhosted.org/remoteStorage.js"></script>
     <script src="IOU.js"></script>
   <script>
-
-    var IOUs = {}
-    var contacts = ['jan@yourremotestorage.com', 'thad@yourremotestorage.com', 'melvin@yourremotestorage.com'];
-    var timestamp;
     function calcSignature(digest, keyPair) {
       return "yours truly";
     }
@@ -87,18 +83,16 @@
       localStorage.setItem('tabs', JSON.stringify(tabs));
       cancel(i);
     }
+    function addNewTab() {
+      document.getElementById('-1').innerHTML= ''
+        +'<input id="newContactName" placeholder="user@host">'
+        +'<input type="submit" value="Owe" onclick="owe(-1);">'
+        +'<input type="submit" value="Claim" onclick="owe(-1);">';
+    }
     function bodyonload() {
       document.getElementById('importantDiv').innerHTML = getImportantString();
       document.getElementById('contactsDiv').innerHTML = getContactsString();
       document.getElementById('historyDiv').innerHTML = getHistoryString();
-      for(var i in contacts) {
-	 var tr = document.createElement('tr');
-	 tr.innerHTML = '<td id="'+i+'">'+contacts[i]
-           +'<input type="submit" id="owe'+i+'" value="owe" onclick="owe('+i+');">'
-           +'<input type="submit" id="claim'+i+'" value="claim" onclick="claim('+i+');">'
-           +'</td>';
-         document.getElementById('contacts').appendChild(tr);
-      }
     }
   </script>
   </head>
@@ -107,6 +101,8 @@
     <div id="importantDiv"></div>
     
     <h2>Contacts</h2>
+    <div id="-1"><input type="submit" value="Open a Tab" onclick="addNewTab();"></div>
+
     <div id="contactsDiv"></div>
     
     <h2>History</h2>
