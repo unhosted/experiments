@@ -1,4 +1,5 @@
-var sampleData =[
+var sampleData = localStorage.getItem('tabs');
+if(sampleData==null) sampleData = [
   {
     payer: 'you',
     payee: 'mich@unhosted.org',

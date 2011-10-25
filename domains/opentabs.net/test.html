@@ -5,11 +5,12 @@
     <title>Opentabs.net app</title>
     <link rel="stylesheet" type="text/css" href="app.css">
     <script src="IOU.js"></script>
+    <script src="http://unhosted.org/remoteStorage.js"></script>
   <script>
     var IOUs = {}
     var contacts = ['jan@yourremotestorage.com', 'thad@yourremotestorage.com', 'melvin@yourremotestorage.com'];
     var timestamp;
-    function sign(digest, keyPair) {
+    function calcSignature(digest, keyPair) {
       return "yours truly";
     }
     function sha1(orig) {
@@ -24,14 +25,18 @@
 	currency: currency};
       obj.statement = "At timestamp "+timestamp+", "+payer+" starts owing "+payee+" an additional "+amount+" "+currency;
       obj.signatures = {};
-      obj.signatures[keyPair.userAddress] = sign(obj.statement, keyPair);
+      obj.signatures[keyPair.userAddress] = calcSignature(obj.statement, keyPair);
       for(var fieldName in otherFields) {
         obj[fieldName] = otherFields[fieldName];
       }
       return obj;
     }
     function val(el) {
-      return document.getElementById(el).value;
+      try {
+        return document.getElementById(el).value;
+      } catch(e) {
+        alert(JSON.stringify(e));
+      }
     }
 
     function owe(i) {
@@ -66,7 +71,6 @@
         +'</td>';
     }
     function sign(payer, payee, i) {
-      cancel(i);
       var keyPair = {n: 1, d:1, p:1, q:1, userAddress:'mich@unhosted.org'};
       var tab = createTab(payer, payee, val('amount'+i), val('currency'+i), timestamp,
         {
@@ -80,6 +84,7 @@
       }
       tabs.push(tab);   
       localStorage.setItem('tabs', JSON.stringify(tabs));
+      cancel(i);
     }
     function bodyonload() {
       for(var i in contacts) {

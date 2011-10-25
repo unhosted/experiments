@@ -22,23 +22,24 @@ http.createServer(function (req, res) {
       , 'path': req.url
       , 'headers': req.headers
       };
-    options.headers.origin = 'http://myfavouritesandwich.org';
-    options.headers['access-control-request-method'] = undefined;
-    options.headers['access-control-request-headers'] = undefined;
-    options.headers.host = undefined;
+//    options.headers.origin = 'http://myfavouritesandwich.org';
+//    options.headers['access-control-request-method'] = undefined;
+//    options.headers['access-control-request-headers'] = undefined;
+//    options.headers.host = undefined;
     
     var req2 = https.request(options, function(res2) {
       var responseHeaders = res2.headers;
       console.log('\nC.HEADERS:'+JSON.stringify(responseHeaders));
       //add CORS to response:
-      responseHeaders['Access-Control-Allow-Origin'] = 'http://example.com';
-      responseHeaders['Access-Control-Allow-Method'] = 'POST';
-      responseHeaders['Access-Control-Allow-Headers'] = 'authorization,content-type,Content-Length,gdata-version,slug,x-upload-content-length,x-upload-content-type';
-      responseHeaders['Access-Control-Allow-Credentials'] = 'true';
+//      responseHeaders['Access-Control-Allow-Origin'] = 'http://example.com';
+//      responseHeaders['Access-Control-Allow-Method'] = 'POST';
+//      responseHeaders['Access-Control-Allow-Headers'] = 'authorization,content-type,Content-Length,gdata-version,slug,x-upload-content-length,x-upload-content-type';
+//      responseHeaders['Access-Control-Allow-Credentials'] = 'true';
       //replace status with 200:
-      responseHeaders['X-Status'] = res2.statusCode;
+//      responseHeaders['X-Status'] = res2.statusCode;
       console.log('\nD.HEADERS:'+JSON.stringify(responseHeaders));
-      res.writeHead(200, responseHeaders);
+//      res.writeHead(200, responseHeaders);
+      res.writeHead(res2.statusCode, responseHeaders);
       res2.setEncoding('utf8');
       var res2Data = '';
       //res.write('START!');
