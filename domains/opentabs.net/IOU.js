@@ -22,14 +22,14 @@ function getImportantString() {
   return importantStr;
 }
 function getContactsString() {
-  var contacts = remoteStorage.getItem('contacts');
+  var contacts = JSON.parse(remoteStorage.getItem('contacts'));
   var tabs = remoteStorage.getItem('tabs');
   var you = remoteStorage.getItem(you);
   var contactsStr = '<table id="contacts"></table>';
   for(var i in contacts) {
-    contactsStr += '<div id="'+i+'"><h2>'+contacts[i]+'</h2>'
-           +'<input type="submit" id="owe'+i+'" value="owe" onclick="owe('+i+');">'
-           +'<input type="submit" id="claim'+i+'" value="claim" onclick="claim('+i+');"><ul>';
+    contactsStr += '<div id="'+i+'"><strong id="contact'+i+'">'+contacts[i]+'</strong>'
+           +'<input type="submit" id="owe'+i+'" value="+" onclick="owe('+i+');">'
+           +'<ul>';
     for(j in tabs) {
       var iou = tabs[j];
       if((iou.payee == contacts[i]) && (iou.status == 'requested')) {

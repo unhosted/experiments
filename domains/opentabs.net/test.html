@@ -45,14 +45,16 @@
     function addContact(userAddress) {
       var contacts = remoteStorage.getItem('contacts');
       if(contacts == null) {
-        contacts = [];
+        contacts = '[]';
       }
+      contacts = JSON.parse(contacts);
       for(var i in contacts) {
         if(contacts[i]==userAddress) {
           return i;
         }
       }
       contacts.push(userAddress);
+      contacts = JSON.stringify(contacts);
       remoteStorage.setItem('contacts', contacts);
       return (contacts.length - 1);
     }
