@@ -61,7 +61,7 @@ function getContactsString() {
 function getHistoryString() {
   var tabs = remoteStorage.getItem('tabs');
   var you = remoteStorage.getItem(you);
-  historyStr = '<h2>HISTORY</h2><ul>';
+  historyStr = '<ul>';
   for(i in tabs) {
     var iou = tabs[i];
     if((iou.proposer != you) && (iou.status == 'declined') && (iou.payee==you)) {

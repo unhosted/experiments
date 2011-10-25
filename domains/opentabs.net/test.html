@@ -7,9 +7,6 @@
     <script src="http://unhosted.org/remoteStorage.js"></script>
     <script src="IOU.js"></script>
   <script>
-    document.write(getImportantString());
-    document.write(getContactsString());
-    document.write(getHistoryString());
 
     var IOUs = {}
     var contacts = ['jan@yourremotestorage.com', 'thad@yourremotestorage.com', 'melvin@yourremotestorage.com'];
@@ -91,6 +88,9 @@
       cancel(i);
     }
     function bodyonload() {
+      document.getElementById('importantDiv').innerHTML = getImportantString();
+      document.getElementById('contactsDiv').innerHTML = getContactsString();
+      document.getElementById('historyDiv').innerHTML = getHistoryString();
       for(var i in contacts) {
 	 var tr = document.createElement('tr');
 	 tr.innerHTML = '<td id="'+i+'">'+contacts[i]
@@ -103,6 +103,15 @@
   </script>
   </head>
   <body onload="bodyonload();">
+    <h2>Important</h2>
+    <div id="importantDiv"></div>
+    
+    <h2>Contacts</h2>
+    <div id="contactsDiv"></div>
+    
+    <h2>History</h2>
+    <div id="historyDiv"></div>
+    
   </body>
 </html>
 
