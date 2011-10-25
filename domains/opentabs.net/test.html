@@ -35,37 +35,65 @@
         alert(JSON.stringify(e));
       }
     }
-
+    function switchDirection() {
+      if(val('direction')=='Owed by') {
+        document.getElementById('direction').value='Owed to';
+      } else {
+        document.getElementById('direction').value='Owed by';
+      }
+    }
+    function addContact(userAddress) {
+      var contacts = remoteStorage.getItem('contacts');
+      if(contacts == null) {
+        contacts = [];
+      }
+      for(var i in contacts) {
+        if(contacts[i]==userAddress) {
+          return i;
+        }
+      }
+      contacts.push(userAddress);
+      remoteStorage.setItem('contacts', contacts);
+      return (contacts.length - 1);
+    }
     function owe(i) {
+      var peer = val('contact'+i);
+      if(i==-1) {
+        if(peer=='') {
+          alert('please enter the user address of the person you want to open a tab with');
+          return;
+        } else {
+          var newIndex = addContact(peer);
+          document.getElementById('contactsDiv').innerHTML = getContactsString();
+          owe(newIndex);
+        }
+      }
       timestamp = (new Date().getTime());
-      document.getElementById(i).innerHTML = '<td id="'+i+'">&quot;At timestamp '+timestamp+', '
-        +'mich@unhosted.org starts owing '+contacts[i]
-        +' an additional <input id="amount'+i+'" value="10" size="3">'
-        +'<input id="currency'+i+'" value="bitcoins" size="10">&quot;'
-        +'<input type="submit" id="cancel'+i+'" value="cancel" onclick="'
-          +'cancel('+i+');'
-	+'"><input type="submit" id="sign'+i+'" value="sign" onclick="'
-          +'sign(\'mich@unhosted.org\', \''+contacts[i]+'\', '+i+');'
-        +'"></td>';
+      document.getElementById(i).innerHTML += 
+         '<div>'
+          +'<div style="border-style:solid;border-width::1px">'
+          +'<input placeholder="Fahrkarte"> '
+          +'<input size="3" placeholder="40"> '
+          +'<input type="submit" value="EUR"></span>'
+          +'</div>'
+          +'<div style="border-style:solid;border-width::1px">'
+          +'<input type="submit" value="Owed by" id="direction" onclick="switchDirection();"> '
+          +'<span>'+peer+'</span> '
+          +'</div>'
+          +'<div style="border-style:solid;border-width::1px">'
+          +'<span><input type="submit" value="Cancel" onclick="cancel('+i+');"> '
+          +'<input type="submit" value="Send" onclick="send('+i+');"></span>'
+          +'</div>'
+        +'</div>';
     }
 
-    function claim(i) {
-      timestamp = (new Date().getTime());
-      document.getElementById(i).innerHTML = '<td id="'+i+'">&quot;At timestamp 1235467890.123, '
-        +contacts[i]+' starts owing mich@unhosted.org'
-        +' an additional <input id="amount'+i+'" value="10" size="3">'
-        +'<input id="currency'+i+'" value="bitcoins" size="10">&quot;'
-        +'<input type="submit" id="cancel'+i+'" value="cancel" onclick="'
-          +'cancel('+i+');'
-        +'"><input type="submit" id="sign'+i+'" value="sign" onclick="'
-          +'sign(\''+contacts[i]+'\', \'mich@unhosted.org\', '+i+');'
-        +'"></td>';
-    }
     function cancel(i) {
       document.getElementById(i).innerHTML = '<td id="'+i+'">'+contacts[i]
         +'<input type="submit" id="owe'+i+'" value="owe" onclick="owe('+i+');">'
         +'<input type="submit" id="claim'+i+'" value="claim" onclick="claim('+i+');">'
         +'</td>';
+    }
+    function send(i) {
     }
     function sign(payer, payee, i) {
       var keyPair = {n: 1, d:1, p:1, q:1, userAddress:'mich@unhosted.org'};
@@ -85,9 +113,8 @@
     }
     function addNewTab() {
       document.getElementById('-1').innerHTML= ''
-        +'<input id="newContactName" placeholder="user@host">'
-        +'<input type="submit" value="Owe" onclick="owe(-1);">'
-        +'<input type="submit" value="Claim" onclick="owe(-1);">';
+        +'<input id="contact-1" placeholder="user@host">'
+        +'<input type="submit" value="+" onclick="owe(-1);">';
     }
     function bodyonload() {
       document.getElementById('importantDiv').innerHTML = getImportantString();
@@ -97,15 +124,14 @@
   </script>
   </head>
   <body onload="bodyonload();">
-    <h2>Important</h2>
+    <h2 style="display:none">Important</h2>
     <div id="importantDiv"></div>
     
-    <h2>Contacts</h2>
     <div id="-1"><input type="submit" value="Open a Tab" onclick="addNewTab();"></div>
 
     <div id="contactsDiv"></div>
     
-    <h2>History</h2>
+    <h2 style="display:none">History</h2>
     <div id="historyDiv"></div>
     
   </body>
