@@ -35,7 +35,7 @@ function getImportantString() {
 function getContactsString() {
   var contacts = JSON.parse(remoteStorage.getItem('contacts'));
   var tabs = JSON.parse(remoteStorage.getItem('tabs'));
-  var you = remoteStorage.getItem(you);
+  var you = remoteStorage.getItem('you');
   var contactsStr = '';
   for(var i in contacts) {
     contactsStr += '<div id="'+i+'"><strong id="contact'+i+'">'+contacts[i]+'</strong>'
@@ -78,7 +78,7 @@ function getContactsString() {
 }
 function getHistoryString() {
   var tabs = JSON.parse(remoteStorage.getItem('tabs'));
-  var you = remoteStorage.getItem(you);
+  var you = remoteStorage.getItem('you');
   historyStr = '<ul>';
   for(i in tabs) {
     var iou = tabs[i];
