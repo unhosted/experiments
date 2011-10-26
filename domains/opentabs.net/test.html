@@ -7,6 +7,8 @@
     <script src="http://unhosted.org/remoteStorage.js"></script>
     <script src="IOU.js"></script>
   <script>
+    var you='michiel@unhosted.org';
+
     function calcSignature(digest, keyPair) {
       return "yours truly";
     }
@@ -27,6 +29,9 @@
         obj[fieldName] = otherFields[fieldName];
       }
       return obj;
+    }
+    function el(el) {
+      return document.getElementById(el);
     }
     function val(el) {
       try {
@@ -59,7 +64,7 @@
       return (contacts.length - 1);
     }
     function owe(i) {
-      var peer = val('contact'+i);
+      var peer = el('contact'+i).innerHTML;
       if(i==-1) {
         if(peer=='') {
           alert('please enter the user address of the person you want to open a tab with');
@@ -75,8 +80,8 @@
          '<div>'
           +'<div style="border-style:solid;border-width::1px">'
           +'<input placeholder="Fahrkarte"> '
-          +'<input size="3" placeholder="40"> '
-          +'<input type="submit" value="EUR"></span>'
+          +'<input size="3" id="amount'+i+'" placeholder="40"> '
+          +'<input type="submit" id="currency'+i+'" value="EUR"></span>'
           +'</div>'
           +'<div style="border-style:solid;border-width::1px">'
           +'<input type="submit" value="Owed by" id="direction" onclick="switchDirection();"> '
@@ -90,12 +95,18 @@
     }
 
     function cancel(i) {
-      document.getElementById(i).innerHTML = '<td id="'+i+'">'+contacts[i]
-        +'<input type="submit" id="owe'+i+'" value="owe" onclick="owe('+i+');">'
-        +'<input type="submit" id="claim'+i+'" value="claim" onclick="claim('+i+');">'
-        +'</td>';
+      document.getElementById('contactsDiv').innerHTML = getContactsString();
     }
     function send(i) {
+      var payer, payee;
+      if(val('direction')=='Owed by') {
+        payer=el('contact'+i).innerHTML;
+        payee=you;
+      } else {
+        payer=you;
+        payee=el('contact'+i).innerHTML;
+      }
+      sign(payer, payee, i);
     }
     function sign(payer, payee, i) {
       var keyPair = {n: 1, d:1, p:1, q:1, userAddress:'mich@unhosted.org'};
@@ -105,12 +116,12 @@
           location: 'Berlin'
         },
 	keyPair);
-      var tabs = JSON.parse(localStorage.getItem('tabs'));
+      var tabs = JSON.parse(remoteStorage.getItem('tabs'));
       if(tabs == null) {
         tabs = [];
       }
       tabs.push(tab);   
-      localStorage.setItem('tabs', JSON.stringify(tabs));
+      remoteStorage.setItem('tabs', JSON.stringify(tabs));
       cancel(i);
     }
     function addNewTab() {
