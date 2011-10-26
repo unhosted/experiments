@@ -120,6 +120,9 @@
           location: 'Berlin'
         },
 	keyPair);
+      storeTab(tab);
+    }
+    function storeTab(tab) {
       var tabs = JSON.parse(remoteStorage.getItem('tabs'));
       if(tabs == null) {
         tabs = [];
@@ -138,9 +141,19 @@
       document.getElementById('contactsDiv').innerHTML = getContactsString();
       document.getElementById('historyDiv').innerHTML = getHistoryString();
     }
+    function fakeIncoming(i) {
+      timestamp = (new Date().getTime());
+      var keyPair = {n: 1, d:1, p:1, q:1, userAddress:'jan@unhosted.org'};
+      var tab = createTab('michiel@unhosted.org', 'jan@unhosted.org', 1, 'beer', timestamp, {}, keyPair);
+      storeTab(tab);
+      bodyonload();
+    }
   </script>
   </head>
   <body onload="bodyonload();">
+    <div style="border-style:dotted;border-width:5px">
+      Fake events: <input type="submit" value="incoming IOU" onclick="fakeIncoming(1);">
+    </div>
     <h2 style="display:none">Important</h2>
     <div id="importantDiv"></div>
     
