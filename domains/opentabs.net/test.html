@@ -166,6 +166,12 @@
       } else  if(i== 2) {
         var tabs = JSON.parse(remoteStorage.getItem('tabs'));
         for(var j in tabs) {
+          if(tabs[j].payee==you) {
+            keyPair.userAddress = tabs[j].payer;
+          }
+          if(tabs[j].payer==you) {
+            keyPair.userAddress = tabs[j].payee;
+          }
           if(((tabs[j].payer==keyPair.userAddress) || (tabs[j].payee==keyPair.userAddress)) &&
             (tabs[j].signatures[keyPair.userAddress]==undefined)) {
             tabs[j].signatures[keyPair.userAddress]=calcSignature(null, keyPair);
@@ -180,6 +186,31 @@
     }
     function unfold(i) {
       document.getElementById('folded'+i).style.display='block';
+    }
+    function markAsPaid(i) {
+      var you = remoteStorage.getItem('you');
+      var tabs = JSON.parse(remoteStorage.getItem('tabs'));
+      if(tabs[i].payer==you) {
+        tabs[i].status='sent';
+      } else {
+        tabs[i].status='received';
+      }
+      remoteStorage.setItem('tabs', JSON.stringify(tabs));
+      bodyonload();
+    }
+    function cancelProposed(i) {
+      var you = remoteStorage.getItem('you');
+      var tabs = JSON.parse(remoteStorage.getItem('tabs'));
+      tabs[i].status='canceled';
+      remoteStorage.setItem('tabs', JSON.stringify(tabs));
+      bodyonload();
+    }
+    function requestPayment(i) {
+      var you = remoteStorage.getItem('you');
+      var tabs = JSON.parse(remoteStorage.getItem('tabs'));
+      tabs[i].status='requested';
+      remoteStorage.setItem('tabs', JSON.stringify(tabs));
+      bodyonload();
     }
   </script>
   </head>

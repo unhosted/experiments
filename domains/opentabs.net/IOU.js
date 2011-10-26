@@ -13,14 +13,14 @@ function getImportantString() {
     if((iou.proposer != you) && (iou.status == 'proposed') && (iou.payer == you)) {
       importantStr += '<li style="background-color:yellow">[incoming invoice:] [?]'
         +iou.payee+' '+iou.description+' '+iou.amount+iou.currency
-        +'<input type="submit" value="Decline" onclick="declineIncoming('+i+');">'
+        +'<input type="submit" value="Decline (msg)" onclick="declineIncoming('+i+');">'
         +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');">'
         +'</li>';
     }
     if((iou.proposer != you) && (iou.status == 'proposed') && (iou.payee == you)) {
       importantStr += '<li style="background-color:yellow">[incoming IOU:] [?]'
         +iou.payer+' '+iou.description+' '+iou.amount+iou.currency
-        +'<input type="submit" value="Decline" onclick="declineIncoming('+i+');">'
+        +'<input type="submit" value="Decline (msg)" onclick="declineIncoming('+i+');">'
         +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');">'
         +'</li>';
     }
@@ -57,19 +57,19 @@ function getContactsString() {
       if((iou.payee == contacts[i]) && (iou.status == 'requested')) {
         contactsStr += '<li style="background-color:pink">[hurry:] [!]'
           +iou.description+' '+iou.amount+iou.currency
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+i+');">'
+          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
       }
       if((iou.payer == contacts[i]) && (iou.status == 'sent')) {
         contactsStr += '<li style="background-color:green">[got it?] [&#10003;]'
           +iou.description+' '+iou.amount+iou.currency
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+i+');">'
+          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
       }
       if((iou.payer == contacts[i]) && (iou.status == 'requested')) {
-        contactStr += '<li style="background-color:green">[you said hurry] [!]'
+        contactsStr += '<li style="background-color:green">[you said hurry] [!]'
           +iou.description+' '+iou.amount+iou.currency
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+i+');">'
+          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
       }
     }
@@ -82,20 +82,26 @@ function getContactsString() {
       if((iou.payee == contacts[i]) && (iou.status == 'accepted')) {
         contactsStr += '<li style="background-color:pink">[you owe them]'
           +iou.description+' '+iou.amount+iou.currency
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+i+');">'
+          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
       }
       if((iou.payer == contacts[i]) && (iou.status == 'accepted')) {
         contactsStr += '<li style="background-color:green">[they owe you]'
           +iou.description+' '+iou.amount+iou.currency
-          +'<input type="submit" value="Request payment" onclick="requestPayment('+i+');">'
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+i+');">'
+          +'<input type="submit" value="Request payment" onclick="requestPayment('+j+');">'
+          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
       }
       if((iou.payee == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
-        contactsStr += '<li style="background-color:pink">[you proposed] [?]'
+        contactsStr += '<li style="background-color:pink">[you proposed to owe] [?]'
           +iou.description+' '+iou.amount+iou.currency
-          +'<input type="submit" value="Cancel" onclick="cancelProposed('+i+');">'
+          +'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');">'
+          +'</li>';
+      }
+      if((iou.payer == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
+        contactsStr += '<li style="background-color:pink">[invoice you proposed] [?]'
+          +iou.description+' '+iou.amount+iou.currency
+          +'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');">'
           +'</li>';
       }
     }
