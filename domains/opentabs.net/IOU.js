@@ -15,8 +15,8 @@ function getImportantString() {
         +iou.payee+' '
         +iou.description+' '
         +iou.amount+iou.currency
-        +'<input type="submit" value="Decline" onclick="decline('+i+');">'
-        +'<input type="submit" value="Accept" onclick="accept('+i+');">'
+        +'<input type="submit" value="Decline" onclick="declineIncoming('+i+');">'
+        +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');">'
         +'</li>';
     }
     if((iou.proposer != you) && (iou.status == 'proposed') && (iou.payee == you)) {
@@ -68,7 +68,7 @@ function getContactsString() {
       if((iou.payer == contacts[i]) && (iou.status == 'accepted')) {
         contactsStr += '<li style="background-color:green">[they owe you]'+iou.description+' '+iou.amount+iou.currency+'</li>';
       }
-      if((iou.payee == contacts[i]) && (iou.status == 'proposed')) {
+      if((iou.payee == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
         contactsStr += '<li style="background-color:pink">[you proposed] [?]'+iou.description+' '+iou.amount+iou.currency+'</li>';
       }
     }

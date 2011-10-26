@@ -137,6 +137,21 @@
         +'<input id="contact-1" placeholder="user@host">'
         +'<input type="submit" value="+" onclick="owe(-1);">';
     }
+    function declineIncoming(i) {
+      var tabs = JSON.parse(remoteStorage.getItem('tabs'));
+      tabs[i].status = 'declined';
+      //TODO: send notif
+      remoteStorage.setItem('tabs', JSON.stringify(tabs));
+      bodyonload();
+    }
+    function acceptIncoming(i) {
+      var tabs = JSON.parse(remoteStorage.getItem('tabs'));
+      tabs[i].signatures[you]=calcSignature(null, null);
+      tabs[i].status = 'accepted';
+      remoteStorage.setItem('tabs', JSON.stringify(tabs));
+      bodyonload();
+    }
+
     function bodyonload() {
       document.getElementById('importantDiv').innerHTML = getImportantString();
       document.getElementById('contactsDiv').innerHTML = getContactsString();
@@ -147,6 +162,7 @@
       var keyPair = {n: 1, d:1, p:1, q:1, userAddress:'jan@unhosted.org'};
       var tab = createTab('michiel@unhosted.org', 'jan@unhosted.org', 1, 'beer', timestamp, {}, keyPair);
       storeTab(tab);
+      addContact('jan@unhosted.org');
       bodyonload();
     }
   </script>
