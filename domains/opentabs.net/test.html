@@ -160,26 +160,41 @@
     function fakeIncoming(i) {
       timestamp = (new Date().getTime());
       var keyPair = {n: 1, d:1, p:1, q:1, userAddress:'jan@unhosted.org'};
-      var tab = createTab(you, 'jan@unhosted.org', 1, 'beer', timestamp, {}, keyPair);
-      storeTab(tab);
-      addContact('jan@unhosted.org');
+      if(i == 1) {
+        var tab = createTab(you, keyPair.userAddress, 1, 'beer', timestamp, {}, keyPair);
+        storeTab(tab);
+      } else  if(i== 2) {
+        var tabs = JSON.parse(remoteStorage.getItem('tabs'));
+        for(var j in tabs) {
+          if(((tabs[j].payer==keyPair.userAddress) || (tabs[j].payee==keyPair.userAddress)) &&
+            (tabs[j].signatures[keyPair.userAddress]==undefined)) {
+            tabs[j].signatures[keyPair.userAddress]=calcSignature(null, keyPair);
+            tabs[j].status='accepted';
+            remoteStorage.setItem('tabs', JSON.stringify(tabs));
+            break;
+          }
+        }
+      }
+      addContact(keyPair.userAddress);
       bodyonload();
+    }
+    function unfold(i) {
+      document.getElementById('folded'+i).style.display='block';
     }
   </script>
   </head>
   <body onload="bodyonload();">
     <div style="border-style:dotted;border-width:5px">
-      Fake events: <input type="submit" value="incoming IOU" onclick="fakeIncoming(1);">
+      Fake events:
+      <input type="submit" value="incoming IOU" onclick="fakeIncoming(1);">
+      <input type="submit" value="one accepted" onclick="fakeIncoming(2);">
     </div>
-    <h2 style="display:none">Important</h2>
-    <div id="importantDiv"></div>
-    
-    <div id="-1"><input type="submit" value="Open a Tab" onclick="addNewTab();"></div>
-
-    <div id="contactsDiv"></div>
-    
-    <h2 style="display:none">History</h2>
-    <div id="historyDiv"></div>
+    <div style="border-style:dotted;border-width:5px" id="importantDiv"></div>
+    <div style="border-style:dotted;border-width:5px" id="-1">
+      <input type="submit" value="Open a Tab" onclick="addNewTab();">
+    </div>
+    <div style="border-style:dotted;border-width:5px" id="contactsDiv"></div>
+    <div style="border-style:dotted;border-width:5px" id="historyDiv"></div>
     
   </body>
 </html>

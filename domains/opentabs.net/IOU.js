@@ -56,7 +56,7 @@ function getContactsString() {
         contactStr += '<li style="background-color:green">[you said hurry] [!]'+iou.description+' '+iou.amount+iou.currency+'</li>';
       }
     }
-    contactsStr += '</ul><hr><ul>';
+    contactsStr += '</ul><div onclick="unfold('+i+');">...<div id="folded'+i+'" style="display:none"><ul>';
     for(j in tabs) {
       var iou = tabs[j];
       if(!iou.description) {
@@ -72,7 +72,7 @@ function getContactsString() {
         contactsStr += '<li style="background-color:pink">[you proposed] [?]'+iou.description+' '+iou.amount+iou.currency+'</li>';
       }
     }
-    contactsStr += '</ul></div>';
+    contactsStr += '</ul></div></div></div>';
   }
   return contactsStr;
 }
