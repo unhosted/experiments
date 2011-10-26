@@ -180,6 +180,21 @@
             break;
           }
         }
+      } else  if(i==3) {
+        var tabs = JSON.parse(remoteStorage.getItem('tabs'));
+        for(var j in tabs) {
+          if((tabs[j].status=='reque') && (tabs[j].payer==you)) {
+            tabs[j].status='received';
+            remoteStorage.setItem('tabs', JSON.stringify(tabs));
+            break;
+          }
+          if(((tabs[j].status=='sent') || (tabs[j].status=='accepted') || (tabs[j].status=='requested'))
+              && (tabs[j].payer==you)) {
+            tabs[j].status='received';
+            remoteStorage.setItem('tabs', JSON.stringify(tabs));
+            break;
+          }
+        }
       }
       addContact(keyPair.userAddress);
       bodyonload();
@@ -219,6 +234,7 @@
       Fake events:
       <input type="submit" value="incoming IOU" onclick="fakeIncoming(1);">
       <input type="submit" value="one accepted" onclick="fakeIncoming(2);">
+      <input type="submit" value="one received" onclick="fakeIncoming(3);">
     </div>
     <div style="border-style:dotted;border-width:5px" id="importantDiv"></div>
     <div style="border-style:dotted;border-width:5px" id="-1">
