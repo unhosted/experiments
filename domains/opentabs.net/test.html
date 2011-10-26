@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Opentabs.net app</title>
     <link rel="stylesheet" type="text/css" href="app.css">
-    <script src="http://unhosted.org/remoteStorage.js"></script>
+    <script src="http://unhost.it/remoteStorage.js"></script>
     <script src="IOU.js"></script>
   <script>
     var you='michiel@unhosted.org';
@@ -21,6 +21,7 @@
         payer: payer,
         payee: payee,
         status: 'proposed',
+        proposer: keyPair.userAddress,
         amount: amount,
 	currency: currency};
       obj.statement = "At timestamp "+timestamp+", "+payer+" starts owing "+payee+" an additional "+amount+" "+currency;

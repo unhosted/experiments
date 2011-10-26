@@ -1,12 +1,23 @@
+remoteStorage.setItem('you', 'michiel@unhosted.org');
+
 function getImportantString() {
   var tabs = JSON.parse(remoteStorage.getItem('tabs'));
-  var you = remoteStorage.getItem(you);
+  var you = remoteStorage.getItem('you');
 
   var importantStr = '<ul>';
   for(i in tabs) {
     var iou = tabs[i];
+    if(!iou.description) {
+      iou.description='';
+    }
     if((iou.proposer != you) && (iou.status == 'proposed') && (iou.payer == you)) {
-      importantStr += '<li style="background-color:yellow">[incoming invoice:] [?]'+iou.payee+' '+iou.description+' '+iou.amount+iou.currency+'</li>';
+      importantStr += '<li style="background-color:yellow">[incoming invoice:] [?]'
+        +iou.payee+' '
+        +iou.description+' '
+        +iou.amount+iou.currency
+        +'<input type="submit" value="Decline" onclick="decline('+i+');">'
+        +'<input type="submit" value="Accept" onclick="accept('+i+');">'
+        +'</li>';
     }
     if((iou.proposer != you) && (iou.status == 'proposed') && (iou.payee == you)) {
       importantStr += '<li style="background-color:yellow">[incoming IOU:] [?]'+iou.payer+' '+iou.description+' '+iou.amount+iou.currency+'</li>';
@@ -32,6 +43,9 @@ function getContactsString() {
            +'<ul>';
     for(j in tabs) {
       var iou = tabs[j];
+      if(!iou.description) {
+        iou.description='';
+      }
       if((iou.payee == contacts[i]) && (iou.status == 'requested')) {
         contactsStr += '<li style="background-color:pink">[hurry:] [!]'+iou.description+' '+iou.amount+iou.currency+'</li>';
       }
@@ -45,6 +59,9 @@ function getContactsString() {
     contactsStr += '</ul><hr><ul>';
     for(j in tabs) {
       var iou = tabs[j];
+      if(!iou.description) {
+        iou.description='';
+      }
       if((iou.payee == contacts[i]) && (iou.status == 'accepted')) {
         contactsStr += '<li style="background-color:pink">[you owe them]'+iou.description+' '+iou.amount+iou.currency+'</li>';
       }
@@ -65,6 +82,9 @@ function getHistoryString() {
   historyStr = '<ul>';
   for(i in tabs) {
     var iou = tabs[i];
+    if(!iou.description) {
+      iou.description='';
+    }
     if((iou.proposer != you) && (iou.status == 'declined') && (iou.payee==you)) {
       historyStr += '<li style="background-color:yellow">[you declined] [X]'+iou.payer+' '+iou.description+' '+iou.amount+iou.currency+'</li>';
     }
