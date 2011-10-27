@@ -1,8 +1,8 @@
 exports.config = {
   couch: {
-    host: 'http://<you>.iriscouch.com/',
+    host: '<you>.iriscouch.com',
     port: 5984,
-    usr: 'remoteCouch',
+    usr: 'remoteCouch',//must be a CouchDb server admin
     pwd: '<pwd>'
   }
 };
