@@ -25,7 +25,7 @@ http.createServer(function (req, res) {
 //    options.headers.origin = 'http://myfavouritesandwich.org';
 //    options.headers['access-control-request-method'] = undefined;
 //    options.headers['access-control-request-headers'] = undefined;
-//    options.headers.host = undefined;
+    options.headers.host = undefined;
     
     var req2 = https.request(options, function(res2) {
       var responseHeaders = res2.headers;
