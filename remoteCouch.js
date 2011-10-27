@@ -1,61 +1,35 @@
-var http = require('http')
-  , https = require('https');
+var http = require('http'),
+  cradle = require('cradle'),
+  config = require('./config').config;
 
-  //////////////////////
- // gdata CORS proxy //
-//////////////////////
+//
+// Create a connection
+//
+var conn = new(cradle.Connection)(config.couch.host, config.couch.port, {
+  cache: true,
+  raw: false,
+  auth: {username: config.couch.usr, password: config.couch.pwd}
+});
 
-http.createServer(function (req, res) {
-  var dataStr = '';
-  req.on('data', function(chunk) {
-    dataStr += chunk;
-  });
-  req.on('end', function() {
-    console.log('\nA.URL:'+req.url);
-    console.log('\nA.METHOD:'+req.method);
-    console.log('\nA.HEADERS:'+JSON.stringify(req.headers));
-    console.log('\nA.DATA:'+dataStr);
-    var options =
-      { 'host': 'michiel.iriscouch.com'
-      , 'port': 443
-      , 'method': req.method
-      , 'path': req.url
-      , 'headers': req.headers
-      };
-//    options.headers.origin = 'http://myfavouritesandwich.org';
-//    options.headers['access-control-request-method'] = undefined;
-//    options.headers['access-control-request-headers'] = undefined;
-    options.headers.host = undefined;
-    
-    var req2 = https.request(options, function(res2) {
-      var responseHeaders = res2.headers;
-      console.log('\nC.HEADERS:'+JSON.stringify(responseHeaders));
-      //add CORS to response:
-//      responseHeaders['Access-Control-Allow-Origin'] = 'http://example.com';
-//      responseHeaders['Access-Control-Allow-Method'] = 'POST';
-//      responseHeaders['Access-Control-Allow-Headers'] = 'authorization,content-type,Content-Length,gdata-version,slug,x-upload-content-length,x-upload-content-type';
-//      responseHeaders['Access-Control-Allow-Credentials'] = 'true';
-      //replace status with 200:
-//      responseHeaders['X-Status'] = res2.statusCode;
-      console.log('\nD.HEADERS:'+JSON.stringify(responseHeaders));
-//      res.writeHead(200, responseHeaders);
-      res.writeHead(res2.statusCode, responseHeaders);
-      res2.setEncoding('utf8');
-      var res2Data = '';
-      //res.write('START!');
-      res2.on('data', function (chunk) {
-        res2Data += chunk;
-        res.write(chunk);
-        //res.write('DATA!');
-        //res.end();//FIXME:this is wrong here
-      });
-      res2.on('end', function() {
-        console.log('\nC.DATA:'+res2Data);
-        //res.write('END!');
-        res.end();
-      });
-    });
-    req2.write(dataStr);
-    req2.end();
-  });
-}).listen(9003);
+//
+// Get a database
+//
+var database = conn.database('newyorkcity');
+
+database.create();
+
+//
+// Now work with it
+//
+database.save('flatiron', {
+  description: 'The neighborhood surrounding the Flatiron building',
+  boundaries: {
+    north: '28 Street',
+    south: '18 Street',
+    east: 'Park Avenue',
+    west: '6 Avenue'
+  }
+}, function (err, res) {
+  console.log(JSON.stringify(err));
+  console.log(JSON.stringify(res)); // True
+});
