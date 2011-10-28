@@ -54,14 +54,16 @@
       cache: true, raw: false,
       auth: {username: config.couch.usr, password: config.couch.pwd}
     });
-    var scopeDb = conn.database(dataScope);
-    scopeDb.create();//looking at https://github.com/cloudhead/cradle this seems to be a synchronous call?
-    var sec;
+    var dbName, sec;
     if(public) {
+      dbName = dataScope+'_public';
       sec= {admins:{names:[userAddress]}};//leaving readers undefined
     } else {
+      dbName = dataScope+'_private';
       sec= {admins:{names:[userAddress]}, readers:{names:[userAddress]}};
     }
+    var scopeDb = conn.database(dbName);
+    scopeDb.create();//looking at https://github.com/cloudhead/cradle this seems to be a synchronous call?
     scopeDb.save('_security', sec, function (err, res) {
       console.log(JSON.stringify(err));
       console.log(JSON.stringify(res)); // True
@@ -99,13 +101,13 @@
 	  //+'  <Link rel="http://w3.org/ns/remoteStorage"\n'
 	  +'  <Link rel="remoteStorage"\n'
           +'    template="http://'+config.proxy.host+':'+config.proxy.port+'/{scope}_private/"\n'
-          +'    auth="http//'+config.facade.host+':'+config.facade.port+'/auth_private"\n'
+          +'    auth="http://'+config.facade.host+':'+config.facade.port+'/auth_private"\n'
           +'    api="CouchDb/private"\n'
 	  +'  ></Link>\n'
 	  //+'  <Link rel="http://w3.org/ns/remoteStorage"\n'
 	  +'  <Link rel="remoteStorage"\n'
           +'    template="http://'+config.proxy.host+':'+config.proxy.port+'/{scope}_public/"\n'
-          +'    auth="http//'+config.facade.host+':'+config.facade.port+'/auth_public"\n'
+          +'    auth="http://'+config.facade.host+':'+config.facade.port+'/auth_public"\n'
           +'    api="CouchDb/public"\n'
 	  +'  ></Link>\n'
           +'</XRD>\n');
