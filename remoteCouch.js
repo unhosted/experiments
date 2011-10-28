@@ -65,9 +65,11 @@
   }
 
   var dataScope = 'documents';
-  var userName = (new Buffer('test@yourremotestorage.com')).toString('base64');
-  var oauthToken = createScope(userName, 'documents');
-  console.log(oauthToken);
+  var userName = 'test@yourremotestorage.com';
+  var password = createScope(userName, 'documents');
+  //make basic auth header match bearer token for easy proxying:
+  var bearerToken = (new Buffer(userName+':'+password)).toString('base64');
+  console.log(bearerToken);
   return;
 
   var testConn = new(cradle.Connection)(config.couch.host, config.couch.port, {
