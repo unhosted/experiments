@@ -139,8 +139,8 @@
         var userAddress = urlObj.query.userAddress;
         if(config.passwords[userAddress] == str2sha(urlObj.query.password)) {
           createToken(urlObj.query.userAddress, urlObj.query.scope, (urlObj.query.public=='true'), function(token) {
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.end('<html><h3>Location: '+urlObj.query.redirect_url+'#access_token='+token+'</h3></html>\n');
+            res.writeHead(302, {Location: urlObj.query.redirect_uri+'#access_token='+token});
+            res.end('Found');
           });
         } else {
           res.writeHead(401, {'Content-Type': 'text/html'});
