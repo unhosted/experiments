@@ -43,6 +43,45 @@
       console.log(JSON.stringify(err));
       console.log(JSON.stringify(res)); // True
     });
+    return pwd;
   }
-  genUser('test');
+  function createScope(userName, dataScope) {
+    var conn = new(cradle.Connection)(config.couch.host, config.couch.port, {
+      cache: true, raw: false,
+      auth: {username: config.couch.usr, password: config.couch.pwd}
+    });
+    var scopeDb = conn.database(dataScope);
+    scopeDb.create();
+    scopeDb.save('_security', {
+      admins: {
+        names: [userName]
+      }
+    }, function (err, res) {
+      console.log(JSON.stringify(err));
+      console.log(JSON.stringify(res)); // True
+    });
+    var pwd=genUser(userName);
+    return pwd;
+  }
+
+  var dataScope = 'documents';
+  var userName = (new Buffer('test@yourremotestorage.com')).toString('base64');
+  var oauthToken = createScope(userName, 'documents');
+  console.log(oauthToken);
+  return;
+
+  var testConn = new(cradle.Connection)(config.couch.host, config.couch.port, {
+      cache: true, raw: false,
+      auth: {username: userName, password: oauthToken}
+    });
+  var documentsDb = testConn.database('documents');
+  documentsDb.save('text', {
+    value: 'Mich woz here'
+  }, function (err, res) {
+    console.log(JSON.stringify(err));
+    console.log(JSON.stringify(res)); // True
+  });
 })();
+
+var buffer = new Buffer('test@yourremotestorage.com');
+console.log(buffer.toString('base64'));
