@@ -4,7 +4,6 @@
     fs = require('fs'),
     Buffer = require('buffer').Buffer,
     crypto = require('crypto'),
-    shasum = crypto.createHash('sha1'),
     url = require('url'),
     config = require('./config').config;
 
@@ -14,6 +13,11 @@
     fs.closeSync(fd);
     return this;
   }
+  function str2sha(str) {
+    var shasum = crypto.createHash('sha1');
+    shasum.update(str);
+    return shasum.digest('hex');
+  } 
   function randStr(length) {
     var buffer = new Buffer(length);
     buffer.randomize();
@@ -27,8 +31,7 @@
     var salt=randStr(40);
     console.log(salt);
     console.log('Generating sha');
-    shasum.update(pwd+salt);
-    var sha1 = shasum.digest('hex');
+    var sha1 = str2sha(pwd+salt);
     console.log(sha1);
     var conn = new(cradle.Connection)(config.couch.host, config.couch.port, {
       cache: true, raw: false,
@@ -117,12 +120,19 @@
         console.log(urlObj);
         
         var dataScope = urlObj.query.scope;
+        var dataScop = urlObj.query.scope;
         var userAddress = urlObj.query.userAddress;
-
-        var token = createToken(userAddress, dataScope);
-
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end('<html><h2>'+token+'</h2></html>\n');
+        if(config.passwords[userAddress] == str2sha(urlObj.query.password)) {
+          var token = createToken(urlObj.query.userAddress, urlObj.query.scope);
+          res.writeHead(200, {'Content-Type': 'text/html'});
+          res.end('<html><h3>Location: '+urlObj.query.redirect_url+'#access_token='+token+'</h3></html>\n');
+        } else {
+          res.writeHead(401, {'Content-Type': 'text/html'});
+          res.end('<html><h3>Please set passwords[\''+userAddress+'\'] to \''
+            +str2sha(urlObj.query.password)
+            +'\' in config.js to make that password work\n'
+            +'</h3></html>');
+        }
       } else {
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.end('Not found\n');
