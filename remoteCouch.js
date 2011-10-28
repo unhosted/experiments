@@ -72,12 +72,6 @@
     return bearerToken;
   }
 
-  function test() {
-    var dataScope = 'documents';
-    var userName = 'test@yourremotestorage.com';
-    console.log(createToken(userName, dataScope));
-  }
-
   function serveFacade() {
     http.createServer(function (req, res) {
       if(req.url=='/.well-known/host-meta') {
@@ -101,6 +95,28 @@
           +'    api="CouchDb/public"\n'
 	  +'  ></Link>\n'
           +'</XRD>\n');
+      } else if(req.url=='/auth_private') {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end('<html><form method="GET" action="/doAuth">\n'
+          +'  Your user address: <input name="userAddress" value="test@yourremotestorage.com"><br>\n'
+          +'  Your password:<input name="password" type="password" value="unhosted"><br>\n'
+          +'  <input type="hidden" name="private" value="true"><br>\n'
+          +'  <input type="submit" value="Allow this app to read and write on your private couch">\n'
+          +'</form></html>\n');
+      } else if(req.url=='/auth_public') {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end('<html><form method="GET" action="/doAuth">\n'
+          +'  Your user address: <input name="userAddress" value="test@yourremotestorage.com"><br>\n'
+          +'  Your password:<input name="password" type="password" value="unhosted"><br>\n'
+          +'  <input type="hidden" name="private" value="false"><br>\n'
+          +'  <input type="submit" value="Allow this app to read and write on your private couch">\n'
+          +'</form></html>\n');
+      } else if(req.url.substring(0, '/doAuth'.length)=='/doAuth') {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        var dataScope = 'documents';
+        var userName = 'test@yourremotestorage.com';
+        var token = createToken(userName, dataScope);
+        res.end('<html><h2>'+token+'</h2></html>\n');
       } else {
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.end('Not found\n');
