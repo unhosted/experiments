@@ -84,10 +84,12 @@
           'Content-Type': 'xrd+xml',
           'Access-Control-Allow-Origin': '*'});
         res.end('<?xml version="1.0" encoding="UTF-8"?>\n'
+          +'<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0" xmlns:hm="http://host-meta.net/xrd/1.0">\n'
+	  +'  <hm:Host xmlns="http://host-meta.net/xrd/1.0">yourremotestorage.com</hm:Host>\n'
           +'  <Link rel="lrdd" template="http://'+config.facade.host+':'+config.facade.port+'/webfinger?q={uri}">\n'
           +'  </Link>\n'
           +'</XRD>\n');
-      } else if(req.url=='/webfinger') {
+      } else if(req.url.substring(0, '/webfinger'.length)=='/webfinger') {
         res.writeHead(200, {
           'Content-Type': 'xrd+xml',
           'Access-Control-Allow-Origin': '*'});
@@ -98,6 +100,7 @@
           +'    template="http://'+config.proxy.host+':'+config.proxy.port+'/{scope}_private/"\n'
           +'    auth="http//'+config.facade.host+':'+config.facade.port+'/auth_private"\n'
           +'    api="CouchDb/private"\n'
+	  +'  ></Link>\n'
 	  +'  <Link rel="http://w3.org/ns/remoteStorage"\n'
           +'    template="http://'+config.proxy.host+':'+config.proxy.port+'/{scope}_public/"\n'
           +'    auth="http//'+config.facade.host+':'+config.facade.port+'/auth_public"\n'
