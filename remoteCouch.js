@@ -111,19 +111,23 @@
           +'    api="CouchDb/public"\n'
 	  +'  ></Link>\n'
           +'</XRD>\n');
-      } else if(req.url=='/auth_private') {
+      } else if(req.url.substring(0, '/auth_private'.length)=='/auth_private') {
+        var urlObj = url.parse(req.url, true);
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end('<html><form method="GET" action="/doAuth">\n'
           +'  Your user address: <input name="userAddress" value="test@yourremotestorage.com"><br>\n'
           +'  Your password:<input name="password" type="password" value="unhosted"><br>\n'
+          +'  <input type="hidden" name="redirect_uri" value="'+urlObj.query.redirect_uri+'"><br>\n'
           +'  <input type="hidden" name="public" value="false"><br>\n'
           +'  <input type="submit" value="Allow this app to read and write on your private couch">\n'
           +'</form></html>\n');
-      } else if(req.url=='/auth_public') {
+      } else if(req.url.substring(0, '/auth_public'.length)=='/auth_public') {
+        var urlObj = url.parse(req.url, true);
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end('<html><form method="GET" action="/doAuth">\n'
           +'  Your user address: <input name="userAddress" value="test@yourremotestorage.com"><br>\n'
           +'  Your password:<input name="password" type="password" value="unhosted"><br>\n'
+          +'  <input type="hidden" name="redirect_uri" value="'+urlObj.query.redirect_uri+'"><br>\n'
           +'  <input type="hidden" name="public" value="true"><br>\n'
           +'  <input type="submit" value="Allow this app to read and write on your private couch">\n'
           +'</form></html>\n');
@@ -132,7 +136,6 @@
         console.log(urlObj);
         
         var dataScope = urlObj.query.scope;
-        var dataScop = urlObj.query.scope;
         var userAddress = urlObj.query.userAddress;
         if(config.passwords[userAddress] == str2sha(urlObj.query.password)) {
           createToken(urlObj.query.userAddress, urlObj.query.scope, (urlObj.query.public=='true'), function(token) {
