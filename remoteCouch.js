@@ -80,13 +80,17 @@
   function serveFacade() {
     http.createServer(function (req, res) {
       if(req.url=='/.well-known/host-meta') {
-        res.writeHead(200, {'Content-Type': 'xrd+xml'});
+        res.writeHead(200, {
+          'Content-Type': 'xrd+xml',
+          'Access-Control-Allow-Origin': '*'});
         res.end('<?xml version="1.0" encoding="UTF-8"?>\n'
           +'  <Link rel="lrdd" template="http://'+config.facade.host+':'+config.facade.port+'/webfinger?q={uri}">\n'
           +'  </Link>\n'
           +'</XRD>\n');
       } else if(req.url=='/webfinger') {
-        res.writeHead(200, {'Content-Type': 'xrd+xml'});
+        res.writeHead(200, {
+          'Content-Type': 'xrd+xml',
+          'Access-Control-Allow-Origin': '*'});
         res.end('<?xml version="1.0" encoding="UTF-8"?>\n'
           +'<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0" xmlns:hm="http://host-meta.net/xrd/1.0">\n'
 	  +'  <hm:Host xmlns="http://host-meta.net/xrd/1.0">yourremotestorage.com</hm:Host>\n'
