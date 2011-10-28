@@ -64,26 +64,51 @@
     return pwd;
   }
 
-  var dataScope = 'documents';
-  var userName = 'test@yourremotestorage.com';
-  var password = createScope(userName, 'documents');
-  //make basic auth header match bearer token for easy proxying:
-  var bearerToken = (new Buffer(userName+':'+password)).toString('base64');
-  console.log(bearerToken);
-  return;
+  function createToken(userName, dataScope) {
+    var password = createScope(userName, dataScope);
+  
+    //make basic auth header match bearer token for easy proxying:
+    var bearerToken = (new Buffer(userName+':'+password)).toString('base64');
+    return bearerToken;
+  }
 
-  var testConn = new(cradle.Connection)(config.couch.host, config.couch.port, {
-      cache: true, raw: false,
-      auth: {username: userName, password: oauthToken}
-    });
-  var documentsDb = testConn.database('documents');
-  documentsDb.save('text', {
-    value: 'Mich woz here'
-  }, function (err, res) {
-    console.log(JSON.stringify(err));
-    console.log(JSON.stringify(res)); // True
-  });
+  function test() {
+    var dataScope = 'documents';
+    var userName = 'test@yourremotestorage.com';
+    console.log(createToken(userName, dataScope));
+  }
+
+  function serveFacade() {
+    http.createServer(function (req, res) {
+      if(req.url=='/.well-known/host-meta') {
+        res.writeHead(200, {'Content-Type': 'xrd+xml'});
+        res.end('<?xml version="1.0" encoding="UTF-8"?>\n'
+          +'  <Link rel="lrdd" template="http://'+config.facade.host+':'+config.facade.port+'/webfinger?q={uri}">\n'
+          +'  </Link>\n'
+          +'</XRD>\n');
+      } else if(req.url=='/webfinger') {
+        res.writeHead(200, {'Content-Type': 'xrd+xml'});
+        res.end('<?xml version="1.0" encoding="UTF-8"?>\n'
+          +'<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0" xmlns:hm="http://host-meta.net/xrd/1.0">\n'
+	  +'  <hm:Host xmlns="http://host-meta.net/xrd/1.0">yourremotestorage.com</hm:Host>\n'
+	  +'  <Link rel="http://w3.org/ns/remoteStorage"\n'
+          +'    template="http://'+config.proxy.host+':'+config.proxy.port+'/{scope}_private/"\n'
+          +'    auth="http//'+config.facade.host+':'+config.facade.port+'/auth_private"\n'
+          +'    api="CouchDb/private"\n'
+	  +'  <Link rel="http://w3.org/ns/remoteStorage"\n'
+          +'    template="http://'+config.proxy.host+':'+config.proxy.port+'/{scope}_public/"\n'
+          +'    auth="http//'+config.facade.host+':'+config.facade.port+'/auth_public"\n'
+          +'    api="CouchDb/public"\n'
+	  +'  ></Link>\n'
+          +'</XRD>\n');
+      } else {
+        res.writeHead(404, {'Content-Type': 'text/plain'});
+        res.end('Not found\n');
+      }
+    }).listen(config.facade.port);
+  }
+
+  //test();
+  serveFacade();
+
 })();
-
-var buffer = new Buffer('test@yourremotestorage.com');
-console.log(buffer.toString('base64'));
