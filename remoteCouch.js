@@ -5,6 +5,7 @@
     Buffer = require('buffer').Buffer,
     crypto = require('crypto'),
     shasum = crypto.createHash('sha1'),
+    url = require('url'),
     config = require('./config').config;
 
   Buffer.prototype.randomize = function() {
@@ -18,7 +19,7 @@
     buffer.randomize();
     return buffer.toString('base64');
   }
-  function genUser(userName) {
+  function genUser(userAddress) {
     console.log('Generating pwd');
     var pwd=randStr(40);
     console.log(pwd);
@@ -33,9 +34,9 @@
       cache: true, raw: false,
       auth: {username: config.couch.usr, password: config.couch.pwd}
     });
-    conn.database('_users').save('org.couchdb.user:'+userName, {
+    conn.database('_users').save('org.couchdb.user:'+userAddress, {
       type: 'user',
-      name: userName,
+      name: userAddress,
       roles: [],
       password_sha: sha1,
       salt: salt
@@ -45,7 +46,7 @@
     });
     return pwd;
   }
-  function createScope(userName, dataScope) {
+  function createScope(userAddress, dataScope) {
     var conn = new(cradle.Connection)(config.couch.host, config.couch.port, {
       cache: true, raw: false,
       auth: {username: config.couch.usr, password: config.couch.pwd}
@@ -54,21 +55,21 @@
     scopeDb.create();
     scopeDb.save('_security', {
       admins: {
-        names: [userName]
+        names: [userAddress]
       }
     }, function (err, res) {
       console.log(JSON.stringify(err));
       console.log(JSON.stringify(res)); // True
     });
-    var pwd=genUser(userName);
+    var pwd=genUser(userAddress);
     return pwd;
   }
 
-  function createToken(userName, dataScope) {
-    var password = createScope(userName, dataScope);
+  function createToken(userAddress, dataScope) {
+    var password = createScope(userAddress, dataScope);
   
     //make basic auth header match bearer token for easy proxying:
-    var bearerToken = (new Buffer(userName+':'+password)).toString('base64');
+    var bearerToken = (new Buffer(userAddress+':'+password)).toString('base64');
     return bearerToken;
   }
 
@@ -112,10 +113,15 @@
           +'  <input type="submit" value="Allow this app to read and write on your private couch">\n'
           +'</form></html>\n');
       } else if(req.url.substring(0, '/doAuth'.length)=='/doAuth') {
+        var urlObj = url.parse(req.url, true);
+        console.log(urlObj);
+        
+        var dataScope = urlObj.query.scope;
+        var userAddress = urlObj.query.userAddress;
+
+        var token = createToken(userAddress, dataScope);
+
         res.writeHead(200, {'Content-Type': 'text/html'});
-        var dataScope = 'documents';
-        var userName = 'test@yourremotestorage.com';
-        var token = createToken(userName, dataScope);
         res.end('<html><h2>'+token+'</h2></html>\n');
       } else {
         res.writeHead(404, {'Content-Type': 'text/plain'});
