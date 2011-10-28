@@ -23,7 +23,7 @@
     buffer.randomize();
     return buffer.toString('base64');
   }
-  function genUser(userAddress) {
+  function genUser(userAddress, cb) {
     console.log('Generating pwd');
     var pwd=randStr(40);
     console.log(pwd);
@@ -46,34 +46,35 @@
     }, function (err, res) {
       console.log(JSON.stringify(err));
       console.log(JSON.stringify(res)); // True
+      cb(pwd);
     });
-    return pwd;
   }
-  function createScope(userAddress, dataScope) {
+  function createScope(userAddress, dataScope, public, cb) {
     var conn = new(cradle.Connection)(config.couch.host, config.couch.port, {
       cache: true, raw: false,
       auth: {username: config.couch.usr, password: config.couch.pwd}
     });
     var scopeDb = conn.database(dataScope);
-    scopeDb.create();
-    scopeDb.save('_security', {
-      admins: {
-        names: [userAddress]
-      }
-    }, function (err, res) {
+    scopeDb.create();//looking at https://github.com/cloudhead/cradle this seems to be a synchronous call?
+    var sec;
+    if(public) {
+      sec= {admins:{names:[userAddress]}};//leaving readers undefined
+    } else {
+      sec= {admins:{names:[userAddress]}, readers:{names:[userAddress]}};
+    }
+    scopeDb.save('_security', sec, function (err, res) {
       console.log(JSON.stringify(err));
       console.log(JSON.stringify(res)); // True
+      genUser(userAddress, cb);
     });
-    var pwd=genUser(userAddress);
-    return pwd;
   }
 
-  function createToken(userAddress, dataScope) {
-    var password = createScope(userAddress, dataScope);
-  
-    //make basic auth header match bearer token for easy proxying:
-    var bearerToken = (new Buffer(userAddress+':'+password)).toString('base64');
-    return bearerToken;
+  function createToken(userAddress, dataScope, public, cb) {
+    createScope(userAddress, dataScope, public, function(password) {
+      //make basic auth header match bearer token for easy proxying:
+      var bearerToken = (new Buffer(userAddress+':'+password)).toString('base64');
+      cb(bearerToken);
+    });
   }
 
   function serveFacade() {
@@ -104,7 +105,7 @@
         res.end('<html><form method="GET" action="/doAuth">\n'
           +'  Your user address: <input name="userAddress" value="test@yourremotestorage.com"><br>\n'
           +'  Your password:<input name="password" type="password" value="unhosted"><br>\n'
-          +'  <input type="hidden" name="private" value="true"><br>\n'
+          +'  <input type="hidden" name="public" value="false"><br>\n'
           +'  <input type="submit" value="Allow this app to read and write on your private couch">\n'
           +'</form></html>\n');
       } else if(req.url=='/auth_public') {
@@ -112,7 +113,7 @@
         res.end('<html><form method="GET" action="/doAuth">\n'
           +'  Your user address: <input name="userAddress" value="test@yourremotestorage.com"><br>\n'
           +'  Your password:<input name="password" type="password" value="unhosted"><br>\n'
-          +'  <input type="hidden" name="private" value="false"><br>\n'
+          +'  <input type="hidden" name="public" value="true"><br>\n'
           +'  <input type="submit" value="Allow this app to read and write on your private couch">\n'
           +'</form></html>\n');
       } else if(req.url.substring(0, '/doAuth'.length)=='/doAuth') {
@@ -123,9 +124,10 @@
         var dataScop = urlObj.query.scope;
         var userAddress = urlObj.query.userAddress;
         if(config.passwords[userAddress] == str2sha(urlObj.query.password)) {
-          var token = createToken(urlObj.query.userAddress, urlObj.query.scope);
-          res.writeHead(200, {'Content-Type': 'text/html'});
-          res.end('<html><h3>Location: '+urlObj.query.redirect_url+'#access_token='+token+'</h3></html>\n');
+          createToken(urlObj.query.userAddress, urlObj.query.scope, (urlObj.query.public=='true'), function(token) {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.end('<html><h3>Location: '+urlObj.query.redirect_url+'#access_token='+token+'</h3></html>\n');
+          });
         } else {
           res.writeHead(401, {'Content-Type': 'text/html'});
           res.end('<html><h3>Please set passwords[\''+userAddress+'\'] to \''
