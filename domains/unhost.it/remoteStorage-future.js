@@ -356,31 +356,31 @@
         if(linkTags.length == 0) {
           error('no Link tags found in lrdd');
         } else {
-          var davFound = false;
-          var errorStr = 'none of the Link tags have a http://unhosted.org/spec/dav/0.1 rel-attribute';
+          var linkFound = false;
+          var errorStr = 'none of the Link tags have a remoteStorage rel-attribute';
           for(var linkTagI in linkTags) {
             for(var attrI in linkTags[linkTagI].attributes) {
               var attr = linkTags[linkTagI].attributes[attrI];
-              if((attr.name=='rel') && (attr.value=='http://unhosted.org/spec/dav/0.1')) {
-                davFound = true;
-                errorStr = 'the first Link tag with a dav rel-attribute has no href-attribute';
+              if((attr.name=='rel') && (attr.value=='remoteStorage')) {
+                linkFound = true;
+                errorStr = 'the first Link tag with a dav rel-attribute has no template-attribute';
                 for(var attrJ in linkTags[linkTagI].attributes) {
                   var attr2 = linkTags[linkTagI].attributes[attrJ];
-                  davAddress = attr2.value;
-                  if(attr2.name=='href') {
+                  authAddress = attr2.value;
+                  if(attr2.name=='auth') {
                     //SUCCESS:
-                    cb(davAddress);
+                    cb(authAddress);
                     break;
                   }
                 }
                 break;
               }
             }
-            if(davFound) {
+            if(linkFound) {
               break;
             }
           }
-          if(!davFound) {
+          if(!linkFound) {
             error(errorStr);
           }
         }
@@ -396,7 +396,7 @@
       function go(address, dataScope, userAddress) {
         var loc = encodeURIComponent((''+window.location).split('#')[0]);
         window.location = address
-          + 'oauth2/auth?client_id=' + loc
+          + '?client_id=' + loc
           + '&redirect_uri=' + loc
           + '&scope=' + dataScope
           + '&user_address=' + userAddress
@@ -530,12 +530,12 @@
           var onError = function(errorMsg) {
             alert(errorMsg);
           }
-          var callback = function(davAddress) {
+          var callback = function(authAddress) {
             cb();
             localStorage.setItem('_remoteStorageUserAddress', userAddress);
             localStorage.setItem('_remoteStorageDataScope', dataScope);
-            localStorage.setItem('_remoteStorageDavAddress', davAddress)
-            oauth.go(davAddress, dataScope, userAddress);
+            localStorage.setItem('_remoteStorageAuthAddress', authAddress)
+            oauth.go(authAddress, dataScope, userAddress);
           }
           webfinger.getDavBaseAddress(userAddress, onError, callback);
         },
