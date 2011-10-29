@@ -32,7 +32,7 @@
       document.removeEventListener('DOMContentLoaded', arguments.callee, false );
       {
         var scripts = document.getElementsByTagName('script');
-	for(i in scripts) {
+        for(i in scripts) {
           if(/remoteStorage-future.js$/.test(scripts[i].src)) {
             var options = (new Function('return ' + scripts[i].innerHTML.replace(/\n|\r/g, '')))();
             window.remoteStorage.init(options);
@@ -543,8 +543,8 @@
             localStorage.setItem('_remoteStorageDataScope', dataScope);
             localStorage.setItem('_remoteStorageKV', rSkv)
             localStorage.setItem('_remoteStorageAPI', rSapi)
-            localStorage.setItem('_remoteStorageAuthAddress', authAddress)
-            oauth.go(authAddress, dataScope, userAddress);
+            localStorage.setItem('_remoteStorageAuthAddress', rSauth)
+            oauth.go(rSauth, dataScope, userAddress);
           }
           webfinger.getDavBaseAddress(userAddress, onError, callback);
         },
