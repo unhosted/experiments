@@ -418,9 +418,13 @@
             params[param] = params[param].substring(1);
           }
           var kv = params[param].split('=');
-          if(kv.length == 2) {
+          if(kv.length >= 2) {
             if(kv[0]=='access_token') {
-              cb(kv[1]);
+              var token = kv[i];
+              for(var i = 2; i<kv.length; i++) {
+                token += '='+kv[i];
+              }
+              cb(token);
             } else if(kv[0]=='token_type') {
               //ignore silently
             } else {

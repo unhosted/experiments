@@ -139,7 +139,7 @@
         var userAddress = urlObj.query.userAddress;
         if(config.passwords[userAddress] == str2sha(urlObj.query.password)) {
           createToken(urlObj.query.userAddress, urlObj.query.scope, (urlObj.query.public=='true'), function(token) {
-            res.writeHead(302, {Location: urlObj.query.redirect_uri+'#access_token='+token});
+            res.writeHead(302, {Location: urlObj.query.redirect_uri+'#access_token='+encodeURIComponent(token)});
             res.end('Found');
           });
         } else {
