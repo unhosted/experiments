@@ -364,19 +364,24 @@
               if((attr.name=='rel') && (attr.value=='remoteStorage')) {
                 linkFound = true;
                 errorStr = 'the first Link tag with a dav rel-attribute has no template-attribute';
+                var authAddress, kvAddress, api;
                 for(var attrJ in linkTags[linkTagI].attributes) {
                   var attr2 = linkTags[linkTagI].attributes[attrJ];
-                  authAddress = attr2.value;
+                  if(attr2.name=='template') {
+                    rStemplate = attr2.value;
+                  }
                   if(attr2.name=='auth') {
-                    //SUCCESS:
-                    cb(authAddress);
-                    break;
+                    rSauth = attr2.value;
+                  }
+                  if(attr2.name=='api') {
+                    rSapi = attr2.value;
                   }
                 }
                 break;
               }
             }
             if(linkFound) {
+              cb(rSauth, rStemplate, rSapi);
               break;
             }
           }
@@ -445,7 +450,7 @@
       function keyToAddress(key) {
         var userAddressParts = localStorage.getItem('_remoteStorageUserAddress').split('@')
         var resource = localStorage.getItem('_remoteStorageDataScope');
-        var address = localStorage.getItem('_remoteStorageDavAddress')
+        var address = localStorage.getItem('_remoteStorageKV')
           +'webdav/'+ userAddressParts[1]
           +'/'+ userAddressParts[0]
           +'/'+ resource
@@ -530,10 +535,14 @@
           var onError = function(errorMsg) {
             alert(errorMsg);
           }
-          var callback = function(authAddress) {
+          var callback = function(rsAuth, rStemplate, rSapi) {
             cb();
+            var rSkvParts = rStemplate.split('{scope}');
+            var rSkv = rSkvParts[0]+dataScope+rSkvParts[1];
             localStorage.setItem('_remoteStorageUserAddress', userAddress);
             localStorage.setItem('_remoteStorageDataScope', dataScope);
+            localStorage.setItem('_remoteStorageKV', rSkv)
+            localStorage.setItem('_remoteStorageAPI', rSapi)
             localStorage.setItem('_remoteStorageAuthAddress', authAddress)
             oauth.go(authAddress, dataScope, userAddress);
           }
@@ -704,7 +713,9 @@
         disconnect: function() {
           localStorage.removeItem('_remoteStorageUserAddress');
           localStorage.removeItem('_remoteStorageDataScope');
-          localStorage.removeItem('_remoteStorageDavAddress');
+          localStorage.removeItem('_remoteStorageKV');
+          localStorage.removeItem('_remoteStorageAPI');
+          localStorage.removeItem('_remoteStorageAuthAddress');
           localStorage.removeItem('_remoteStorageOauthToken');
           localStorage.removeItem('_remoteStorageIndex');
           for(var i=0; i<localStorage.length; i++) {

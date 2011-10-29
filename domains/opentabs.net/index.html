@@ -1,44 +1,37 @@
-<!DOCTYPE html>
+<!DOCtype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <title>Opentabs.net</title>
+    <script>
+      function submit() {
+        var emailAddress = document.getElementById('email').value;
+        document.getElementById('button').disabled=true;
+        var xhr = new XMLHttpRequest();
+        xhr.open('PUT', 'http://invite.opentabs.net:1605/', true);
+        xhr.onreadystatechange=function() {
+          if(xhr.readyState==4) {
+            if(xhr.status==200) {
+              document.getElementById('button').disabled=false;
+              document.getElementById('button').value="Thank you!";
+            }
+          }
+        }
+        xhr.send(emailAddress);
+      }
+    </script>
   </head>
   <body>
+    <h2>Coming soon</h2>
+    <p>Opentabs.net is a free software tool to help the 99% of us be less dependent on abusive banking fees. 7 days left before our private alpha launch!</p>
+
+    <h2>Sign up for an invite</h2>
+    Your email address: <input type="email" id="email"><input type="submit" id="button" onclick="submit();" value="Be a part of this">
+
     <h2>Opentabs.net</h2>
-    <h3>An alternative to banking among friends and peers.</h3>
-    <a href="test.html">
-      <h3>Experimental implementation</h3>
-    </a>
-    <p>Initial mockups:</p>
-    <img src="/Opentabsscreenshot1.png">
-    <img src="/Opentabsscreenshot2.png">
+    <p>Imagine you owe me money from, say, a train ticket that I bought for you. We then have two options: if it was a small amount, we can decide to forget about it (gift economy), but if it was any noteworthy sum, then we would probably end up using the Plain Old Banking System to settle this little peer-to-peer transaction. People use banking between friends, between house mates, and even between family members, and abusive banking fees play too big a role in our day-to-day life. This has to stop. With Opentabs.net there will be a third option: just tab it!</p>
+
+     <p>You can tab amounts of money, beers, hours of work, bitcoins, books, whatever you want to leave unpaid. Just like when you tell the waiter in a bar to put a round of drinks &quot;on your tab&quot;, Opentabs.net is a tool for having tabs open with your peers, until it cancels out against something else.</p>
     <h2>How it works</h2>
-    <p>There are four types of messages you can send through the Opentabs net:
-    <ul>
-    <li>IOUs: "I owe you a beer"</li>
-    <li>Invoices: "You owe me a beer"</li>
-    <li>Receipts: "Thanks, now you no longer owe me that beer"</li>
-    <li>[what do you call this?]: "There you go, now I no longer owe you that beer"</li>
-    </ul>
-    </p>
-    <p>All of these categories use the same data format:
-      <pre>
-        <em>&lt;opentab>
-          &lt;payer></em>user@host<em>&lt;/payer>
-          &lt;payee></em>user@host<em>&lt;/payee>
-          &lt;amount></em>123.45<em>&lt;/amount>
-          &lt;currency></em>BitCoin<em>&lt;/currency>
-          &lt;timestamp></em>1234567890.123<em>&lt;/timestamp>
-          &lt;urgent></em>false<em>&lt;/urgent>
-          &lt;reason></em>Whatever we owe you for those cinema tickets<em>&lt;/reason>
-       &lt;/opentab></em>
-      </pre>
-      And all the app does is send these messages back and forth, with cryptographic signatures on them. Simple, but sufficient to replace a lot of what banks currently get rich with.
-    </p>
-    <h2>The lifecycle of an IOU</h2>
-    <p>
-      <img src="lifecycle.png">
-    </p>
+     <p>The Opentabs.net web app does not make actual transactions. It is not a currency, and it is not a bank. It just helps you to cryptographically sign open tabs (&quot;IOUs&quot;) between peers, as an alternative to actually executing a bank transfer. This way we can both forget about that train ticket you owe me, and strike it off against other transactions, until maybe at the end of the year we clear the balance once, and settle the tab. Just like tabs in a bar.</p>
+     <p>We will launch in private alpha, from the Mozilla Festival in London, on Guy Fawkes Day, to coincide with Bank Transfer Day (7 days left!). We're working around the clock to get everything ready for Saturday. More info will become available during the launch.</p>
   </body>
 </html>
