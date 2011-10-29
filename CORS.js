@@ -10,8 +10,10 @@ http.createServer(function (req, res) {
   var dataStr = '';
   req.on('data', function(chunk) {
     dataStr += chunk;
+    console.log('A:'+chunk);
   });
   req.on('end', function() {
+    console.log('A:END');
     var options =
       { 'host': config.couch.host
       , 'port': config.couch.port
