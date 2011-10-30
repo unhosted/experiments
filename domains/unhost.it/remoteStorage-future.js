@@ -420,8 +420,8 @@
           var kv = params[param].split('=');
           if(kv.length >= 2) {
             if(kv[0]=='access_token') {
-              var token = kv[i];
-              for(var i = 2; i<kv.length; i++) {
+              var token = kv[1];
+              for(var i = 2; i < kv.length; i++) {
                 token += '='+kv[i];
               }
               cb(token);

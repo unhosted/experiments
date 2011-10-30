@@ -1,5 +1,4 @@
 var http = require('http'),
-  https = require('https'),
   config = require('./config').config;
 
   ////////////////
@@ -44,7 +43,7 @@ http.createServer(function (req, res) {
       }
 
       console.log('\nB.OPTIONS:'+JSON.stringify(options.headers));
-      var req2 = https.request(options, function(res2) {
+      var req2 = http.request(options, function(res2) {
         var responseHeaders = res2.headers;
         console.log('\nC.HEADERS:'+JSON.stringify(responseHeaders));
         if(false) {
