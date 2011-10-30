@@ -72,7 +72,7 @@
   }
 
   function createToken(userAddress, dataScope, cb) {
-    var public = (dataScope.substring(0, 'public/'.length) == 'public/');
+    var public = (dataScope == 'public');
     createScope(userAddress, dataScope, public, function(password) {
       //make basic auth header match bearer token for easy proxying:
       var bearerToken = (new Buffer(userAddress+':'+password)).toString('base64');
