@@ -76,6 +76,7 @@
     createScope(userAddress, dataScope, public, function(password) {
       //make basic auth header match bearer token for easy proxying:
       var bearerToken = (new Buffer(userAddress+':'+password)).toString('base64');
+      console.log(bearerToken+' <= '+userAddress+':'+password);
       cb(bearerToken);
     });
   }
