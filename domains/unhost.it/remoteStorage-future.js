@@ -454,11 +454,7 @@
       function keyToAddress(key) {
         var userAddressParts = localStorage.getItem('_remoteStorageUserAddress').split('@')
         var resource = localStorage.getItem('_remoteStorageDataScope');
-        var address = localStorage.getItem('_remoteStorageKV')
-          +'webdav/'+ userAddressParts[1]
-          +'/'+ userAddressParts[0]
-          +'/'+ resource
-          +'/'+ key
+        var address = localStorage.getItem('_remoteStorageKV') + key
         return address
       }
       function doCall(method, key, value, revision, cb) {

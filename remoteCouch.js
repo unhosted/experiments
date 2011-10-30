@@ -56,10 +56,10 @@
     });
     var dbName, sec;
     if(public) {
-      dbName = dataScope+'_public';
+      dbName = dataScope;
       sec= {admins:{names:[userAddress]}};//leaving readers undefined
     } else {
-      dbName = dataScope+'_private';
+      dbName = dataScope;
       sec= {admins:{names:[userAddress]}, readers:{names:[userAddress]}};
     }
     var scopeDb = conn.database(dbName);
@@ -114,7 +114,7 @@
           +'  Your password:<input name="password" type="password" value="unhosted"><br>\n'
           +'  <input type="hidden" name="redirect_uri" value="'+urlObj.query.redirect_uri+'"><br>\n'
           +'  <input type="hidden" name="scope" value="'+urlObj.query.scope+'"><br>\n'
-          +'  <input type="submit" value="Allow this app to read and write on your private couch">\n'
+          +'  <input type="submit" value="Allow this app to read and write on your couch">\n'
           +'</form></html>\n');
       } else if(req.url.substring(0, '/doAuth'.length)=='/doAuth') {
         var urlObj = url.parse(req.url, true);
