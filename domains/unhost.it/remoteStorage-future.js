@@ -343,7 +343,7 @@
         if(method!='GET') {
           ajaxObj.data=JSON.stringify({
             value: value,
-            _revision: revision
+            revision: revision
           });
         }
         ajax(ajaxObj);
@@ -356,37 +356,37 @@
       return {
         clear: function(cb) {
           var revision = 0;
-          var index = JSON.parse(localStorage.getItem('_remoteStorageIndex'));
+          var index = JSON.parse(localStorage.getItem('remoteStorageIndex'));
           for(var i in index) {
             doCall('DELETE', i, null, revision, function() {});
           }
           index={};
-          localStorage.setItem('_remoteStorageIndex', JSON.stringify(index));
-          doCall('PUT', '_remoteStorageIndex', JSON.stringify(index), revision, cb);
+          localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
+          doCall('PUT', 'remoteStorageIndex', JSON.stringify(index), revision, cb);
         },
         setItem: function(key, value, revision, cb) {
-          var index = JSON.parse(localStorage.getItem('_remoteStorageIndex'));
+          var index = JSON.parse(localStorage.getItem('remoteStorageIndex'));
           if(!index) {//first use
             index={};
-            localStorage.setItem('_remoteStorageIndex', JSON.stringify(index));
+            localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
           }
           if((!index[key]) || (index[key]<revision)) {
             doCall('PUT', key, value, revision, function() {
               index[key]=revision;
-              localStorage.setItem('_remoteStorageIndex', JSON.stringify(index));
-              doCall('PUT', '_remoteStorageIndex', JSON.stringify(index), revision, cb);
+              localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
+              doCall('PUT', 'remoteStorageIndex', JSON.stringify(index), revision, cb);
             });
           } else {//shouldn't happen!
             cb(revision+1);
           }
         },
         removeItem: function(key, revision, cb) {
-          var index = JSON.parse(localStorage.getItem('_remoteStorageIndex'));
+          var index = JSON.parse(localStorage.getItem('remoteStorageIndex'));
           if((!index[key]) || (index[key]<revision)) {
             doCall('DELETE', key, null, revision, function() {
               index[keys]=revision;
-              localStorage.setItem('_remoteStorageIndex', JSON.stringify(index));
-              doCall('PUT', '_remoteStorageIndex', JSON.stringify(index), revision, cb);
+              localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
+              doCall('PUT', 'remoteStorageIndex', JSON.stringify(index), revision, cb);
             });
           }
         },
@@ -411,11 +411,11 @@
           localStorage.setItem('_remoteStorageOauthToken', token);
         },
         sync: function() {
-          var localIndex = JSON.parse(localStorage.getItem('_remoteStorageIndex'));
+          var localIndex = JSON.parse(localStorage.getItem('remoteStorageIndex'));
           if(!localIndex) {
             localIndex = {};
           }
-          doCall('GET', '_remoteStorageIndex', null, null, function(data) {
+          doCall('GET', 'remoteStorageIndex', null, null, function(data) {
             var remoteIndex;
             try {
               remoteIndex = JSON.parse(data.value);
@@ -426,12 +426,12 @@
               if((localIndex[i] == undefined) || (remoteIndex[i] > localIndex[i])) {//need to pull it
                 doCall('GET', i, null, null, function(data) {
                   localStorage.setItem('_remoteStorage_'+i, data.value);
-                  var localIndex = JSON.parse(localStorage.getItem('_remoteStorageIndex'));
+                  var localIndex = JSON.parse(localStorage.getItem('remoteStorageIndex'));
                   if(!localIndex) {
                     localIndex = {};
                   }
-                  localIndex[i]=data._revision;
-                  localStorage.setItem('_remoteStorageIndex', JSON.stringify(localIndex));
+                  localIndex[i]=data.revision;
+                  localStorage.setItem('remoteStorageIndex', JSON.stringify(localIndex));
                   var oldValue = localStorage.getItem('_remoteStorage+'+i);
                   if(window.remoteStorage.options.onChange) {
                     window.remoteStorage.options.onChange(i, oldValue, data.value);
@@ -576,7 +576,7 @@
           localStorage.removeItem('_remoteStorageAPI');
           localStorage.removeItem('_remoteStorageAuthAddress');
           localStorage.removeItem('_remoteStorageOauthToken');
-          localStorage.removeItem('_remoteStorageIndex');
+          localStorage.removeItem('remoteStorageIndex');
           for(var i=0; i<localStorage.length; i++) {
             if(localStorage.key(i).substring(0,15)=='_remoteStorage_') {
               var keyName = localStorage.key(i);
