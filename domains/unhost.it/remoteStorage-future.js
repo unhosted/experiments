@@ -478,10 +478,10 @@
             });
           },
         }
+        var bearerToken=Base64.encode(localStorage.getItem('_remoteStorageUserAddress')+':'+localStorage.getItem('_remoteStorageOauthToken'));
+        ajaxObj.headers= {Authorization: 'Bearer '+bearerToken};
+        ajaxObj.fields={withCredentials: 'true'};
         if(method!='GET') {
-          var bearerToken=Base64.encode(localStorage.getItem('_remoteStorageUserAddress')+':'+localStorage.getItem('_remoteStorageOauthToken'));
-          ajaxObj.headers= {Authorization: 'Basic '+bearerToken};
-//          ajaxObj.fields={withCredentials: 'true'};
           ajaxObj.data=JSON.stringify({
             value: value,
             _revision: revision
