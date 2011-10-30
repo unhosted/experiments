@@ -37,6 +37,10 @@ http.createServer(function (req, res) {
       options.headers.host = options.host;
 
       //cunning trick that works because of how our bearer tokens relate to our CouchDb passwords:
+      if(options.headers['authorization']) {
+        var bearerToken = options.headers['authorization'].substring(('Bearer '.length));
+        options.headers['authorization'] = 'Basic '+bearerToken;
+      }
       if(options.headers['Authorization']) {
         var bearerToken = options.headers['Authorization'].substring(('Bearer '.length));
         options.headers['Authorization'] = 'Basic '+bearerToken;
