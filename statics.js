@@ -73,7 +73,6 @@ console.log('>:'+host)
   })
 }
 
-http.createServer(serve).listen(8004)
+http.createServer(serve).listen(8001)
 https.createServer(ssl, serve).listen(443)
-console.log('Server running at ports 8004 and 443') 
-//console.log('Server running at port 80') 
+console.log('Server running at ports 8001 and 443') 
