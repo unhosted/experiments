@@ -6,6 +6,7 @@ var http = require('http')
   , url = require('url')
   , path = require('path')
   , fs = require('fs')
+  , config = require('./config').config
  
 var ssl =
   { ca:fs.readFileSync(sslDir +'sub.class1.server.ca.pem')
@@ -73,6 +74,6 @@ console.log('>:'+host)
   })
 }
 
-http.createServer(serve).listen(8001)
+http.createServer(serve).listen(config.backends.statics)
 https.createServer(ssl, serve).listen(443)
-console.log('Server running at ports 8001 and 443') 
+console.log('Server running at ports '+config.backends.statics+' and 443') 
