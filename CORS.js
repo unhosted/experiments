@@ -72,4 +72,4 @@ http.createServer(function (req, res) {
       req2.end();
     }
   });
-}).listen(config.proxy.port);
+}).listen(config.backends.proxy);
