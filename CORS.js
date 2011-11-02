@@ -50,21 +50,23 @@ http.createServer(function (req, res) {
       var req2 = http.request(options, function(res2) {
         var responseHeaders = res2.headers;
         console.log('\nC.HEADERS:'+JSON.stringify(responseHeaders));
-        if(false) {
-          responseHeaders['Access-Control-Allow-Origin'] = 'http://example.com';
-          responseHeaders['Access-Control-Allow-Methods'] = 'GET, PUT, POST, DELETE';
-          responseHeaders['Access-Control-Allow-Headers'] = 'authorization,content-type,Content-Length,gdata-version,slug,x-upload-content-length,x-upload-content-type';
-          responseHeaders['Access-Control-Allow-Credentials'] = 'true';
+        var origin = req.headers.Origin;
+        if(!origin) {
+          origin = '*';
         }
+        responseHeaders['Access-Control-Allow-Origin'] = origin;
+        responseHeaders['Access-Control-Allow-Methods'] = 'GET, PUT, POST, DELETE';
+        responseHeaders['Access-Control-Allow-Headers'] = 'authorization,content-type,Content-Length,gdata-version,slug,x-upload-content-length,x-upload-content-type';
+        responseHeaders['Access-Control-Allow-Credentials'] = 'true';
         res.writeHead(res2.statusCode, responseHeaders);
         res2.setEncoding('utf8');
         var res2Data = '';
         res2.on('data', function (chunk) {
           res2Data += chunk;
-          res.write(chunk);
         });
         res2.on('end', function() {
           console.log('\nC.DATA:'+res2Data);
+          res.write(res2Data);
           res.end();
         });
       });

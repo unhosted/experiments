@@ -22,7 +22,6 @@
 
 (function() {
   if(!window.remoteStorage) {//shim switch
-
       ///////////////////////
      // poor man's jQuery //
     ///////////////////////
@@ -70,7 +69,7 @@
         if(xhr.readyState == 4) {
           if(xhr.status == 0) {
             //alert('looks like '+params.url+' has no CORS headers on it! try copying this scraper and that file both onto your localhost')
-            params.error(xhr.responseText);
+            params.error(xhr);
           } else {
             params.success(xhr.responseText);
           }
@@ -83,7 +82,6 @@
     function $(str) {
       return document.getElementById(str);
     }
-
 
       ///////////////
      // Webfinger //
@@ -252,7 +250,6 @@
       }
       return {getDavBaseAddress: getDavBaseAddress};
     })()
-
       ///////////////////////////
      // OAuth2 implicit grant //
     ///////////////////////////
@@ -317,34 +314,43 @@
         var address = localStorage.getItem('_remoteStorageKV') + key
         return address
       }
-      function doCall(method, key, value, revision, cb) {
+      function doCall(method, key, obj, cb) {
         var ajaxObj = {
           url: keyToAddress(key),
           method: method,
           success: function(text){
-            var obj={};
+            var retObj={};
             try {//this is not necessary for current version of protocol, but might be in future:
-              obj = JSON.parse(text);
-              obj.success = true;
+              retObj = JSON.parse(text);
+              retObj.success = true;
+              if(retObj.rev) {//store rev as _rev in localStorage
+                obj._rev = retObj.rev;
+                localStorage.setItem('_remoteStorage_'+key, JSON.stringify(obj));
+              }
             } catch(e){
-              obj.success = false;
+              retObj.success = false;
             }
-            cb(obj);
+            cb(retObj);
           },
           error: function(xhr) {
-            cb({
-              success:false,
-              error: xhr.status
-            });
+            if(xhr.status==409) {//resolve CouchDB conflict:
+              doCall('GET', key, null, function(text) {
+                var correctVersion=JSON.parse(text);
+                correctVersion.value=obj.value;
+                doCall('PUT', key, correctVersion, cb);
+              });
+            } else {
+              cb({
+                success:false,
+                error: xhr.status
+              });
+            }
           },
         }
         ajaxObj.headers= {Authorization: 'Bearer '+localStorage.getItem('_remoteStorageOauthToken')};
         ajaxObj.fields={withCredentials: 'true'};
         if(method!='GET') {
-          ajaxObj.data=JSON.stringify({
-            value: value,
-            revision: revision
-          });
+          ajaxObj.data=JSON.stringify(obj);
         }
         ajax(ajaxObj);
       }
@@ -358,11 +364,11 @@
           var revision = 0;
           var index = JSON.parse(localStorage.getItem('remoteStorageIndex'));
           for(var i in index) {
-            doCall('DELETE', i, null, revision, function() {});
+            doCall('DELETE', i, null, function() {});
           }
           index={};
           localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
-          doCall('PUT', 'remoteStorageIndex', JSON.stringify(index), revision, cb);
+          doCall('PUT', 'remoteStorageIndex', index, cb);
         },
         setItem: function(key, value, revision, cb) {
           var index = JSON.parse(localStorage.getItem('remoteStorageIndex'));
@@ -371,10 +377,10 @@
             localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
           }
           if((!index[key]) || (index[key]<revision)) {
-            doCall('PUT', key, value, revision, function() {
+            doCall('PUT', key, value, function() {
               index[key]=revision;
               localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
-              doCall('PUT', 'remoteStorageIndex', JSON.stringify(index), revision, cb);
+              doCall('PUT', 'remoteStorageIndex', index, cb);
             });
           } else {//shouldn't happen!
             cb(revision+1);
@@ -386,7 +392,7 @@
             doCall('DELETE', key, null, revision, function() {
               index[keys]=revision;
               localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
-              doCall('PUT', 'remoteStorageIndex', JSON.stringify(index), revision, cb);
+              doCall('PUT', 'remoteStorageIndex', index, cb);
             });
           }
         },
@@ -432,14 +438,16 @@
                   }
                   localIndex[i]=data.revision;
                   localStorage.setItem('remoteStorageIndex', JSON.stringify(localIndex));
-                  var oldValue = localStorage.getItem('_remoteStorage+'+i);
+                  var oldValue = localStorage.getItem('_remoteStorage_'+i);
                   if(window.remoteStorage.options.onChange) {
                     window.remoteStorage.options.onChange(i, oldValue, data.value);
                   }
                 });
               } else if(remoteIndex[i] < localIndex[i]) {//need to push it
                 localValue = localStorage.getItem('_remoteStorage_'+i);
-                doCall('PUT', i, localValue, localIndex[i], function() {});
+                var obj = JSON.parse(localValue);
+                obj.revision = localIndex[i];
+                doCall('PUT', i, obj, function() {});
               }
             }
           });
@@ -510,6 +518,7 @@
         }
         return len;
       }
+
 
       return {
         length: calcLength(),
