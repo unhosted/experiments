@@ -9,6 +9,7 @@ http.createServer(function (req, res) {
   res.writeHead(200, {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'PUT',
+    'Access-Control-Allow-Headers': 'Content-Type',
     'Content-Type': 'text/plain'});
   res.end('Thanks!\n');
 }).listen(1605);
