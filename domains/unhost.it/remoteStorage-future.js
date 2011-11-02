@@ -360,39 +360,23 @@
     ////////////////////////////////////////
 
       return {
-        clear: function(cb) {
-          var revision = 0;
-          var index = JSON.parse(localStorage.getItem('remoteStorageIndex'));
-          for(var i in index) {
-            doCall('DELETE', i, null, function() {});
-          }
-          index={};
-          localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
-          doCall('PUT', 'remoteStorageIndex', index, cb);
-        },
-        setItem: function(key, value, revision, cb) {
-          var index = JSON.parse(localStorage.getItem('remoteStorageIndex'));
-          if(!index) {//first use
-            index={};
-            localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
-          }
-          if((!index[key]) || (index[key]<revision)) {
-            doCall('PUT', key, value, function() {
-              index[key]=revision;
-              localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
-              doCall('PUT', 'remoteStorageIndex', index, cb);
-            });
-          } else {//shouldn't happen!
-            cb(revision+1);
-          }
+        tryOutbound: function(key, cb) {//presumably we don't have to re-check versions here
+          var value=JSON.parse(localStorage.getItem('_remoteStorage_'+key));
+          doCall('PUT', key, value, function() {
+            //index[key]=revision;
+            //localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
+            //doCall('PUT', 'remoteStorageIndex', index, cb);
+            cb();
+          });
         },
         removeItem: function(key, revision, cb) {
           var index = JSON.parse(localStorage.getItem('remoteStorageIndex'));
           if((!index[key]) || (index[key]<revision)) {
             doCall('DELETE', key, null, function() {
-              index[keys]=revision;
-              localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
-              doCall('PUT', 'remoteStorageIndex', index, cb);
+              //index[keys]=revision;
+              //localStorage.setItem('remoteStorageIndex', JSON.stringify(index));
+              //doCall('PUT', 'remoteStorageIndex', index, cb);
+              cb();
             });
           }
         },
@@ -460,50 +444,49 @@
     ////////////////////////////////////////
 
     window.remoteStorage = (function(){
-      function work(minRevision) {
+      function work() {
         if(!(localStorage.getItem('_remoteStorageOauthToken'))) {
           return;
         }
+        var time = 1;
         var dirties = JSON.parse(localStorage.getItem('_remoteStorageDirties'));
         for(dirty in dirties) {
-          var thisAction = dirties[dirty];
-          if(thisAction.revision>=minRevision) {
-            var alreadyWorking = localStorage.getItem('_remoteStorageWorking_'+thisAction.key);
-            if(!alreadyWorking) {
-              localStorage.setItem('_remoteStorageWorking_'+thisAction.key, thisAction.revision);
-              dirties[dirty]=undefined;
-              localStorage.setItem('_remoteStorageDirties', JSON.stringify(dirties));
-              if(thisAction.action == 'clear') {
-                backend.clear(function() {
-                  localStorage.removeItem('_remoteStorageWorking_'+thisAction.key);
-                  work(1);
-                });
-              } else if(thisAction.action == 'setItem') {
-                backend.setItem(thisAction.key, thisAction.value, thisAction.revision, function(revision) {
-                  localStorage.removeItem('_remoteStorageWorking_'+thisAction.key);
-                  work(revision+1);
-                });
-              } else if(thisAction.action == 'removeItem') {
-                backend.removeItem(thisAction.key, thisAction.revision, function(revision) {
-                  localStorage.removeItem('_remoteStorageWorking_'+thisAction.key);
-                  work(revision+1);
-                });
-              }
-              return;
+          //var alreadyWorking = localStorage.getItem('_remoteStorageWorking_'+dirty);
+          //if(!alreadyWorking) {
+          if(true) {
+            //localStorage.setItem('_remoteStorageWorking_'+dirty, time);
+            localStorage.setItem('_remoteStorageDirties', JSON.stringify(dirties));
+            if(dirties[dirty]) {
+              backend.tryOutbound(dirty, function() {
+                //localStorage.removeItem('_remoteStorageWorking_'+dirty);
+              });
+            } else {
+              backend.tryInbound(dirty, function() {
+                //localStorage.removeItem('_remoteStorageWorking_'+dirty);
+              });
             }
+            delete dirties[dirty];
           }
         }
       }
-      function pushAction(action) {
+      function markDirty(key, outbound) {
+        if(outbound==undefined) {
+          outbound = true;
+        }
         var dirties = JSON.parse(localStorage.getItem('_remoteStorageDirties'));
         if(dirties==null){
           dirties={};
         }
-        action.revision = new Date().getTime();
-        dirties[action.key] = action;
+        var time;
+        if(outbound) {
+          time = new Date().getTime();
+        } else {
+          time = 0;
+        }
+        dirties[key] = time;
         localStorage.setItem('_remoteStorageDirties', JSON.stringify(dirties));
       }
-      work(0);
+      work();
 
         //////////////////
        // DOM API shim //
@@ -533,43 +516,52 @@
           }
         },
         getItem: function(k) {
-          return localStorage.getItem('_remoteStorage_'+k);
+          var cacheObj = localStorage.getItem('_remoteStorage_'+k);
+          if(cacheObj) {
+            try {
+              return JSON.parse(cacheObj).value;
+            }catch(e) {}
+          }
+          return null;
         },
         setItem: function(k,v) {
-          if(v == localStorage.getItem('_remoteStorage_'+k)) {
-            return;
+          var cacheObj = {};
+          var cacheStr = localStorage.getItem('_remoteStorage_'+k);
+          if(cacheStr) {
+            try {
+              var cacheObj = JSON.parse(cacheStr);
+              var oldValue = cacheObj.value;
+              if(v == oldValue) {
+                return;
+              }
+            }catch(e) {}
           }
-          pushAction({action: 'setItem', key: k, value: v});
-          if(this.isConnected()) {
-            work(0);
-          }
-          var ret = localStorage.setItem('_remoteStorage_'+k, v);
-          this.length = calcLength();
-          return ret;
+          cacheObj.value=v;
+          localStorage.setItem('_remoteStorage_'+k, JSON.stringify(cacheObj));
+          window.remoteStorage.length = calcLength();
+          markDirty(k);
+          work();
         },
         removeItem: function(k) {
-          pushAction({action: 'removeItem', key: k});
-          if(this.isConnected()) {
-            work(0);
-          }
-          var ret = localStorage.removeItem('_remoteStorage_'+k);
+          localStorage.removeItem('_remoteStorage_'+k);
           window.remoteStorage.length = calcLength();
-          return ret;
+          markDirty(k);
+          work();
         },
         clear: function() {
-          localStorage.setItem('_remoteStorageActionQueue', '[{"action": "clear"}]');
-          if(this.isConnected()) {
-            work(0);
-          }
           for(var i=0;i<localStorage.length;i++) {
             if(localStorage.key(i).substring(0,15)=='_remoteStorage_') {
               localStorage.removeItem(localStorage.key(i));
+              localStorage.removeItem('_remoteStorageWorking_'+localStorage.key(i));
+              markDirty(localStorage.key(i));
             }
           }
+          window.remoteStorage.length = 0;
+          work();
         },
         connect: function(userAddress, dataScope) {
           backend.connect(userAddress, dataScope, function() {
-            work(0);
+            work();
           })
         },
         isConnected: function() {
@@ -585,6 +577,7 @@
           localStorage.removeItem('_remoteStorageAPI');
           localStorage.removeItem('_remoteStorageAuthAddress');
           localStorage.removeItem('_remoteStorageOauthToken');
+          localStorage.removeItem('_remoteStorageDirties');
           localStorage.removeItem('remoteStorageIndex');
           for(var i=0; i<localStorage.length; i++) {
             if(localStorage.key(i).substring(0,15)=='_remoteStorage_') {
