@@ -1,5 +1,4 @@
-var domainsDir = 'domains/'
-var sslDir = '/root/ssl-cert/'
+var config = require('./config').config;
 
 var http = require('http')
   , https = require('https')
@@ -9,9 +8,9 @@ var http = require('http')
   , config = require('./config').config
  
 var ssl =
-  { ca:fs.readFileSync(sslDir +'sub.class1.server.ca.pem')
-  , key:fs.readFileSync(sslDir +'ssl.key')
-  , cert:fs.readFileSync(sslDir +'ssl.crt')
+  { ca:fs.readFileSync(config.sslDir +'sub.class1.server.ca.pem')
+  , key:fs.readFileSync(config.sslDir +'ssl.key')
+  , cert:fs.readFileSync(config.sslDir +'ssl.crt')
   }
 function serve(req, res) {
   var uri = url.parse(req.url).pathname
@@ -27,8 +26,8 @@ function serve(req, res) {
   host = host
     .replace(new RegExp('([a-f0-9]+)\.apptorrent\.net', 'g'), 'apptorrent.net')//wildcard hosting
 console.log('>:'+host)
-  var filename = path.join(domainsDir, host, uri)
-  if(filename.substring(0, domainsDir.length) != domainsDir) {
+  var filename = path.join(config.domainsDir, host, uri)
+  if(filename.substring(0, config.domainsDir.length) != config.domainsDir) {
     res.writeHead(403, {'Content-Type': 'text/plain'})
     res.write('403 Naughty!\n'+filename)
     res.end()
@@ -75,5 +74,5 @@ console.log('>:'+host)
 }
 
 http.createServer(serve).listen(config.backends.statics)
-https.createServer(ssl, serve).listen(443)
+https.createServer(ssl, serve).listen(1443)
 console.log('Server running at ports '+config.backends.statics+' and 443') 

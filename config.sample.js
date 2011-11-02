@@ -21,4 +21,6 @@ exports.config = {
     'example.com' : backends.facade,
     'proxy.example.com' : backends.proxy
   }
+  domainsDir: 'domains/',
+  sslDir: '/home/<you>/ssl-cert/'
 };
