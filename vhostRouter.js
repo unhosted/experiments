@@ -2,6 +2,7 @@ var httpProxy = require('http-proxy'),
     config = require('./config').config;
 
 httpProxy.createServer(function (req, res, proxy) {
+  console.log(':>');
   var host = req.headers.host.split(':')[0];
   console.log(host)
 
@@ -14,4 +15,7 @@ httpProxy.createServer(function (req, res, proxy) {
     host: 'localhost',
     port: portToUse
   });
+  console.log('<:');
 }).listen(80);
+console.log('vhostRouter running on port 80, backends:');
+console.log(config.backends);
