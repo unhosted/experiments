@@ -2,7 +2,6 @@ body { position:absolute; padding:5% 20%; font:1em FreeSans,Helvetica,sans-serif
 
 #main {width:380px;height:540px;border-style:solid;border-width:5px}
 .avatar {width:70px;height:70px;border-style:solid;border-width:5px}
-.contactName {display:none}
 
 #importantDiv, #newTab, #contactsDiv div, #historyDiv { background:#fcfcfc; margin-top:2em; padding:1em; border-radius:1em; }
 #contactsDiv input { margin:0; }

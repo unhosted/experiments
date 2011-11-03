@@ -31,7 +31,7 @@
         document.getElementById('login').style.display='none';
         document.getElementById('main').style.display='block';
         document.getElementById('loggedInAs').innerHTML=
-	  '<div class="avatar">'+data[0]+'</div>';
+	  'You are <span class="avatar">'+data[0]+'</span>'+data;
         for(var i in nicks) {
           if(nicks[i]!=you) {
             addContact(nicks[i]);
@@ -301,11 +301,11 @@
 	'zed'];
     </div>
     <div id="main">
-      <h2 id="loggedInAs"></h2>
-      <div id="importantDiv"></div>
       <div id="newTab">
+        <span id="loggedInAs"></span>
         <input type="submit" value="Open a Tab" onclick="addNewTab();">
       </div>
+      <div id="importantDiv"></div>
       <div id="contactsDiv"></div>
       <div id="historyDiv"></div>
     </div>
