@@ -138,9 +138,8 @@
         }
       }
       timestamp = (new Date().getTime());
-      document.getElementById(i).innerHTML += 
-         '<div>'
-          +'<p>'
+      document.getElementById('add'+i).innerHTML = 
+         '<p>'
           +'<input id="description'+i+'" value="Fahrkarte"> '
           +'<input size="3" id="amount'+i+'" value="40"> '
           +'<input type="submit" id="currency'+i+'" value="EUR"></span>'
@@ -152,8 +151,7 @@
           +'<p>'
           +'<span onclick="cancel('+i+');">Cancel</span> '
           +'<input type="submit" value="Send" onclick="send('+i+');"></span>'
-          +'</p>'
-        +'</div>';
+          +'</p>';
     }
 
     function cancel(i) {
