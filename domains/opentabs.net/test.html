@@ -6,7 +6,34 @@
     <link rel="stylesheet" type="text/css" href="app.css">
     <script src="http://unhost.it/remoteStorage.js"></script>
     <script src="IOU.js"></script>
-  <script>
+    <script src="http://opentabs.net:9000/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io.connect('http://opentabs.net:9000');
+      //listen client-side:
+      socket.on('welcome', function (data) {
+        document.getElementById('login').style.display='none';
+        document.getElementById('main').style.display='block';
+      });
+      socket.on('msg', function (data) {
+        //document.getElementById('output').innerHTML +='msg incoming: '+JSON.stringify(data)+'<br>';
+      });
+      function register() {
+        var dataObj = {
+	  userAddress: document.getElementById('nick').value+'@opentabs.net',
+	  secret: document.getElementById('secret').value
+	};
+        socket.emit('register', dataObj);
+        console.log('emitted register '+dataObj.userAddress);
+      }
+      function send(to, msg) {
+        var dataObj = {
+	  to: to,
+	  msg: msg
+	};
+        socket.emit('msg', dataObj);
+        console.log('emitted msg '+JSON.stringify(dataObj));
+      }
+
     var you=remoteStorage.getItem('you');
 
     function calcSignature(digest, keyPair) {
@@ -159,6 +186,7 @@
       document.getElementById('importantDiv').innerHTML = getImportantString();
       document.getElementById('contactsDiv').innerHTML = getContactsString();
       document.getElementById('historyDiv').innerHTML = getHistoryString();
+      document.getElementById('main').style.display="none";
     }
     function fakeIncoming(i) {
       timestamp = (new Date().getTime());
@@ -230,22 +258,29 @@
       remoteStorage.setItem('tabs', JSON.stringify(tabs));
       bodyonload();
     }
+      
   </script>
   </head>
   <body onload="bodyonload();">
-    <div>
-      Fake events:
-      <input type="submit" value="incoming IOU" onclick="fakeIncoming(1);">
-      <input type="submit" value="one accepted" onclick="fakeIncoming(2);">
-      <input type="submit" value="one received" onclick="fakeIncoming(3);">
+    <div id="login">
+      Our secret word: <input id="secret"><br>
+      Choose a nick: <input id="nick" size="10">@opentabs.net<br>
+      <input type="submit" value="Do some alpha testing" onclick="register();"><br>
+      WARNING: This is an alpha test, so use fake data!
     </div>
-    <div id="importantDiv"></div>
-    <div id="newTab">
-      <input type="submit" value="Open a Tab" onclick="addNewTab();">
+    <div id="main">
+      <div id="fakes">
+        Fake events:
+        <input type="submit" value="incoming IOU" onclick="fakeIncoming(1);">
+        <input type="submit" value="one accepted" onclick="fakeIncoming(2);">
+        <input type="submit" value="one received" onclick="fakeIncoming(3);">
+      </div>
+      <div id="importantDiv"></div>
+      <div id="newTab">
+        <input type="submit" value="Open a Tab" onclick="addNewTab();">
+      </div>
+      <div id="contactsDiv"></div>
+      <div id="historyDiv"></div>
     </div>
-    <div id="contactsDiv"></div>
-    <div id="historyDiv"></div>
-    
   </body>
 </html>
-

@@ -7,3 +7,4 @@ function clickOat() {
 function sendNewTab() {
   document.getElementById('addDialog').style.display="none";
 }
+
