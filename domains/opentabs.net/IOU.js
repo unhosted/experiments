@@ -1,8 +1,7 @@
-remoteStorage.setItem('you', 'michiel@unhosted.org');
+var you = localStorage.getItem('nick')+'@opentabs.net';
 
 function getImportantString() {
-  var tabs = JSON.parse(remoteStorage.getItem('tabs'));
-  var you = remoteStorage.getItem('you');
+  var tabs = JSON.parse(localStorage.getItem('tabs'));
   var totals = {};
   var importantStr = '<ul>';
   for(i in tabs) {
@@ -80,9 +79,8 @@ function getImportantString() {
   return importantStr;
 }
 function getContactsString() {
-  var contacts = JSON.parse(remoteStorage.getItem('contacts'));
-  var tabs = JSON.parse(remoteStorage.getItem('tabs'));
-  var you = remoteStorage.getItem('you');
+  var contacts = JSON.parse(localStorage.getItem('contacts'));
+  var tabs = JSON.parse(localStorage.getItem('tabs'));
   var contactsStr = '';
   for(var i in contacts) {
     var totals = {};
@@ -140,7 +138,7 @@ function getContactsString() {
         }
       }
     }
-    contactsStr += '</ul><div onclick="unfold('+i+');">...<div id="folded'+i+'" style="display:none"><ul>';
+    contactsStr += '</ul><div onclick="fold('+i+');">...<div id="folded'+i+'"><ul>';
     for(j in tabs) {
       var iou = tabs[j];
       if(!iou.description) {
@@ -216,8 +214,7 @@ function getContactsString() {
   return contactsStr;
 }
 function getHistoryString() {
-  var tabs = JSON.parse(remoteStorage.getItem('tabs'));
-  var you = remoteStorage.getItem('you');
+  var tabs = JSON.parse(localStorage.getItem('tabs'));
   historyStr = '<ul>';
   var totals= {};
   for(i in tabs) {
