@@ -8,19 +8,35 @@
     <script src="http://opentabs.net:9000/socket.io/socket.io.js"></script>
     <script>
       var socket = io.connect('http://opentabs.net:9000');
+      
+      var nicks = [
+	'albert',
+	'butch',
+        'charlie',
+	'donald',
+	'evan',
+	'fergie',
+	'gloria',
+	'hazie',
+	'ingrid',
+	'jan',
+	'katie',
+	'liz',
+	'mich',
+	'nathan',
+	'ozzie',
+	'zed'];
       //listen client-side:
-      socket.on('contacts', function (data) {
-        for(var i in data) {
-          if(data[i]!=you) {
-            addContact(data[i]);
-          }
-        }
-        show();
-      });
       socket.on('welcome', function (data) {
         document.getElementById('login').style.display='none';
         document.getElementById('main').style.display='block';
         document.getElementById('loggedInAs').innerHTML='Logged in as "'+data+'"';
+        for(var i in nicks) {
+          if(nicks[i]!=you) {
+            addContact(nicks[i]);
+          }
+        }
+        show();
       });
       socket.on('msg', function (data) {
         storeTab(data.msg);
@@ -266,7 +282,24 @@
       Our secret word: <input id="secret"><br>
       Choose a nick: <input id="nick" size="10">@opentabs.net<br>
       <input type="submit" value="Do some alpha testing" onclick="register();"><br>
-      WARNING: This is an alpha test, so use fake data!
+      WARNING: This is an alpha test, so use fake data!<br>
+      These are valid nicks:
+	'albert',
+	'butch',
+        'charlie',
+	'donald',
+	'evan',
+	'fergie',
+	'gloria',
+	'hazie',
+	'ingrid'
+	'jan',
+	'katie',
+	'liz',
+	'mich',
+	'nathan',
+	'ozzie',
+	'zed'];
     </div>
     <div id="main">
       <h2 id="loggedInAs"></h2>

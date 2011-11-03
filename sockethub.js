@@ -4,7 +4,7 @@ var sockets = {};
 var msgQ = {};
 
 //this is for testing:
-var testingContacts = [];
+//var testingContacts = [];
 
 socketio.on('connection', function(socket) {
   socket.on('register', function(data) {
@@ -14,8 +14,8 @@ socketio.on('connection', function(socket) {
       socket.emit('welcome', data.userAddress);
 
       //this is for testing:
-      socket.emit('contacts', testingContacts);
-      testingContacts.push(data.userAddress);
+      //socket.emit('contacts', testingContacts);
+      //testingContacts.push(data.userAddress);
 
       if(msgQ[data.userAddress]) {
         for(var i in msgQ[data.userAddress]) {
