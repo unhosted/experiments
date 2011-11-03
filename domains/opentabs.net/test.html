@@ -43,10 +43,12 @@
       }
     }
     function switchDirection() {
-      if(val('direction')=='Owed by') {
-        document.getElementById('direction').value='Owed to';
+      if(val('direction')=='owed by') {
+        document.getElementById('direction').value='owed to';
+        document.getElementById('direction').className='negative';
       } else {
-        document.getElementById('direction').value='Owed by';
+        document.getElementById('direction').value='owed by';
+        document.getElementById('direction').className='positive';
       }
     }
     function addContact(userAddress) {
@@ -83,19 +85,19 @@
       timestamp = (new Date().getTime());
       document.getElementById(i).innerHTML += 
          '<div>'
-          +'<div style="border-style:solid;border-width::1px">'
+          +'<p>'
           +'<input id="description'+i+'" value="Fahrkarte"> '
           +'<input size="3" id="amount'+i+'" value="40"> '
           +'<input type="submit" id="currency'+i+'" value="EUR"></span>'
-          +'</div>'
-          +'<div style="border-style:solid;border-width::1px">'
-          +'<input type="submit" value="Owed to" id="direction" onclick="switchDirection();"> '
+          +'</p>'
+          +'<p>'
+          +'<input class="negative" type="submit" value="owed to" id="direction" onclick="switchDirection();"> '
           +'<span>'+peer+'</span> '
-          +'</div>'
-          +'<div style="border-style:solid;border-width::1px">'
-          +'<span><input type="submit" value="Cancel" onclick="cancel('+i+');"> '
+          +'</p>'
+          +'<p>'
+          +'<span onclick="cancel('+i+');">Cancel</span> '
           +'<input type="submit" value="Send" onclick="send('+i+');"></span>'
-          +'</div>'
+          +'</p>'
         +'</div>';
     }
 
@@ -104,7 +106,7 @@
     }
     function send(i) {
       var payer, payee;
-      if(val('direction')=='Owed by') {
+      if(val('direction')=='owed by') {
         payer=el('contact'+i).innerHTML;
         payee=you;
       } else {
@@ -133,9 +135,10 @@
       cancel(i);
     }
     function addNewTab() {
-      document.getElementById('-1').innerHTML= ''
+      document.getElementById('newTab').innerHTML= ''
         +'<input id="contact-1" placeholder="user@host">'
         +'<input type="submit" value="+" onclick="owe(-1);">';
+        // this needs the same code like in owe(), line 84
     }
     function declineIncoming(i) {
       var tabs = JSON.parse(remoteStorage.getItem('tabs'));
@@ -230,18 +233,18 @@
   </script>
   </head>
   <body onload="bodyonload();">
-    <div style="border-style:dotted;border-width:5px">
+    <div>
       Fake events:
       <input type="submit" value="incoming IOU" onclick="fakeIncoming(1);">
       <input type="submit" value="one accepted" onclick="fakeIncoming(2);">
       <input type="submit" value="one received" onclick="fakeIncoming(3);">
     </div>
-    <div style="border-style:dotted;border-width:5px" id="importantDiv"></div>
-    <div style="border-style:dotted;border-width:5px" id="-1">
+    <div id="importantDiv"></div>
+    <div id="newTab">
       <input type="submit" value="Open a Tab" onclick="addNewTab();">
     </div>
-    <div style="border-style:dotted;border-width:5px" id="contactsDiv"></div>
-    <div style="border-style:dotted;border-width:5px" id="historyDiv"></div>
+    <div id="contactsDiv"></div>
+    <div id="historyDiv"></div>
     
   </body>
 </html>
