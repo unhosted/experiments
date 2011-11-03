@@ -86,8 +86,8 @@ function getContactsString() {
     var totals = {};
     contactsStr += '<span id="'+i+'"><span onclick="owe('+i+');" class="avatar" id="avatar'+i+'">'+contacts[i][0]+'</span>'
            +'<span onclick="owe('+i+');" class="contactName" id="contact'+i+'">'+contacts[i]+'</span>'
-           +'<span id="add'+i+'"></span>'
-	   +'<ul>';
+           +'<span id="add'+i+'"></span>';
+    var thisContactsStr='';
     for(j in tabs) {
       var iou = tabs[j];
       if(!iou.description) {
@@ -95,7 +95,7 @@ function getContactsString() {
       }
       if((iou.payee == contacts[i]) && (iou.status == 'requested')) {
         // hurry
-        contactsStr += '<li><strong>!</strong> '
+        thisContactsStr += '<li><strong>!</strong> '
           +iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
@@ -110,7 +110,7 @@ function getContactsString() {
       }
       if((iou.payer == contacts[i]) && (iou.status == 'sent')) {
         // got it?
-        contactsStr += '<li><strong>&#10003;</strong> '
+        thisContactsStr += '<li><strong>&#10003;</strong> '
           +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
@@ -125,7 +125,7 @@ function getContactsString() {
       }
       if((iou.payer == contacts[i]) && (iou.status == 'requested')) {
         // you said hurry
-        contactsStr += '<li><strong>!</strong> '
+        thisContactsStr += '<li><strong>!</strong> '
           +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
@@ -139,7 +139,7 @@ function getContactsString() {
         }
       }
     }
-    contactsStr += '</ul><div onclick="fold('+i+');">...<div id="folded'+i+'"><ul>';
+    thisContactsStr2 = '';
     for(j in tabs) {
       var iou = tabs[j];
       if(!iou.description) {
@@ -147,7 +147,7 @@ function getContactsString() {
       }
       if((iou.payee == contacts[i]) && (iou.status == 'accepted')) {
         // you owe them
-        contactsStr += '<li> '
+        thisContactsStr2 += '<li> '
           +iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
@@ -162,7 +162,7 @@ function getContactsString() {
       }
       if((iou.payer == contacts[i]) && (iou.status == 'accepted')) {
         // they owe you
-        contactsStr += '<li>'
+        thisContactsStr2 += '<li>'
           +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Request payment" onclick="requestPayment('+j+');">'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
@@ -178,7 +178,7 @@ function getContactsString() {
       }
       if((iou.payee == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
         // you proposed to owe
-        contactsStr += '<li><strong>?</strong> '
+        thisContactsStr2 += '<li><strong>?</strong> '
           +iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');">'
           +'</li>';
@@ -193,7 +193,7 @@ function getContactsString() {
       }
       if((iou.payer == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
         // invoice you proposed
-        contactsStr += '<li><strong>?</strong> '
+        thisContactsStr2 += '<li><strong>?</strong> '
           +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');">'
           +'</li>';
@@ -207,9 +207,14 @@ function getContactsString() {
         }
       }
     }
-    contactsStr += '</ul></div></div></div>';
     for(currency in totals) {
       contactsStr +='<h4>Total: '+totals[currency]+currency+'</h4>';
+    }
+    if(thisContactsStr.length) {
+      contactStr  += '<ul>'+thisContactsStr+'</ul>';
+    }
+    if(thisContactsStr2.length) {
+      contactsStr += '<div onclick="fold('+i+');">...<div id="folded'+i+'"><ul>'+thisContactsStr2 + '</ul></div></div></div>';
     }
   }
   return contactsStr;
