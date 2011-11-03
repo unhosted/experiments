@@ -11,9 +11,11 @@
       //listen client-side:
       socket.on('contacts', function (data) {
         for(var i in data) {
-	  addContact(data[i])
-	}
-	show();
+          if(data[i]!=you) {
+            addContact(data[i]);
+          }
+        }
+        show();
       });
       socket.on('welcome', function (data) {
         document.getElementById('login').style.display='none';
@@ -22,23 +24,25 @@
       });
       socket.on('msg', function (data) {
         storeTab(data.msg);
-	show();
+        show();
       });
       function register() {
         var dataObj = {
-	  userAddress: document.getElementById('nick').value+'@opentabs.net',
-	  secret: document.getElementById('secret').value
-	};
-	localStorage.setItem('nick', document.getElementById('nick').value);
-	localStorage.setItem('secret', document.getElementById('secret').value);
+          userAddress: document.getElementById('nick').value+'@opentabs.net',
+          secret: document.getElementById('secret').value
+        };
+        you = document.getElementById('nick').value+'@opentabs.net';
+        localStorage.setItem('nick', document.getElementById('nick').value);
+        
+        localStorage.setItem('secret', document.getElementById('secret').value);
         socket.emit('register', dataObj);
         console.log('emitted register '+dataObj.userAddress);
       }
       function sendMsg(to, msg) {
         var dataObj = {
-	  to: to,
-	  msg: msg
-	};
+          to: to,
+          msg: msg
+        };
         socket.emit('msg', dataObj);
         console.log('emitted msg '+JSON.stringify(dataObj));
       }
@@ -58,7 +62,7 @@
         status: 'proposed',
         proposer: keyPair.userAddress,
         amount: amount,
-	currency: currency};
+        currency: currency};
       obj.statement = "At timestamp "+timestamp+", "+payer+" starts owing "+payee+" an additional "+amount+" "+currency;
       obj.signatures = {};
       obj.signatures[keyPair.userAddress] = calcSignature(obj.statement, keyPair);
@@ -157,7 +161,7 @@
           description: val('description'+i),
           location: 'Berlin'
         },
-	keyPair);
+        keyPair);
       tab.sender=you;
       tab.recipient=recipient;
       storeTab(tab);
