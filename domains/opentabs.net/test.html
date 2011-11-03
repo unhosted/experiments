@@ -186,9 +186,9 @@
     function declineIncoming(i) {
       var tabs = JSON.parse(localStorage.getItem('tabs'));
       tabs[i].status = 'declined';
-      //TODO: send notif
+      tabs[i].message = 'nobody owes anything here, pay it forward!';
       localStorage.setItem('tabs', JSON.stringify(tabs));
-      sendMsg(tab.sender, tab);
+      sendMsg(tabs[i].sender, tabs[i]);
       show();
     }
     function acceptIncoming(i) {
@@ -196,7 +196,7 @@
       tabs[i].signatures[you]=calcSignature(null, null);
       tabs[i].status = 'accepted';
       localStorage.setItem('tabs', JSON.stringify(tabs));
-      sendMsg(tab.sender, tab);
+      sendMsg(tabs[i].sender, tabs[i]);
       show();
     }
 
@@ -222,8 +222,10 @@
       var tabs = JSON.parse(localStorage.getItem('tabs'));
       if(tabs[i].payer==you) {
         tabs[i].status='sent';
+        sendMsg(tabs[i].payee, tabs[i]);
       } else {
         tabs[i].status='received';
+        sendMsg(tabs[i].payer, tabs[i]);
       }
       localStorage.setItem('tabs', JSON.stringify(tabs));
       show();
@@ -232,6 +234,7 @@
       var you = localStorage.getItem('you');
       var tabs = JSON.parse(localStorage.getItem('tabs'));
       tabs[i].status='canceled';
+      sendMsg(tabs[i].recipient, tabs[i]);
       localStorage.setItem('tabs', JSON.stringify(tabs));
       show();
     }
@@ -239,6 +242,7 @@
       var you = localStorage.getItem('you');
       var tabs = JSON.parse(localStorage.getItem('tabs'));
       tabs[i].status='requested';
+      sendMsg(tabs[i].payer, tabs[i]);
       localStorage.setItem('tabs', JSON.stringify(tabs));
       show();
     }
