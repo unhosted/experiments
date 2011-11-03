@@ -63,11 +63,29 @@
       sec= {admins:{names:[userAddress]}, readers:{names:[userAddress]}};
     }
     var scopeDb = conn.database(dbName);
-    scopeDb.create();//looking at https://github.com/cloudhead/cradle this seems to be a synchronous call?
-    scopeDb.save('_security', sec, function (err, res) {
-      console.log(JSON.stringify(err));
-      console.log(JSON.stringify(res)); // True
-      genUser(userAddress, cb);
+    scopeDb.exists(function(err, exists) {
+      if(err) {
+        console.log('error looking for scopeDb:');
+        console.log(err);
+      } else if(exists) {
+        console.log('database "'+dbName+'" exists already!');
+      } else {
+      	console.log('creating database "'+dbName+'"');
+        scopeDb.create();//looking at https://github.com/cloudhead/cradle this seems to be a synchronous call?
+        console.log('created database "'+dbName+'"');
+      }
+      scopeDb.save('_security', sec, function (err, res) {
+        console.log('result of saving security doc:');
+	console.log(sec);
+	console.log(err);
+        console.log(res);
+	if(err) {
+	  console.log('there was an error');
+	} else {
+	  console.log('db and security doc created, will now generate user:');
+          genUser(userAddress, cb);
+	}
+      });
     });
   }
 
