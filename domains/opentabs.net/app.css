@@ -12,9 +12,11 @@ body { position:relative; margin:1em auto; width:25em; font:1em FreeSans,Helveti
 tr { padding:.3em; }
 tr p { margin:0; }
 td { padding:0 .3em; clear:both; }
-td input { float:right; }
-.negative, .positive { text-align:right; }
+td.negative, td.positive { text-align:right; }
 #add { display:none; }
+input#direction { margin:0 .5em; }
+input[id^="amount"] { border-top-right-radius:0; border-bottom-right-radius:0; }
+input[id^="currency"] { border-top-left-radius:0; border-bottom-left-radius:0; }
 
 form span { position:relative; }
 label.infield { position:absolute; top:.1em; left:.8em; }

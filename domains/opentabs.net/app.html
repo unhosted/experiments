@@ -138,17 +138,13 @@
         }
       }
       timestamp = (new Date().getTime());
-      document.getElementById('add'+i).innerHTML = 
-         '<p>'
-          +'<input type="text" id="description'+i+'" placeholder="Reason"> '
-          +'<input type="text" size="5" id="amount'+i+'" placeholder="amount">'
-          +'<input type="submit" id="currency'+i+'" value="&euro;"></span> '
-          +'<input class="negative" type="submit" value="you owe" id="direction" onclick="switchDirection();">'
-          +'</p>'
-          +'<p>'
-          +'<span onclick="cancel('+i+');">Cancel</span> '
-          +'<input type="submit" value="Send" onclick="send('+i+');"></span>'
-          +'</p>';
+      document.getElementById('add'+i).innerHTML = '<td>'
+          +'<input type="text" size="10" id="description'+i+'" placeholder="Reason" />'
+          +'<input class="negative" type="submit" value="you owe" id="direction" onclick="switchDirection();" />'
+          +'<input type="text" size="5" id="amount'+i+'" placeholder="amount" />'
+          +'<input type="submit" id="currency'+i+'" value="&euro;" /></span>'
+          +'</td>'
+          +'<td><input type="submit" value="Send" onclick="send('+i+');" /></td>';
     }
 
     function cancel(i) {
@@ -202,8 +198,8 @@
     }
     function addNewTab() {
       document.getElementById('newTab').innerHTML= ''
-        +'<input type="text" id="contact-1" placeholder="user@host">'
-        +'<input type="submit" value="+" onclick="owe(-1);">';
+        +'<input type="text" id="contact-1" placeholder="user@host" />'
+        +'<input type="submit" value="+" onclick="owe(-1);" />';
         // this needs the same code like in owe(), line 84
     }
     function declineIncoming(i) {
@@ -281,8 +277,8 @@
   <body onload="bodyonload();">
     <div id="login">
       <input type="text" id="secret" placeholder="Secret word" /><br>
-      <input type="text" id="nick" placeholder="Nickname" size="10">@opentabs.net<br>
-      <input type="submit" value="Test" onclick="register();"><br>
+      <input type="text" id="nick" placeholder="Nickname" size="10" />@opentabs.net<br>
+      <input type="submit" value="Test" onclick="register();" /><br>
       WARNING: This is an alpha test, so use fake data!<br>
       These are valid nicks:
 	'albert',
@@ -304,7 +300,7 @@
     </div>
       <div id="newTab">
         <span id="loggedInAs"></span>
-        <input type="submit" value="Open a Tab" onclick="addNewTab();">
+        <input type="submit" value="Open a Tab" onclick="addNewTab();" />
       </div>
       <div id="importantDiv"></div>
       <div id="contactsDiv"></div>

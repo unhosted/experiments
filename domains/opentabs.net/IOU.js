@@ -18,8 +18,8 @@ function getImportantString() {
       // incoming invoice
       importantStr += '<tr><td><strong>?</strong> '
         +iou.payee+' '+iou.description
-        +'<input type="submit" value="Decline (msg)" onclick="declineIncoming('+i+');">'
-        +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');">'
+        +'<input type="submit" value="Decline" onclick="declineIncoming('+i+');" />'
+        +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');" />'
         +'</td><td class="negative">'+iou.amount+iou.currency+'</td>'
         +'</tr>';
       if(totals[iou.currency]==undefined) {
@@ -35,8 +35,8 @@ function getImportantString() {
       // incoming IOU
       importantStr += '<tr><td><strong>?</strong>'
         +iou.payer+' '+iou.description
-        +'<input type="submit" value="Decline (msg)" onclick="declineIncoming('+i+');">'
-        +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');">'
+        +'<input type="submit" value="Decline" onclick="declineIncoming('+i+');" />'
+        +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');" />'
         +'</td><td class="positive">'+iou.amount+iou.currency+'</td>'
         +'</tr>';
       if(totals[iou.currency]==undefined) {
@@ -52,7 +52,7 @@ function getImportantString() {
       // declined your IOU
       importantStr += '<tr><td><strong>X</strong> '
         +iou.payee+' '+iou.description
-        +'<input type="submit" value="Close" onclick="closeDeclined('+i+');">'
+        +'<input type="submit" value="Close" onclick="closeDeclined('+i+');" />'
         +'</td><td class="negative">'+iou.amount+iou.currency+'</td>'
         +'</tr>';
       if(totals[iou.currency]==undefined) {
@@ -68,7 +68,7 @@ function getImportantString() {
       // declined your invoice
       importantStr += '<tr><td><strong>X</strong> '
         +iou.payer+' '+iou.description
-        +'<input type="submit" value="Close" onclick="closeDeclined('+i+');">'
+        +'<input type="submit" value="Close" onclick="closeDeclined('+i+');" />'
         +'</td><td class="positive">'+iou.amount+iou.currency+'</td>'
         +'</tr>';
       if(totals[iou.currency]==undefined) {
@@ -106,7 +106,7 @@ function getContactsString() {
       if((iou.payee == contacts[i]) && (iou.status == 'requested')) {
         // hurry
         thisContactsStr += '<tr><td><strong>!</strong>'
-          +iou.description+'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');"></td>'
+          +iou.description+'<input type="submit" value="was paid" onclick="markAsPaid('+j+');" /></td>'
           +'<td class="negative">'+iou.amount+iou.currency+'</td></tr>'
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
@@ -120,7 +120,7 @@ function getContactsString() {
       if((iou.payer == contacts[i]) && (iou.status == 'sent')) {
         // got it?
         thisContactsStr += '<tr><td><strong>&#10003;</strong> '
-          +iou.description+'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');"></td>'
+          +iou.description+'<input type="submit" value="was paid" onclick="markAsPaid('+j+');" /></td>'
           +'<td class="positive">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
@@ -134,7 +134,7 @@ function getContactsString() {
       if((iou.payer == contacts[i]) && (iou.status == 'requested')) {
         // you said hurry
         thisContactsStr += '<tr><td><strong>!</strong> '
-          +iou.description+'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');"></td>'
+          +iou.description+'<input type="submit" value="was paid" onclick="markAsPaid('+j+');" /></td>'
           +'<td class="positive">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
@@ -155,7 +155,7 @@ function getContactsString() {
       if((iou.payee == contacts[i]) && (iou.status == 'accepted')) {
         // you owe them
         thisContactsStr2 += '<tr class="folded'+i+'"><td>'
-          +iou.description+'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');"></td>'
+          +iou.description+'<input type="submit" value="was paid" onclick="markAsPaid('+j+');" /></td>'
           +'<td class="negative">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
@@ -170,8 +170,8 @@ function getContactsString() {
         // they owe you
         thisContactsStr2 += '<tr class="folded'+i+'"><td>'
           +iou.description
-          +'<input type="submit" value="Request payment" onclick="requestPayment('+j+');">'
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');"></td>'
+          +'<input type="submit" value="urgent" onclick="requestPayment('+j+');" />'
+          +'<input type="submit" value="was paid" onclick="markAsPaid('+j+');" /></td>'
           +'<td class="positive">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
@@ -185,7 +185,7 @@ function getContactsString() {
       if((iou.payee == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
         // you proposed to owe
         thisContactsStr2 += '<tr class="folded'+i+'"><td><strong>?</strong> '
-          +iou.description+'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');"></td>'
+          +iou.description+'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');" /></td>'
           +'<td class="negative">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
@@ -199,7 +199,7 @@ function getContactsString() {
       if((iou.payer == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
         // invoice you proposed
         thisContactsStr2 += '<tr class="folded'+i+'"><td><strong>?</strong> '
-          +iou.description+'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');"></td>'
+          +iou.description+'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');" /></td>'
           +'<td class="positive">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
