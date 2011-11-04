@@ -4,16 +4,16 @@ function getImportantString() {
   var tabs = JSON.parse(localStorage.getItem('tabs'));
   var totals = {};
   var importantStr = '<table>';
+  importantStr += '<tr><th><strong>Important</strong></th><th>';
+  for(currency in totals) {
+    importantStr += totals[currency]+currency;
+  }
+  importantStr += '</th></tr>';
   for(i in tabs) {
     var iou = tabs[i];
     if(!iou.description) {
       iou.description='';
     }
-    importantStr += '<tr><th><strong>Important</strong></th><th>';
-    for(currency in totals) {
-      importantStr += totals[currency]+currency;
-    }
-    importantStr += '</th></tr>';
     if((iou.proposer != you) && (iou.status == 'proposed') && (iou.payer == you)) {
       // incoming invoice
       importantStr += '<tr><td><strong>?</strong> '
@@ -96,6 +96,7 @@ function getContactsString() {
       contactsStr += totals[currency]+currency;
     }
     contactsStr += '</th></tr>';
+    contactsStr += '<tr id="add'+i+'"></tr>';
     var thisContactsStr='';
     for(j in tabs) {
       var iou = tabs[j];
@@ -214,7 +215,7 @@ function getContactsString() {
       contactStr  += thisContactsStr;
     }
     if(thisContactsStr2.length) {
-      contactsStr += thisContactsStr2;
+      contactsStr += '<tr onclick="fold('+i+');"><td>&hellip;</td><td></td></tr>'+thisContactsStr2;
     }
     contactsStr+='</table>';
   }
@@ -224,16 +225,16 @@ function getHistoryString() {
   var tabs = JSON.parse(localStorage.getItem('tabs'));
   historyStr = '<table>';
   var totals= {};
+  historyStr += '<tr><th><strong>History</strong></th><th>';
+  for(currency in totals) {
+    historyStr += totals[currency]+currency;
+  }
+  historyStr += '</th></tr>';
   for(i in tabs) {
     var iou = tabs[i];
     if(!iou.description) {
       iou.description='';
     }
-    historyStr += '<tr><th><strong>History</strong></th><th>';
-    for(currency in totals) {
-      historyStr += totals[currency]+currency;
-    }
-    historyStr += '</th></tr>';
     if((iou.proposer != you) && (iou.status == 'declined') && (iou.payee==you)) {
       // offer you refused
       historyStr += '<tr><td><strong>X</strong> '+iou.payer+' '+iou.description+'</td><td class="positive">'+iou.amount+iou.currency+'</td></tr>';

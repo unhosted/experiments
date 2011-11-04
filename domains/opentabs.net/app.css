@@ -10,6 +10,8 @@ tr { padding:.3em; border-bottom:1px solid #ddd; }
 td { padding:0 .3em; clear:both; }
 td input { float:right; }
 .negative, .positive { text-align:right; }
+.folded { display:none; }
+#add { display:none; }
 
 form span { position:relative; }
 label.infield { position:absolute; top:.1em; left:.8em; }

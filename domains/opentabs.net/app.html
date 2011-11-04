@@ -29,7 +29,6 @@
       //listen client-side:
       socket.on('welcome', function (data) {
         document.getElementById('login').style.display='none';
-        document.getElementById('main').style.display='block';
         document.getElementById('loggedInAs').innerHTML=
 	  'You are <span class="avatar">'+data[0]+'</span>'+data;
         for(var i in nicks) {
@@ -241,7 +240,6 @@
     }
     function bodyonload() {
       show();
-      document.getElementById('main').style.display="none";
       if((localStorage.getItem('nick')) && (localStorage.getItem('secret'))) {
         document.getElementById('nick').value=localStorage.getItem('nick');
         document.getElementById('secret').value=localStorage.getItem('secret');
