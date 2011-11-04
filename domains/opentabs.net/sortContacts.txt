@@ -7,6 +7,10 @@ user stories (in order of decreasing importance):
 5 - find a specific tab you know exists, and request payment.
 6 - check whether you're cool with a specific peer: the 'open new tab' list also displays a per-peer totals summary. click on it to see bigger, complete, per-peer-per-currency totals, with a description->amount+currency list hanging from it.
 
+see http://opentabs.net/mainMenu.html and http://opentabs.net/mainMenuWNotif.html
+
+clicking on a name should open /both/ the new tab dialog and the per-peer list.
+
 
 09:09 < JanCBorchardt> history should not be a separated view but collapsed by 
               default
