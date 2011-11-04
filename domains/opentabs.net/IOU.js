@@ -84,7 +84,7 @@ function getContactsString() {
   var contactsStr = '';
   for(var i in contacts) {
     var totals = {};
-    contactsStr += '<span id="'+i+'"><span onclick="owe('+i+');" class="avatar" id="avatar'+i+'">'+contacts[i][0]+'</span>'
+    contactsStr += '<div id="'+i+'"><span onclick="owe('+i+');" class="avatar" id="avatar'+i+'">'+contacts[i][0]+'</span>'
            +'<span onclick="owe('+i+');" class="contactName" id="contact'+i+'">'+contacts[i]+'</span>'
            +'<span id="add'+i+'"></span>';
     var thisContactsStr='';
@@ -214,8 +214,9 @@ function getContactsString() {
       contactStr  += '<ul>'+thisContactsStr+'</ul>';
     }
     if(thisContactsStr2.length) {
-      contactsStr += '<div onclick="fold('+i+');">...<div id="folded'+i+'"><ul>'+thisContactsStr2 + '</ul></div></div></div>';
+      contactsStr += '<div onclick="fold('+i+');">...<div id="folded'+i+'"><ul>'+thisContactsStr2 + '</ul>';
     }
+    contactsStr+='</div>';
   }
   return contactsStr;
 }
