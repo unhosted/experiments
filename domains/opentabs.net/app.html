@@ -249,7 +249,7 @@
       }
     }
     function fold(i) {
-      document.getElementById('folded'+i).style.display='none';
+      document.getElementsByClassName('folded'+i).style.display='none';
     }
     function markAsPaid(i) {
       var you = localStorage.getItem('you');
@@ -285,9 +285,9 @@
   </head>
   <body onload="bodyonload();">
     <div id="login">
-      Our secret word: <input type="text" id="secret"><br>
-      Choose a nick: <input type="text" id="nick" size="10">@opentabs.net<br>
-      <input type="submit" value="Do some alpha testing" onclick="register();"><br>
+      <input type="text" id="secret" placeholder="Secret word" /><br>
+      <input type="text" id="nick" placeholder="Nickname" size="10">@opentabs.net<br>
+      <input type="submit" value="Test" onclick="register();"><br>
       WARNING: This is an alpha test, so use fake data!<br>
       These are valid nicks:
 	'albert',
