@@ -98,11 +98,11 @@
       }
     }
     function switchDirection() {
-      if(val('direction')=='owed by') {
-        document.getElementById('direction').value='owed to';
+      if(val('direction')=='they owe') {
+        document.getElementById('direction').value='you owe';
         document.getElementById('direction').className='negative';
       } else {
-        document.getElementById('direction').value='owed by';
+        document.getElementById('direction').value='they owe';
         document.getElementById('direction').className='positive';
       }
     }
@@ -141,12 +141,9 @@
       document.getElementById('add'+i).innerHTML = 
          '<p>'
           +'<input type="text" id="description'+i+'" placeholder="Reason"> '
-          +'<input type="text" size="3" id="amount'+i+'" placeholder="amount"> '
-          +'<input type="submit" id="currency'+i+'" value="&euro;"></span>'
-          +'</p>'
-          +'<p>'
-          +'<input class="negative" type="submit" value="owed to" id="direction" onclick="switchDirection();"> '
-          +'<span>'+peer+'</span> '
+          +'<input type="text" size="5" id="amount'+i+'" placeholder="amount">'
+          +'<input type="submit" id="currency'+i+'" value="&euro;"></span> '
+          +'<input class="negative" type="submit" value="you owe" id="direction" onclick="switchDirection();">'
           +'</p>'
           +'<p>'
           +'<span onclick="cancel('+i+');">Cancel</span> '
@@ -159,7 +156,7 @@
     }
     function send(i) {
       var payer, payee;
-      if(val('direction')=='owed by') {
+      if(val('direction')=='they owe') {
         payer=el('contact'+i).innerHTML;
         payee=you;
       } else {

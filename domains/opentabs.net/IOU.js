@@ -154,7 +154,7 @@ function getContactsString() {
       }
       if((iou.payee == contacts[i]) && (iou.status == 'accepted')) {
         // you owe them
-        thisContactsStr2 += '<tr class="folded"><td>'
+        thisContactsStr2 += '<tr class="folded'+i+'"><td>'
           +iou.description+'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');"></td>'
           +'<td class="negative">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
@@ -168,7 +168,7 @@ function getContactsString() {
       }
       if((iou.payer == contacts[i]) && (iou.status == 'accepted')) {
         // they owe you
-        thisContactsStr2 += '<tr class="folded"><td>'
+        thisContactsStr2 += '<tr class="folded'+i+'"><td>'
           +iou.description
           +'<input type="submit" value="Request payment" onclick="requestPayment('+j+');">'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');"></td>'
@@ -184,7 +184,7 @@ function getContactsString() {
       }
       if((iou.payee == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
         // you proposed to owe
-        thisContactsStr2 += '<tr class="folded"><td><strong>?</strong> '
+        thisContactsStr2 += '<tr class="folded'+i+'"><td><strong>?</strong> '
           +iou.description+'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');"></td>'
           +'<td class="negative">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
@@ -198,7 +198,7 @@ function getContactsString() {
       }
       if((iou.payer == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
         // invoice you proposed
-        thisContactsStr2 += '<tr class="folded"><td><strong>?</strong> '
+        thisContactsStr2 += '<tr class="folded'+i+'"><td><strong>?</strong> '
           +iou.description+'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');"></td>'
           +'<td class="positive">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
