@@ -22,5 +22,6 @@ exports.config = {
     'proxy.example.com' : backends.proxy
   }
   domainsDir: 'domains/',
-  sslDir: '/home/<you>/ssl-cert/'
+  sslDir: '/home/<you>/ssl-cert/',
+  socketHubSecret: '<something>'
 };

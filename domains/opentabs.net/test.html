@@ -31,7 +31,7 @@
         document.getElementById('login').style.display='none';
         document.getElementById('main').style.display='block';
         document.getElementById('loggedInAs').innerHTML=
-	  'You are <span class="avatar">'+data[0]+'</span>'+data;
+	  'You are <span class="avatar">'+data[0]+'</span> '+data;
         for(var i in nicks) {
           if(nicks[i]+'@opentabs.net'!=you) {
             addContact(nicks[i]+'@opentabs.net');

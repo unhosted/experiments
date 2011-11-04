@@ -84,7 +84,7 @@ function getContactsString() {
   var contactsStr = '';
   for(var i in contacts) {
     var totals = {};
-    contactsStr += '<div id="'+i+'"><span onclick="owe('+i+');" class="avatar" id="avatar'+i+'">'+contacts[i][0]+'</span>'
+    contactsStr += '<div id="'+i+'"><span onclick="owe('+i+');" class="avatar" id="avatar'+i+'">'+contacts[i][0]+'</span> '
            +'<span onclick="owe('+i+');" class="contactName" id="contact'+i+'">'+contacts[i]+'</span>'
            +'<span id="add'+i+'"></span>';
     var thisContactsStr='';
