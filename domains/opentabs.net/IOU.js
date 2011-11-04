@@ -1,8 +1,7 @@
-remoteStorage.setItem('you', 'michiel@unhosted.org');
+var you = localStorage.getItem('nick')+'@opentabs.net';
 
 function getImportantString() {
-  var tabs = JSON.parse(remoteStorage.getItem('tabs'));
-  var you = remoteStorage.getItem('you');
+  var tabs = JSON.parse(localStorage.getItem('tabs'));
   var totals = {};
   var importantStr = '<ul>';
   for(i in tabs) {
@@ -11,8 +10,9 @@ function getImportantString() {
       iou.description='';
     }
     if((iou.proposer != you) && (iou.status == 'proposed') && (iou.payer == you)) {
-      importantStr += '<li style="background-color:yellow">[incoming invoice:] [?]'
-        +iou.payee+' '+iou.description+' '+iou.amount+iou.currency
+      // incoming invoice
+      importantStr += '<li><strong>?</strong> '
+        +iou.payee+' '+iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
         +'<input type="submit" value="Decline (msg)" onclick="declineIncoming('+i+');">'
         +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');">'
         +'</li>';
@@ -26,8 +26,9 @@ function getImportantString() {
       }
     }
     if((iou.proposer != you) && (iou.status == 'proposed') && (iou.payee == you)) {
-      importantStr += '<li style="background-color:yellow">[incoming IOU:] [?]'
-        +iou.payer+' '+iou.description+' '+iou.amount+iou.currency
+      // incoming IOU
+      importantStr += '<li><strong>?</strong>'
+        +iou.payer+' '+iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
         +'<input type="submit" value="Decline (msg)" onclick="declineIncoming('+i+');">'
         +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');">'
         +'</li>';
@@ -41,8 +42,9 @@ function getImportantString() {
       }
     }
     if((iou.proposer == you) && (iou.status == 'declined') && (iou.payer == you)) {
-      importantStr += '<li style="background-color:yellow">[declined your IOU:] [X]'
-        +iou.payee+' '+iou.description+' '+iou.amount+iou.currency
+      // declined your IOU
+      importantStr += '<li><strong>X</strong> '
+        +iou.payee+' '+iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
         +'<input type="submit" value="Close" onclick="closeDeclined('+i+');">'
         +'</li>';
       if(totals[iou.currency]==undefined) {
@@ -55,8 +57,9 @@ function getImportantString() {
       }
     }
     if((iou.proposer == you) && (iou.status == 'declined') && (iou.payee == you)) {
-      importantStr += '<li style="background-color:yellow">[declined your invoice:] [X]'
-        +iou.payer+' '+iou.description+' '+iou.amount+iou.currency
+      // declined your invoice
+      importantStr += '<li><strong>X</strong> '
+        +iou.payer+' '+iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
         +'<input type="submit" value="Close" onclick="closeDeclined('+i+');">'
         +'</li>';
       if(totals[iou.currency]==undefined) {
@@ -69,30 +72,31 @@ function getImportantString() {
       }
     }
     for(currency in totals) {
-      importantStr +='<h4>TOTAL: '+totals[currency]+currency+'</h4>';
+      importantStr +='<h4>Total: '+totals[currency]+currency+'</h4>';
     }
   }
   importantStr += '</ul>';
   return importantStr;
 }
 function getContactsString() {
-  var contacts = JSON.parse(remoteStorage.getItem('contacts'));
-  var tabs = JSON.parse(remoteStorage.getItem('tabs'));
-  var you = remoteStorage.getItem('you');
+  var contacts = JSON.parse(localStorage.getItem('contacts'));
+  var tabs = JSON.parse(localStorage.getItem('tabs'));
   var contactsStr = '';
   for(var i in contacts) {
     var totals = {};
-    contactsStr += '<div id="'+i+'"><strong id="contact'+i+'">'+contacts[i]+'</strong>'
-           +'<input type="submit" id="owe'+i+'" value="+" onclick="owe('+i+');">'
-           +'<ul>';
+    contactsStr += '<div id="'+i+'"><span onclick="owe('+i+');" class="avatar" id="avatar'+i+'">'+contacts[i][0]+'</span>'
+           +'<span onclick="owe('+i+');" class="contactName" id="contact'+i+'">'+contacts[i]+'</span>'
+           +'<span id="add'+i+'"></span>';
+    var thisContactsStr='';
     for(j in tabs) {
       var iou = tabs[j];
       if(!iou.description) {
         iou.description='';
       }
       if((iou.payee == contacts[i]) && (iou.status == 'requested')) {
-        contactsStr += '<li style="background-color:pink">[hurry:] [!]'
-          +iou.description+' '+iou.amount+iou.currency
+        // hurry
+        thisContactsStr += '<li><strong>!</strong> '
+          +iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
         if(totals[iou.currency]==undefined) {
@@ -105,8 +109,9 @@ function getContactsString() {
         }
       }
       if((iou.payer == contacts[i]) && (iou.status == 'sent')) {
-        contactsStr += '<li style="background-color:green">[got it?] [&#10003;]'
-          +iou.description+' '+iou.amount+iou.currency
+        // got it?
+        thisContactsStr += '<li><strong>&#10003;</strong> '
+          +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
         if(totals[iou.currency]==undefined) {
@@ -119,8 +124,9 @@ function getContactsString() {
         }
       }
       if((iou.payer == contacts[i]) && (iou.status == 'requested')) {
-        contactsStr += '<li style="background-color:green">[you said hurry] [!]'
-          +iou.description+' '+iou.amount+iou.currency
+        // you said hurry
+        thisContactsStr += '<li><strong>!</strong> '
+          +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
         if(totals[iou.currency]==undefined) {
@@ -133,15 +139,16 @@ function getContactsString() {
         }
       }
     }
-    contactsStr += '</ul><div onclick="unfold('+i+');">...<div id="folded'+i+'" style="display:none"><ul>';
+    thisContactsStr2 = '';
     for(j in tabs) {
       var iou = tabs[j];
       if(!iou.description) {
         iou.description='';
       }
       if((iou.payee == contacts[i]) && (iou.status == 'accepted')) {
-        contactsStr += '<li style="background-color:pink">[you owe them]'
-          +iou.description+' '+iou.amount+iou.currency
+        // you owe them
+        thisContactsStr2 += '<li> '
+          +iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
         if(totals[iou.currency]==undefined) {
@@ -154,8 +161,9 @@ function getContactsString() {
         }
       }
       if((iou.payer == contacts[i]) && (iou.status == 'accepted')) {
-        contactsStr += '<li style="background-color:green">[they owe you]'
-          +iou.description+' '+iou.amount+iou.currency
+        // they owe you
+        thisContactsStr2 += '<li>'
+          +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Request payment" onclick="requestPayment('+j+');">'
           +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
           +'</li>';
@@ -169,8 +177,9 @@ function getContactsString() {
         }
       }
       if((iou.payee == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
-        contactsStr += '<li style="background-color:pink">[you proposed to owe] [?]'
-          +iou.description+' '+iou.amount+iou.currency
+        // you proposed to owe
+        thisContactsStr2 += '<li><strong>?</strong> '
+          +iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');">'
           +'</li>';
         if(totals[iou.currency]==undefined) {
@@ -183,8 +192,9 @@ function getContactsString() {
         }
       }
       if((iou.payer == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
-        contactsStr += '<li style="background-color:pink">[invoice you proposed] [?]'
-          +iou.description+' '+iou.amount+iou.currency
+        // invoice you proposed
+        thisContactsStr2 += '<li><strong>?</strong> '
+          +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
           +'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');">'
           +'</li>';
         if(totals[iou.currency]==undefined) {
@@ -197,16 +207,21 @@ function getContactsString() {
         }
       }
     }
-    contactsStr += '</ul></div></div></div>';
     for(currency in totals) {
-      contactsStr +='<h4>TOTAL: '+totals[currency]+currency+'</h4>';
+      contactsStr +='<h4>Total: '+totals[currency]+currency+'</h4>';
     }
+    if(thisContactsStr.length) {
+      contactStr  += '<ul>'+thisContactsStr+'</ul>';
+    }
+    if(thisContactsStr2.length) {
+      contactsStr += '<div onclick="fold('+i+');">...</div><div id="folded'+i+'"><ul>'+thisContactsStr2 + '</ul></div>';
+    }
+    contactsStr+='</div>';
   }
   return contactsStr;
 }
 function getHistoryString() {
-  var tabs = JSON.parse(remoteStorage.getItem('tabs'));
-  var you = remoteStorage.getItem('you');
+  var tabs = JSON.parse(localStorage.getItem('tabs'));
   historyStr = '<ul>';
   var totals= {};
   for(i in tabs) {
@@ -215,8 +230,9 @@ function getHistoryString() {
       iou.description='';
     }
     if((iou.proposer != you) && (iou.status == 'declined') && (iou.payee==you)) {
-      historyStr += '<li style="background-color:yellow">[offer you refused] [X]'
-        +iou.payer+' '+iou.description+' '+iou.amount+iou.currency
+      // offer you refused
+      historyStr += '<li><strong>X</strong>'
+        +iou.payer+' '+iou.description+'<span class="positive">'+iou.amount+iou.currency+'</span>'
         +'</li>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
@@ -228,8 +244,9 @@ function getHistoryString() {
       }
     }
     if((iou.proposer != you) && (iou.status == 'declined') && (iou.payer==you)) {
-      historyStr += '<li style="background-color:yellow">[invoice you declined] [X]'
-        +iou.payee+' '+iou.description+' '+iou.amount+iou.currency
+      // invoice you declined
+      historyStr += '<li><strong>X</strong> '
+        +iou.payee+' '+iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
         +'</li>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
@@ -240,9 +257,10 @@ function getHistoryString() {
         totals[iou.currency]-= parseInt(iou.amount);
       }
     }
-    if((iou.payer == you) &&(iou.status == 'closed')) {
-      historyStr += '<li style="background-color:yellow">[was declined] [X]'
-        +iou.payee+' '+iou.description+' '+iou.amount+iou.currency
+    if((iou.payer == you) && (iou.status == 'closed')) {
+      // was declined
+      historyStr += '<li><strong>X</strong> '
+        +iou.payee+' '+iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
         +'</li>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
@@ -253,10 +271,9 @@ function getHistoryString() {
         totals[iou.currency]-= parseInt(iou.amount);
       }
     }
-    if((iou.payee == you) &&(iou.status == 'closed')) {
-      historyStr += '<li style="background-color:yellow">[was declined] [X]'
-        +iou.payer+' '+iou.description+' '+iou.amount+iou.currency
-        +'</li>';
+    if((iou.payee == you) && (iou.status == 'closed')) {
+      // was declined
+      historyStr += '<li><strong>X</strong> '+iou.payer+' '+iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span></li>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -267,9 +284,8 @@ function getHistoryString() {
       }
     }
     if((iou.payer == you) && (iou.status == 'sent')) {
-      historyStr += '<li style="background-color:pink">[you sent] [&#10003;]'
-        +iou.payee+' '+iou.description+' '+iou.amount+iou.currency
-        +'</li>';
+      // you sent
+      historyStr += '<li><strong>&#10003;</strong> '+iou.payee+' '+iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span></li>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -280,9 +296,8 @@ function getHistoryString() {
       }
     }
     if((iou.payer == you) && (iou.status == 'received')) {
-      historyStr += '<li style="background-color:pink">[they received] [&#10003;]'
-        +iou.payee+' '+iou.description+' '+iou.amount+iou.currency
-        +'</li>';
+      // they received
+      historyStr += '<li><strong>&#10003;</strong> '+iou.payee+' '+iou.description+' <span class="negative>'+iou.amount+iou.currency+'</span></li>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -293,9 +308,8 @@ function getHistoryString() {
       }
     }
     if((iou.payee == you) && (iou.status == 'received')) {
-      historyStr += '<li style="background-color:green">[you received] [&#10003;]'
-        +iou.payer+' '+iou.description+' '+iou.amount+iou.currency
-        +'</li>';
+      // you received
+      historyStr += '<li><strong>&#10003;</strong> '+iou.payer+' '+iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span></li>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -308,7 +322,7 @@ function getHistoryString() {
   }
   historyStr += '</ul>';
   for(currency in totals) {
-    historyStr +='<h4>TOTAL: '+totals[currency]+currency+'</h4>'
+    historyStr +='<h4>Total: '+totals[currency]+currency+'</h4>'
   }
   return historyStr;
 }
