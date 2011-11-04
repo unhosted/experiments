@@ -218,6 +218,13 @@
       sendMsg(tabs[i].sender, tabs[i]);
       show();
     }
+    function closeDeclined(i) {
+      var tabs = JSON.parse(localStorage.getItem('tabs'));
+      tabs[i].status = 'closed';
+      localStorage.setItem('tabs', JSON.stringify(tabs));
+      sendMsg(tabs[i].recipient, tabs[i]);
+      show();
+    }
     function acceptIncoming(i) {
       var tabs = JSON.parse(localStorage.getItem('tabs'));
       tabs[i].signatures[you]=calcSignature(null, null);
