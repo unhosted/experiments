@@ -141,9 +141,9 @@
       timestamp = (new Date().getTime());
       document.getElementById('add'+i).innerHTML = 
          '<p>'
-          +'<input id="description'+i+'" value="Fahrkarte"> '
-          +'<input size="3" id="amount'+i+'" value="40"> '
-          +'<input type="submit" id="currency'+i+'" value="EUR"></span>'
+          +'<input type="text" id="description'+i+'" placeholder="Reason"> '
+          +'<input type="text" size="3" id="amount'+i+'" placeholder="amount"> '
+          +'<input type="submit" id="currency'+i+'" value="&euro;"></span>'
           +'</p>'
           +'<p>'
           +'<input class="negative" type="submit" value="owed to" id="direction" onclick="switchDirection();"> '
@@ -206,7 +206,7 @@
     }
     function addNewTab() {
       document.getElementById('newTab').innerHTML= ''
-        +'<input id="contact-1" placeholder="user@host">'
+        +'<input type="text" id="contact-1" placeholder="user@host">'
         +'<input type="submit" value="+" onclick="owe(-1);">';
         // this needs the same code like in owe(), line 84
     }
@@ -285,8 +285,8 @@
   </head>
   <body onload="bodyonload();">
     <div id="login">
-      Our secret word: <input id="secret"><br>
-      Choose a nick: <input id="nick" size="10">@opentabs.net<br>
+      Our secret word: <input type="text" id="secret"><br>
+      Choose a nick: <input type="text" id="nick" size="10">@opentabs.net<br>
       <input type="submit" value="Do some alpha testing" onclick="register();"><br>
       WARNING: This is an alpha test, so use fake data!<br>
       These are valid nicks:
