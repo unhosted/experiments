@@ -3,7 +3,7 @@ var you = localStorage.getItem('nick')+'@opentabs.net';
 function getImportantString() {
   var tabs = JSON.parse(localStorage.getItem('tabs'));
   var totals = {};
-  var importantStr = '<ul>';
+  var importantStr = '';
   for(i in tabs) {
     var iou = tabs[i];
     if(!iou.description) {
@@ -75,8 +75,11 @@ function getImportantString() {
       importantStr +='<h4>Total: '+totals[currency]+currency+'</h4>';
     }
   }
-  importantStr += '</ul>';
-  return importantStr;
+  if(importantStr.length) {
+    return '<div id="importantStr"><ul>'+importantStr+'</ul></div>';
+  } else {
+    return '';
+  }
 }
 function getContactsString() {
   var contacts = JSON.parse(localStorage.getItem('contacts'));
@@ -211,18 +214,23 @@ function getContactsString() {
       contactsStr +='<h4>Total: '+totals[currency]+currency+'</h4>';
     }
     if(thisContactsStr.length) {
-      contactStr  += '<ul>'+thisContactsStr+'</ul>';
+      contactsStr  += '<ul>'+thisContactsStr+'</ul>';
     }
     if(thisContactsStr2.length) {
       contactsStr += '<div onclick="fold('+i+');">...</div><div id="folded'+i+'"><ul>'+thisContactsStr2 + '</ul></div>';
     }
     contactsStr+='</div>';
   }
-  return contactsStr;
+  if(contactsStr.length) {
+    return '<div id="contactsDiv">'+contactsStr+'</div>';
+  } else {
+    return '';
+  }
 }
+
 function getHistoryString() {
   var tabs = JSON.parse(localStorage.getItem('tabs'));
-  historyStr = '<ul>';
+  historyStr = '';
   var totals= {};
   for(i in tabs) {
     var iou = tabs[i];
@@ -320,9 +328,13 @@ function getHistoryString() {
       }
     }
   }
-  historyStr += '</ul>';
-  for(currency in totals) {
-    historyStr +='<h4>Total: '+totals[currency]+currency+'</h4>'
+  if(historyStr.length) {
+    historyStr = '<div id="historyDiv"><ul>'+historyStr+'</ul>';
+    for(currency in totals) {
+      historyStr +='<h4>Total: '+totals[currency]+currency+'</h4>'
+    }
+    return historyStr+'</div>';
+  } else {
+    return '';
   }
-  return historyStr;
 }

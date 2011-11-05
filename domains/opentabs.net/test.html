@@ -31,7 +31,7 @@
         document.getElementById('login').style.display='none';
         document.getElementById('main').style.display='block';
         document.getElementById('loggedInAs').innerHTML=
-	  'You are <span class="avatar">'+data[0]+'</span>'+data;
+	  '<span class="avatar">'+data[0]+'</span>'+data;
         for(var i in nicks) {
           if(nicks[i]+'@opentabs.net'!=you) {
             addContact(nicks[i]+'@opentabs.net');
@@ -235,9 +235,9 @@
     }
 
     function show() {
-      document.getElementById('importantDiv').innerHTML = getImportantString();
-      document.getElementById('contactsDiv').innerHTML = getContactsString();
-      document.getElementById('historyDiv').innerHTML = getHistoryString();
+      document.getElementById('div2').innerHTML = getImportantString();
+      document.getElementById('div3').innerHTML = getContactsString();
+      document.getElementById('div4').innerHTML = getHistoryString();
     }
     function bodyonload() {
       show();
@@ -308,13 +308,14 @@
 	'zed'];
     </div>
     <div id="main">
-      <div id="newTab">
+      <div id="div1">
         <span id="loggedInAs"></span>
-        <input type="submit" value="Open a Tab" onclick="addNewTab();">
+        <input type="submit" value="Overview" onclick="overview();">
       </div>
-      <div id="importantDiv"></div>
-      <div id="contactsDiv"></div>
-      <div id="historyDiv"></div>
+      <div id="div2"></div>
+      <div id="div3"></div>
+      <div id="div4"></div>
+      <div id="div5"></div>
     </div>
   </body>
 </html>
