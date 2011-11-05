@@ -91,7 +91,8 @@ function getContactsString() {
   for(var i in contacts) {
     var totals = {};
     contactsStr += '<table id="'+i+'"><tr><th><span onclick="owe('+i+');" class="avatar" id="avatar'+i+'">'+contacts[i][0]+'</span>'
-      +'<span onclick="owe('+i+');" class="contactName" id="contact'+i+'">'+contacts[i]+'</span></th><th onclick="fold('+i+');">';
+      +'<span onclick="owe('+i+');" class="contactName" id="contact'+i+'">'+contacts[i]+'</span></th><th onclick="fold('+i+');">'
+      +'<tr id="add'+i+'"></tr>';
     for(currency in totals) {
  	    contactsStr += totals[currency]+currency;
  	  }
