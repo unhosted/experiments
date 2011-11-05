@@ -210,7 +210,6 @@ function getContactsString() {
         }
       }
     }
-    contactsStr += '<table>';
     if(thisContactsStr.length) {
       contactStr += thisContactsStr;
     }
