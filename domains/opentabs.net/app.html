@@ -9,23 +9,7 @@
     <script>
       var socket = io.connect('http://opentabs.net:9000');
       
-      var nicks = [
-	'albert',
-	'butch',
-        'charlie',
-	'donald',
-	'evan',
-	'fergie',
-	'gloria',
-	'hazie',
-	'ingrid',
-	'jan',
-	'katie',
-	'liz',
-	'mich',
-	'nathan',
-	'ozzie',
-	'zed'];
+      var nicks = ['andrew','daniel','dietrich','jan','javi','kenny','mich'];
       //listen client-side:
       socket.on('welcome', function (data) {
         document.getElementById('login').style.display='none';
@@ -276,27 +260,11 @@
   </head>
   <body onload="bodyonload();">
     <div id="login">
-      <input type="text" id="secret" placeholder="Secret word" /><br>
-      <input type="text" id="nick" placeholder="Nickname" size="10" />@opentabs.net<br>
-      <input type="submit" value="Test" onclick="register();" /><br>
-      WARNING: This is an alpha test, so use fake data!<br>
-      These are valid nicks:
-	'albert',
-	'butch',
-        'charlie',
-	'donald',
-	'evan',
-	'fergie',
-	'gloria',
-	'hazie',
-	'ingrid'
-	'jan',
-	'katie',
-	'liz',
-	'mich',
-	'nathan',
-	'ozzie',
-	'zed'];
+      <p><input type="text" id="nick" placeholder="Nickname" size="6" />@opentabs.net
+      <input type="text" id="secret" placeholder="Secret word" size="8" />
+      <input type="submit" value="Test" onclick="register();" /></p>
+      <p><strong>This is an alpha test</strong>, only these names are valid:<br />
+      andrew, daniel, dietrich, jan, javi, kenny, mich</p>
     </div>
       <div id="newTab">
         <span id="loggedInAs"></span>
