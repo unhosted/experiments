@@ -1,9 +1,9 @@
 body { position:absolute; padding:5% 20%; font:1em FreeSans,Helvetica,sans-serif; color:#333; background:#eee;width:60%; }
 
 .main {width:380px;height:540px;border-style:solid;border-width:5px}
-.avatar {float:left;width:70px;height:70px;border-style:solid;border-width:5px}
+.avatar {float:left;width:45px;height:45px;border-style:solid;border-width:5px}
 .avatarSmall {float:left;width:25px;height:25px;border-style:solid;border-width:1px}
-.avatar img {width:70px;height:70px;}
+.avatar img {width:45px;height:45px;}
 .avatarSmall img {width:25px;height:25px;}
 .mastHead {display:block;height:80px;border-style:solid;border-width:1px}
 .loggedInAs {float:left;display:inline}
@@ -18,6 +18,8 @@ body { position:absolute; padding:5% 20%; font:1em FreeSans,Helvetica,sans-serif
 .contacts .contact .summary {height:80px;}
 .contacts .contact .summary .currencySum {float:right;}
 .openTabDialog .description {}
+.name {padding:25px;font-size:44px;text-decoration:none}
+a {text-decoration:none}
 .importantDiv, #newTab, #contactsDiv div, #historyDiv { background:#fcfcfc; margin-top:2em; padding:1em; border-radius:1em; }
 .contactsDiv input { margin:0; }
 
