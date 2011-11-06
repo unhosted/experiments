@@ -222,7 +222,7 @@ function getContactsString() {
     contactsStr+='</div>';
   }
   if(contactsStr.length) {
-    return '<div id="contactsDiv">'+contactsStr+'</div>';
+    return '<div id="contactsDiv"><div>Opentabs.net SEARCH: <input size=5 id="search"></div>'+contactsStr+'</div>';
   } else {
     return '';
   }
