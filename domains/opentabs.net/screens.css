@@ -8,8 +8,9 @@ div {border-radius:10px}
 .mastHead {display:block;height:80px;border-style:solid;border-width:1px}
 .loggedInAs {float:left;display:inline}
 .notifsView {display:block;border-style:solid;border-width:1px}
-.openTabDialog {height:120px;display:block;border-style:solid;border-width:1px}
-.openTabDialog div {margin:10px;height:30px;}
+.transactionList {border-style:solid;border-width:1px}
+.openTabDialog {height:180px;display:block;border-style:solid;border-width:1px}
+.openTabDialog div {margin-top:10px;height:30px;}
 .mainView {border-style:solid;border-width:2px}
 .overviewButton {float:right;display:inline}
 .mainView header {display:block;height:80px;border-style:solid;border-width:1px}
@@ -81,3 +82,4 @@ input:hover { background-position:0 -1em; text-decoration:none; }
 	background-image:-o-linear-gradient(top, #62c462, #57a957);
 	background-image:linear-gradient(top, #62c462, #57a957);
 }
+#login input[type="submit"] {text-decoration:underline;}
