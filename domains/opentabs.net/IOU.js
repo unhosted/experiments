@@ -11,11 +11,12 @@ function getImportantString() {
     }
     if((iou.proposer != you) && (iou.status == 'proposed') && (iou.payer == you)) {
       // incoming invoice
-      importantStr += '<li><strong>?</strong> '
-        +iou.payee+' '+iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
-        +'<input type="submit" value="Decline (msg)" onclick="declineIncoming('+i+');">'
-        +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');">'
-        +'</li>';
+      importantStr += '<tr><td><strong>?</strong> '
+        +iou.payee+' '+iou.description
+        +'<input type="submit" value="Decline" onclick="declineIncoming('+i+');" />'
+        +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');" />'
+        +'</td><td class="negative">'+iou.amount+iou.currency+'</td>'
+        +'</tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -27,11 +28,12 @@ function getImportantString() {
     }
     if((iou.proposer != you) && (iou.status == 'proposed') && (iou.payee == you)) {
       // incoming IOU
-      importantStr += '<li><strong>?</strong>'
-        +iou.payer+' '+iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
-        +'<input type="submit" value="Decline (msg)" onclick="declineIncoming('+i+');">'
-        +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');">'
-        +'</li>';
+      importantStr += '<tr><td><strong>?</strong>'
+        +iou.payer+' '+iou.description
+        +'<input type="submit" value="Decline" onclick="declineIncoming('+i+');" />'
+        +'<input type="submit" value="Accept" onclick="acceptIncoming('+i+');" />'
+        +'</td><td class="positive">'+iou.amount+iou.currency+'</td>'
+        +'</tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -43,10 +45,11 @@ function getImportantString() {
     }
     if((iou.proposer == you) && (iou.status == 'declined') && (iou.payer == you)) {
       // declined your IOU
-      importantStr += '<li><strong>X</strong> '
-        +iou.payee+' '+iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
-        +'<input type="submit" value="Close" onclick="closeDeclined('+i+');">'
-        +'</li>';
+      importantStr += '<tr><td><strong>X</strong> '
+        +iou.payee+' '+iou.description
+        +'<input type="submit" value="Close" onclick="closeDeclined('+i+');" />'
+        +'</td><td class="negative">'+iou.amount+iou.currency+'</td>'
+        +'</tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -58,10 +61,11 @@ function getImportantString() {
     }
     if((iou.proposer == you) && (iou.status == 'declined') && (iou.payee == you)) {
       // declined your invoice
-      importantStr += '<li><strong>X</strong> '
-        +iou.payer+' '+iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
-        +'<input type="submit" value="Close" onclick="closeDeclined('+i+');">'
-        +'</li>';
+      importantStr += '<tr><td><strong>X</strong> '
+        +iou.payer+' '+iou.description
+        +'<input type="submit" value="Close" onclick="closeDeclined('+i+');" />'
+        +'</td><td class="positive">'+iou.amount+iou.currency+'</td>'
+        +'</tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -71,12 +75,15 @@ function getImportantString() {
         totals[iou.currency]-= parseInt(iou.amount);
       }
     }
-    for(currency in totals) {
-      importantStr +='<h4>Total: '+totals[currency]+currency+'</h4>';
-    }
   }
   if(importantStr.length) {
-    return '<div id="importantStr"><ul>'+importantStr+'</ul></div>';
+    var outStr = '<table>'
+      + '<tr><th><strong>Important</strong></th><th>';
+    for(currency in totals) {
+      outStr += totals[currency]+currency;
+    }
+    outStr += '</th></tr>';
+    return outStr + importantStr + '</table>';
   } else {
     return '';
   }
@@ -87,9 +94,13 @@ function getContactsString() {
   var contactsStr = '';
   for(var i in contacts) {
     var totals = {};
-    contactsStr += '<div id="'+i+'"><span onclick="owe('+i+');" class="avatar" id="avatar'+i+'">'+contacts[i][0]+'</span>'
-           +'<span onclick="owe('+i+');" class="contactName" id="contact'+i+'">'+contacts[i]+'</span>'
-           +'<span id="add'+i+'"></span>';
+    contactsStr += '<table id="'+i+'"><tr><th><span onclick="owe('+i+');" class="avatar" id="avatar'+i+'">'+contacts[i][0]+'</span>'
+      +'<span onclick="owe('+i+');" class="contactName" id="contact'+i+'">'+contacts[i]+'</span></th><th onclick="fold('+i+');">'
+      +'<tr id="add'+i+'"></tr>';
+    for(currency in totals) {
+ 	    contactsStr += totals[currency]+currency;
+ 	  }
+    contactsStr += '</th></tr>';
     var thisContactsStr='';
     for(j in tabs) {
       var iou = tabs[j];
@@ -98,10 +109,9 @@ function getContactsString() {
       }
       if((iou.payee == contacts[i]) && (iou.status == 'requested')) {
         // hurry
-        thisContactsStr += '<li><strong>!</strong> '
-          +iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
-          +'</li>';
+        thisContactsStr += '<tr><td><strong>!</strong>'
+          +iou.description+'<input type="submit" value="was paid" onclick="markAsPaid('+j+');" /></td>'
+          +'<td class="negative">'+iou.amount+iou.currency+'</td></tr>'
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
         }
@@ -113,10 +123,9 @@ function getContactsString() {
       }
       if((iou.payer == contacts[i]) && (iou.status == 'sent')) {
         // got it?
-        thisContactsStr += '<li><strong>&#10003;</strong> '
-          +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
-          +'</li>';
+        thisContactsStr += '<tr><td><strong>&#10003;</strong> '
+          +iou.description+'<input type="submit" value="was paid" onclick="markAsPaid('+j+');" /></td>'
+          +'<td class="positive">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
         }
@@ -128,10 +137,9 @@ function getContactsString() {
       }
       if((iou.payer == contacts[i]) && (iou.status == 'requested')) {
         // you said hurry
-        thisContactsStr += '<li><strong>!</strong> '
-          +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
-          +'</li>';
+        thisContactsStr += '<tr><td><strong>!</strong> '
+          +iou.description+'<input type="submit" value="was paid" onclick="markAsPaid('+j+');" /></td>'
+          +'<td class="positive">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
         }
@@ -150,10 +158,9 @@ function getContactsString() {
       }
       if((iou.payee == contacts[i]) && (iou.status == 'accepted')) {
         // you owe them
-        thisContactsStr2 += '<li> '
-          +iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
-          +'</li>';
+        thisContactsStr2 += '<tr class="folded'+i+'"><td>'
+          +iou.description+'<input type="submit" value="was paid" onclick="markAsPaid('+j+');" /></td>'
+          +'<td class="negative">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
         }
@@ -165,11 +172,11 @@ function getContactsString() {
       }
       if((iou.payer == contacts[i]) && (iou.status == 'accepted')) {
         // they owe you
-        thisContactsStr2 += '<li>'
-          +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
-          +'<input type="submit" value="Request payment" onclick="requestPayment('+j+');">'
-          +'<input type="submit" value="Mark as paid" onclick="markAsPaid('+j+');">'
-          +'</li>';
+        thisContactsStr2 += '<tr class="folded'+i+'"><td>'
+          +iou.description
+          +'<input type="submit" value="urgent" onclick="requestPayment('+j+');" />'
+          +'<input type="submit" value="was paid" onclick="markAsPaid('+j+');" /></td>'
+          +'<td class="positive">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
         }
@@ -181,10 +188,9 @@ function getContactsString() {
       }
       if((iou.payee == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
         // you proposed to owe
-        thisContactsStr2 += '<li><strong>?</strong> '
-          +iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
-          +'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');">'
-          +'</li>';
+        thisContactsStr2 += '<tr class="folded'+i+'"><td><strong>?</strong> '
+          +iou.description+'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');" /></td>'
+          +'<td class="negative">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
         }
@@ -196,10 +202,9 @@ function getContactsString() {
       }
       if((iou.payer == contacts[i]) && (iou.status == 'proposed') && (iou.proposer == you)) {
         // invoice you proposed
-        thisContactsStr2 += '<li><strong>?</strong> '
-          +iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span>'
-          +'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');">'
-          +'</li>';
+        thisContactsStr2 += '<tr class="folded'+i+'"><td><strong>?</strong> '
+          +iou.description+'<input type="submit" value="Cancel" onclick="cancelProposed('+j+');" /></td>'
+          +'<td class="positive">'+iou.amount+iou.currency+'</td></tr>';
         if(totals[iou.currency]==undefined) {
           totals[iou.currency]=0;
         }
@@ -210,16 +215,13 @@ function getContactsString() {
         }
       }
     }
-    for(currency in totals) {
-      contactsStr +='<h4>Total: '+totals[currency]+currency+'</h4>';
-    }
     if(thisContactsStr.length) {
-      contactsStr  += '<ul>'+thisContactsStr+'</ul>';
+      contactStr += thisContactsStr;
     }
     if(thisContactsStr2.length) {
-      contactsStr += '<div onclick="fold('+i+');">...</div><div id="folded'+i+'"><ul>'+thisContactsStr2 + '</ul></div>';
+      contactsStr += '<tr onclick="fold('+i+');"><td>&hellip;</td><td></td></tr>'+thisContactsStr2;
     }
-    contactsStr+='</div>';
+    contactsStr+='</table>';
   }
   if(contactsStr.length) {
     return '<div id="contactsDiv"><div>Opentabs.net SEARCH: <input size=5 id="search"></div>'+contactsStr+'</div>';
@@ -230,8 +232,13 @@ function getContactsString() {
 
 function getHistoryString() {
   var tabs = JSON.parse(localStorage.getItem('tabs'));
-  historyStr = '';
+  historyStr = '<table>';
   var totals= {};
+  historyStr += '<tr><th><strong>History</strong></th><th>';
+  for(currency in totals) {
+    historyStr += totals[currency]+currency;
+  }
+  historyStr += '</th></tr>';
   for(i in tabs) {
     var iou = tabs[i];
     if(!iou.description) {
@@ -239,9 +246,7 @@ function getHistoryString() {
     }
     if((iou.proposer != you) && (iou.status == 'declined') && (iou.payee==you)) {
       // offer you refused
-      historyStr += '<li><strong>X</strong>'
-        +iou.payer+' '+iou.description+'<span class="positive">'+iou.amount+iou.currency+'</span>'
-        +'</li>';
+      historyStr += '<tr><td><strong>X</strong> '+iou.payer+' '+iou.description+'</td><td class="positive">'+iou.amount+iou.currency+'</td></tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -253,9 +258,7 @@ function getHistoryString() {
     }
     if((iou.proposer != you) && (iou.status == 'declined') && (iou.payer==you)) {
       // invoice you declined
-      historyStr += '<li><strong>X</strong> '
-        +iou.payee+' '+iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
-        +'</li>';
+      historyStr += '<tr><td><strong>X</strong> '+iou.payee+' '+iou.description+'</td><td class="negative">'+iou.amount+iou.currency+'</td></tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -267,9 +270,7 @@ function getHistoryString() {
     }
     if((iou.payer == you) && (iou.status == 'closed')) {
       // was declined
-      historyStr += '<li><strong>X</strong> '
-        +iou.payee+' '+iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span>'
-        +'</li>';
+      historyStr += '<tr><td><strong>X</strong> '+iou.payee+' '+iou.description+'</td><td class="negative">'+iou.amount+iou.currency+'</td></tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -281,7 +282,7 @@ function getHistoryString() {
     }
     if((iou.payee == you) && (iou.status == 'closed')) {
       // was declined
-      historyStr += '<li><strong>X</strong> '+iou.payer+' '+iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span></li>';
+      historyStr += '<tr><td><strong>X</strong> '+iou.payer+' '+iou.description+'</td><td class="positive">'+iou.amount+iou.currency+'</span></tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -293,7 +294,7 @@ function getHistoryString() {
     }
     if((iou.payer == you) && (iou.status == 'sent')) {
       // you sent
-      historyStr += '<li><strong>&#10003;</strong> '+iou.payee+' '+iou.description+' <span class="negative">'+iou.amount+iou.currency+'</span></li>';
+      historyStr += '<tr><td><strong>&#10003;</strong> '+iou.payee+' '+iou.description+'</td><td class="negative">'+iou.amount+iou.currency+'</td></tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -305,7 +306,7 @@ function getHistoryString() {
     }
     if((iou.payer == you) && (iou.status == 'received')) {
       // they received
-      historyStr += '<li><strong>&#10003;</strong> '+iou.payee+' '+iou.description+' <span class="negative>'+iou.amount+iou.currency+'</span></li>';
+      historyStr += '<tr><td><strong>&#10003;</strong> '+iou.payee+' '+iou.description+'</td><td class="negative>'+iou.amount+iou.currency+'</td></tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -317,7 +318,7 @@ function getHistoryString() {
     }
     if((iou.payee == you) && (iou.status == 'received')) {
       // you received
-      historyStr += '<li><strong>&#10003;</strong> '+iou.payer+' '+iou.description+' <span class="positive">'+iou.amount+iou.currency+'</span></li>';
+      historyStr += '<tr><td><strong>&#10003;</strong>'+iou.payer+' '+iou.description+'</td><td class="positive">'+iou.amount+iou.currency+'</td></tr>';
       if(totals[iou.currency]==undefined) {
         totals[iou.currency]=0;
       }
@@ -333,7 +334,7 @@ function getHistoryString() {
     for(currency in totals) {
       historyStr +='<h4>Total: '+totals[currency]+currency+'</h4>'
     }
-    return historyStr+'</div>';
+    return historyStr+'</table>';
   } else {
     return '';
   }
