@@ -1,11 +1,12 @@
 body { position:absolute; padding:5% 20%; font:1em FreeSans,Helvetica,sans-serif; color:#333; background:#eee;width:60%; }
 
-#main {width:380px;height:540px;border-style:solid;border-width:5px}
+.main {width:380px;height:540px;border-style:solid;border-width:5px}
 /*.avatar {float:left;width:70px;height:70px;border-style:solid;border-width:5px}*/
 .avatar {padding:.7em 1em; margin-right: .5em; background:#999 url('http://placekitten.com/50/50');height:23px;width:17px;float:left}
-#mastHead {display:block;height:80px;border-style:solid;border-width:5px}
-.notifsView {display:block;height:80px;border-style:solid;border-width:5px}
-.overviewButton {float:right}
+.mastHead {display:block;height:80px;border-style:solid;border-width:1px}
+#loggedInAs {float:left;display:inline}
+.notifsView {display:block;height:80px;border-style:solid;border-width:1px}
+.overviewButton {float:right;display:inline}
 #mainView header {height:40px;}
 #mainView header title {float:left}
 #searchBox {float:right}
