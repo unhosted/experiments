@@ -7,8 +7,9 @@ body { position:absolute; padding:5% 20%; font:1em FreeSans,Helvetica,sans-serif
 .loggedInAs {float:left;display:inline}
 .notifsView {display:block;height:80px;border-style:solid;border-width:1px}
 .overviewButton {float:right;display:inline}
+.mainView header {display:block;height:80px;border-style:solid;border-width:1px}
 .mainView header {height:40px;}
-.mainView header title {float:left}
+.mainView header .title {float:left}
 .searchBox {float:right}
 .contacts .contact .summary {height:80px;}
 .openTabDialog .description {}
