@@ -9,7 +9,7 @@ div {border-radius:10px}
 .loggedInAs {float:left;display:inline}
 .notifsView {display:block;border-style:solid;border-width:1px}
 .transactionList {border-style:solid;border-width:1px}
-.openTabDialog {height:180px;display:block;border-style:solid;border-width:1px}
+.openTabDialog {height:50px;display:block;border-style:solid;border-width:1px}
 .openTabDialog div {margin-top:10px;height:30px;}
 .mainView {border-style:solid;border-width:2px}
 .overviewButton {float:right;display:inline}
@@ -30,7 +30,7 @@ li { padding:.3em; border-bottom:1px solid #ddd; }
 
 form span { position:relative; }
 label.infield { position:absolute; top:.1em; left:.8em; }
-
+.cancelButton {float:right;}
 input, select, .currency, .amount, .description, .direction, .nameRepeat, .cancelButton, .sendButton {
   display:inline; margin:.5em; padding:.5em .6em; font-size:.8em;
   color:#333; text-shadow:0 1px 1px rgba(255, 255, 255, 0.75);
