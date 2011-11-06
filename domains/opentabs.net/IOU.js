@@ -216,7 +216,7 @@ function getContactsString() {
       }
     }
     if(thisContactsStr.length) {
-      contactStr += thisContactsStr;
+      contactsStr += thisContactsStr;
     }
     if(thisContactsStr2.length) {
       contactsStr += '<tr onclick="fold('+i+');"><td>&hellip;</td><td></td></tr>'+thisContactsStr2;
