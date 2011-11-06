@@ -1,8 +1,12 @@
 body { position:absolute; padding:5% 20%; font:1em FreeSans,Helvetica,sans-serif; color:#333; background:#eee;width:60%; }
 
 #main {width:380px;height:540px;border-style:solid;border-width:5px}
-.avatar {width:70px;height:70px;border-style:solid;border-width:5px}
-
+.avatar {float:left;width:70px;height:70px;border-style:solid;border-width:5px}
+#mastHead {display:block;height:80px;border-style:solid;border-width:5px}
+.notifsView {display:block;height:80px;border-style:solid;border-width:5px}
+.overviewButton {float:right}
+#searchBox {float:right}
+#contacts .contact .summary {height:80px;}
 #importantDiv, #newTab, #contactsDiv div, #historyDiv { background:#fcfcfc; margin-top:2em; padding:1em; border-radius:1em; }
 #contactsDiv input { margin:0; }
 

@@ -6,7 +6,8 @@
   <link rel="stylesheet" type="text/css" href="/screens.css">
 </head>
 <body>
-<header class="mastHead">
+<div id="main">
+<header id="mastHead">
   <div class="loggedInAs">
     <div class="avatar">
       B
@@ -32,17 +33,46 @@
     </div>
     <div id="searchBox">
       Search:
-      <input>
+      <input size="3">
     </div>
   </header>
   <ul id="contacts">
     <li class="contact">
-      <div class="avatar">
-        P
+      <div class="summary">
+        <div class="avatar">
+          P
+        </div>
+        <a href="openTab.html">
+          Miss Piggy
+        </a>
       </div>
-      <a href="openTab.html">
-        Miss Piggy
-      </a>
+      <div class="openTabDialog">
+        <span class="description">
+	  Train ticket
+	</span>
+        <span class="amount">
+	  15
+	</span>
+        <span class="currency">
+	  euro
+	</span>
+      </div>
+      <div class="openTabDialog">
+        <span class="direction">
+	  owed to
+	</span>
+        <span class="nameRepeat">
+	  piggy@opentabs.net
+	</span>
+      </div>
+      <div class="openTabDialog">
+        <span class="cancelButton">
+	  cancel
+	</span>
+        <span class="sendButton">
+	  send
+	</span>
+      </div>
     </li>
     <li class="contact">
       <div class="avatar">
@@ -54,5 +84,6 @@
     </li>
   </ul>
 </article>
+</div>
 </body>
 </html>
