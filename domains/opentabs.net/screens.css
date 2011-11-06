@@ -12,6 +12,7 @@ body { position:absolute; padding:5% 20%; font:1em FreeSans,Helvetica,sans-serif
 .mainView header .title {float:left}
 .searchBox {float:right}
 .contacts .contact .summary {height:80px;}
+.contacts .contact .summary .currencySum {float:right;}
 .openTabDialog .description {}
 .importantDiv, #newTab, #contactsDiv div, #historyDiv { background:#fcfcfc; margin-top:2em; padding:1em; border-radius:1em; }
 .contactsDiv input { margin:0; }
