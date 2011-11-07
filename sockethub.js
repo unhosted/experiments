@@ -23,6 +23,9 @@ socketio.on('connection', function(socket) {
 	}
 	delete msgQ[data.userAddress];
       }
+    } else {
+      console.log('attempt by '+data.userAddress+' with wrong secret '+data.secret);
+      socket.emit('go away', data.secret);
     }
   });
   socket.on('msg', function(data) {

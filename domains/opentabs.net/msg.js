@@ -1,17 +1,14 @@
 var msg = (function() {
   var socket = io.connect('http://opentabs.net:9000');
-  function init(userAddress, secret, onMsg, onReg) {
+  function init(userAddress, secret, onErr, onMsg, onReg) {
     var dataObj = {
       userAddress: userAddress,
       secret: secret
     };
     //listen client-side:
-    socket.on('welcome', function (data) {
-      onReg();
-    });
-    socket.on('msg', function (data) {
-      onMsg(data.msg);
-    });
+    socket.on('go away', onErr);
+    socket.on('welcome', onReg);
+    socket.on('msg', onMsg);
     socket.emit('register', dataObj);
     console.log('emitted register '+dataObj.userAddress);
   }

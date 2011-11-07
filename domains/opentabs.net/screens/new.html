@@ -107,6 +107,8 @@
     function enter(userAddress) {
       var secret=document.getElementById('secret').value;
       msg.init(userAddress, secret, function(data) {
+        alert('please enter our secret word at the top, not "'+data+'"!');
+      }, function(data) {
         opentabs.processMsg(data, showContacts);
       }, function() {
         document.getElementById('login').style.display='none';
