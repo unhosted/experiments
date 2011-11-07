@@ -5,30 +5,45 @@
   <meta charset="utf8">
   <link rel="stylesheet" type="text/css" href="/screens.css">
   <script>
+    function borrowA(i) {
+      document.getElementById('contactButtons'+i).style.display='none';
+      document.getElementById('borrowDialog'+i).style.display='block';
+    }
+    function lendA(i) {
+      document.getElementById('contactButtons'+i).style.display='none';
+      document.getElementById('lendDialog'+i).style.display='block';
+    }
+    function borrowB(i) {
+      document.getElementById('contactButtons'+i).style.display='block';
+      document.getElementById('borrowDialog'+i).style.display='none';
+    }
+    function lendB(i) {
+      document.getElementById('contactButtons'+i).style.display='block';
+      document.getElementById('lendDialog'+i).style.display='none';
+    }
     function showContacts(contacts) {
       for(var i in contacts) {
         var li = document.createElement('li');
 	li.setAttribute('class', 'contact');
 	li.innerHTML=
-          '<div class="summary">'
+          '<div id="summary" class="summary">'
           +'  <div class="avatar">'
           +'    <img src="avatars/'+contacts[i].name+'">'
           +'  </div>'
           +'  <a class="name" href="openTab.html">'
           +'    '+contacts[i].name
           +'  </a>'
-	  +'  <div class="contactButtons">'
-          +'    <a href="openTab.html">'
-	  +'      <br><input type="submit" value="borrow">'
-          +'    </a>'
-          +'    <a href="direction.html">'
-	  +'      <input type="submit" value="lend">'
-          +'    </a>'
+	  +'  <div class="contactButtons" id="contactButtons'+i+'">'
+	  +'      <br><input type="submit" value="borrow" onclick="borrowA('+i+');">'
+	  +'      <input type="submit" value="lend" onclick="lendA('+i+');">'
 	  +'  </div>'
-	  +'  <div class="contactDialog">'
+	  +'  <div class="contactDialog" id="borrowDialog'+i+'">'
 	  +'    <input>'
-	  +'    <input type="submit" value="Borrow" class="borrowButton>'
-	  +'    <input type="submit" value="Lend" class="lendButton>'
+	  +'    <input type="submit" value="Borrow" class="borrowButton" onclick="borrowB('+i+');">'
+	  +'  </div>'
+	  +'  <div class="contactDialog" id="lendDialog'+i+'">'
+	  +'    <input>'
+	  +'    <input type="submit" value="Lend" class="lendButton" onclick="lendB('+i+');">'
 	  +'  </div>'
           +'</div>';
 	document.getElementById('contacts').appendChild(li);
