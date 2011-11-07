@@ -124,9 +124,9 @@
 	  var str = '<table><tr>';
           for(var i in characters) {
 	    str += '<td onclick="enter(\''
-	      +characters[i].name+'\');"><div class="avatar"><img src="'
-	      +characters[i].avatar+'"><br>'
-	      +characters[i].name+'</div></td>';
+	      +characters[i].name+'\');"><div class="avatarBig"><img src="'
+	      +characters[i].avatar+'"><br><h2>'
+	      +characters[i].name+'</h2></div></td>';
 	  }
 	  document.getElementById('characters').innerHTML= str+'</tr></table>';
 	});

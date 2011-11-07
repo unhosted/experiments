@@ -23,10 +23,13 @@ var msg = (function() {
     init: init,
     sendMsg: sendMsg,
     getCharacters: function(cb) {
-      cb([
-        { name: 'butch', avatar:'http://opentabs.net/screens/avatars/butch'},
-        { name: 'zed', avatar:'http://opentabs.net/screens/avatars/zed'}
-      ]);
+      var names = ['Butch', 'Zed', 'Marcellus', 'Jules', 'Mia', 'Fabienne', 'Vincent'];
+      var characters = [];
+      for(var i in names) {
+        characters.push({ name: names[i], avatar:'http://opentabs.net/screens/avatars/'+names[i]});
+      }
+
+      cb(characters);
     },
     isConnected: function() {
       return false;
