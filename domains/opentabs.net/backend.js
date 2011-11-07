@@ -86,7 +86,20 @@
        getContacts: getContacts,
        sendTab: sendTab,
        processMsg: function(data) {
-         alert(JSON.stringify(data));
+         var me = getMe().userAddress;
+	 var contactId;
+	 if(data.payer==me) {
+	   contactId = findContact(data.payee);
+	 } else if(data.payee == me) {
+	   contactId = findContact(data.payee);
+	 } else {
+	   alert('how does '+JSON.stringify(data)+' affect '+me+'?');
+	 }
+	 if(contactId) {
+	   addTab(contactId, data);
+	 } else {
+	   alert('cant find where to add '+JSON.stringify(data));
+	 }
        },
        getMe: getMe,
        setMe: function(data) {
