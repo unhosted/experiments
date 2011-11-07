@@ -42,8 +42,8 @@ $(function(){
            { options: ['grey', 'red', 'orange', 'green']
            , text:
              { red:    'We will give law enforcement access to your data even when they don\'t have a subpoena',
-               orange: 'We will only give law enforcement access to your data when they have a subpoena / we will let you know about it first',
-               green:  'We will try to help you get a chance to defend yourself when law enforcement requests access to your data'
+               orange: 'We will give law enforcement access to your data when they have a subpoena',
+               green:  'We will let you know and try to help you get a chance to defend yourself when law enforcement requests access to your data'
              }
            }
        , 'OPP':        //You down with O.ther P.eople's P.urposes? Or should we stick to using your data to serve only your purposes?
