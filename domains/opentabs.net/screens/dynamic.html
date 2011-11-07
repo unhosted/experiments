@@ -4,13 +4,20 @@
   <title>Opentabs.net wire frames</title>
   <meta charset="utf8">
   <link rel="stylesheet" type="text/css" href="/screens.css">
+  <script>
+    function bodyOnLoad() {
+      var contacts = [
+        { name: 'Zed',
+	  avatar: '
+      showContacts(contacts);
+  </script>
 </head>
-<body>
+<body onload="bodyOnLoad();">
 <div class="main">
 <article class="mainView">
   <header>
     <div class="searchBoxA">
-      Search:
+      Search/add:
       <input size="3">
     </div>
   </header>
@@ -18,32 +25,34 @@
     <li class="contact">
       <div class="summary">
         <div class="avatar">
-          <img src="avatars/zed">
+          <img src="avatars/fabienne.gif">
         </div>
         <a class="name" href="openTab.html">
-          Zed
+          Fabienne
+        </a>
+        <a href="openTab.html">
+	<br><input type="submit" value="borrow">
+        </a>
+        <a href="direction.html">
+	<input type="submit" value="lend">
         </a>
       </div>
     </li>
     <li class="contact">
       <div class="summary">
         <div class="avatar">
-          <img src="avatars/fabienne">
+          <img src="avatars/zed.jpg">
         </div>
         <a class="name" href="openTab.html">
-          Fabienne
+          Zed
+        </a>
+        <a href="openTab.html">
+	<br><input type="submit" value="borrow">
+        </a>
+        <a href="direction.html">
+	<input type="submit" value="lend">
         </a>
       </div>
-    </li>
-  </ul>
-</article>
-<article class="history">
-  <ul class="transactions">
-    <li class="transaction">
-      [DECLINED]<br>No worries, enjoy your trip -Zed.
-      <span class="currencySum negative">
-        1 motorcycle
-      </span>
     </li>
   </ul>
 </article>
