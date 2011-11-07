@@ -68,7 +68,7 @@
           +'    <img src="'+contacts[i].avatar+'">'
           +'  </div>'
           +'  <div>'
-	  +'    '+contacts[i].name
+          +'    '+contacts[i].name
           +'  </div>'
           +'  <br>'
           +'  <div class="contactButtons" id="contactButtons'+i+'">'
@@ -87,25 +87,26 @@
           +'  </div>'
           +'</div>';
         var tabLists = makeTabLists(contacts[i].tabs);
-	if(tabLists.notif.length) {
-	   var notifs = '<div class="notifList"><h4>Notif:</h4><ul>';
+        if(tabLists.notif.length) {
+           var notifs = '<div class="notifList"><h4>Notif:</h4><ul>';
           for(var j in tabLists.notif) {
             notifs += '<li>'+tabLists.notif[j].icon+tabLists.notif[j].description+'</li>';
-	  }
-	  li.innerHTML += notifs+'</ul></div>';
-	}
-	if(tabLists.track.length) {
-	   var tracks = '<div class="trackList"><h4>Track:</h4><ul>';
+          }
+          li.innerHTML += notifs+'</ul></div>';
+        }
+        if(tabLists.track.length) {
+           var tracks = '<div class="trackList"><h4>Track:</h4><ul>';
           for(var j in tabLists.track) {
             tracks += '<li>'+tabLists.track[j].icon+tabLists.track[j].description+'</li>';
-	  }
-	  li.innerHTML += tracks+'</ul></div>';
-	}
+          }
+          li.innerHTML += tracks+'</ul></div>';
+        }
         document.getElementById('contacts').appendChild(li);
       }
     }
     function enter(userAddress) {
       var secret=document.getElementById('secret').value;
+      localStorage.setItem('secret', secret);
       msg.init(userAddress, secret, function(data) {
         alert('please enter our secret word at the top, not "'+data+'"!');
       }, function(data) {
@@ -114,12 +115,12 @@
         document.getElementById('login').style.display='none';
         document.getElementById('mainView').style.display='block';
         var nick = data.split('@')[0];
-	var me = {
-	   name: nick,
-	   userAddress: data,
-	   avatar: 'http://opentabs.net/screens/avatars/'+nick
-	};
-	opentabs.setMe(me);
+        var me = {
+           name: nick,
+           userAddress: data,
+           avatar: 'http://opentabs.net/screens/avatars/'+nick
+        };
+        opentabs.setMe(me);
       });
     }
     function bodyOnLoad() {
@@ -128,16 +129,22 @@
         document.getElementById('mainView').style.display='block';
         showContacts();
       } else {
-        msg.getCharacters(function(characters) {
-	  var str = '<table><tr>';
-          for(var i in characters) {
-	    str += '<td onclick="enter(\''
-	      +characters[i].name+'\');"><div class="avatarBig"><img src="'
-	      +characters[i].avatar+'"><br><h2>'
-	      +characters[i].name+'</h2></div></td>';
-	  }
-	  document.getElementById('characters').innerHTML= str+'</tr></table>';
-	});
+        if(localStorage.getItem('secret') && localStorage.getItem('me')) {
+          document.getElementById('secret').value=localStorage.getItem('secret');
+          var me= JSON.parse(localStorage.getItem('me'))
+          enter(me.nick);
+        } else {
+          msg.getCharacters(function(characters) {
+            var str = '<table><tr>';
+            for(var i in characters) {
+              str += '<td onclick="enter(\''
+                +characters[i].name+'\');"><div class="avatarBig"><img src="'
+                +characters[i].avatar+'"><br><h2>'
+                +characters[i].name+'</h2></div></td>';
+            }
+            document.getElementById('characters').innerHTML= str+'</tr></table>';
+          });
+        }
       }
     }
   </script>
