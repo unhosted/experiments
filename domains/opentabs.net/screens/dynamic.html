@@ -5,11 +5,47 @@
   <meta charset="utf8">
   <link rel="stylesheet" type="text/css" href="/screens.css">
   <script>
+    function showContacts(contacts) {
+      for(var i in contacts) {
+        var li = document.createElement('li');
+	li.setAttribute('class', 'contact');
+	li.innerHTML=
+          '<div class="summary">'
+          +'  <div class="avatar">'
+          +'    <img src="avatars/'+contacts[i].name+'">'
+          +'  </div>'
+          +'  <a class="name" href="openTab.html">'
+          +'    '+contacts[i].name
+          +'  </a>'
+	  +'  <div class="contactButtons">'
+          +'    <a href="openTab.html">'
+	  +'      <br><input type="submit" value="borrow">'
+          +'    </a>'
+          +'    <a href="direction.html">'
+	  +'      <input type="submit" value="lend">'
+          +'    </a>'
+	  +'  </div>'
+	  +'  <div class="contactDialog">'
+	  +'    <input>'
+	  +'    <input type="submit" value="Borrow" class="borrowButton>'
+	  +'    <input type="submit" value="Lend" class="lendButton>'
+	  +'  </div>'
+          +'</div>';
+	document.getElementById('contacts').appendChild(li);
+      }
+    }
     function bodyOnLoad() {
       var contacts = [
-        { name: 'Zed',
-	  avatar: '
+        { name: 'Zed' },
+        { name: 'Vincent' },
+        { name: 'Fabienne'},
+        { name: 'Wolf' },
+        { name: 'Jules' },
+        { name: 'Marcellus' },
+        { name: 'Mia' },
+      ];
       showContacts(contacts);
+    }
   </script>
 </head>
 <body onload="bodyOnLoad();">
@@ -21,39 +57,7 @@
       <input size="3">
     </div>
   </header>
-  <ul class="contacts">
-    <li class="contact">
-      <div class="summary">
-        <div class="avatar">
-          <img src="avatars/fabienne.gif">
-        </div>
-        <a class="name" href="openTab.html">
-          Fabienne
-        </a>
-        <a href="openTab.html">
-	<br><input type="submit" value="borrow">
-        </a>
-        <a href="direction.html">
-	<input type="submit" value="lend">
-        </a>
-      </div>
-    </li>
-    <li class="contact">
-      <div class="summary">
-        <div class="avatar">
-          <img src="avatars/zed.jpg">
-        </div>
-        <a class="name" href="openTab.html">
-          Zed
-        </a>
-        <a href="openTab.html">
-	<br><input type="submit" value="borrow">
-        </a>
-        <a href="direction.html">
-	<input type="submit" value="lend">
-        </a>
-      </div>
-    </li>
+  <ul class="contacts" id="contacts">
   </ul>
 </article>
 </div>

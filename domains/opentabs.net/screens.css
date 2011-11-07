@@ -1,6 +1,7 @@
 body { position:absolute; padding:5% 20%; font:1em FreeSans,Helvetica,sans-serif; color:#333; background:#eee;width:60%; }
 div {border-radius:10px}
-.main {width:380px;height:540px;border-style:solid;border-width:5px}
+.contactDialog {display:none}
+.main {overflow:hidden;width:380px;height:540px;border-style:solid;border-width:5px}
 .avatar {float:left;width:45px;height:45px;border-style:solid;border-width:5px}
 .avatarSmall {float:left;width:25px;height:25px;border-style:solid;border-width:1px}
 .avatar img {width:45px;height:45px;}
@@ -18,7 +19,7 @@ div {border-radius:10px}
 .mainView header .title {float:left}
 .searchBox {float:right}
 .searchBoxA {float:left}
-.contacts .contact .summary {height:80px;}
+.contacts .contact .summary {height:120px;}
 .contacts .contact .summary .currencySum {float:right;}
 .openTabDialog .description {}
 .name {padding:25px;font-size:44px;text-decoration:none}
