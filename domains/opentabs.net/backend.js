@@ -48,11 +48,12 @@
        }
      }
      function getMe() {
-       return {
-         name: 'Butch',
-         userAddress: 'butch@opentabs.net',
-         avatar: 'http://opentabs.net/screens/avatars/butch'
-       }
+       //return {
+       //  name: 'Butch',
+       //  userAddress: 'butch@opentabs.net',
+       //  avatar: 'http://opentabs.net/screens/avatars/butch'
+       //}
+       return JSON.parse(localStorage.getItem('me'));
      }
      function getContact(contactId) {
        var contacts = getContacts();
@@ -85,6 +86,9 @@
        sendTab: sendTab,
        processMsg: function(data) {
          alert(data);
+       },
+       setMe: function(data) {
+         localStorage.setItem('me', JSON.stringify(data));
        }
      }
    })();

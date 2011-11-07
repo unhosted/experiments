@@ -110,15 +110,23 @@
         alert('please enter our secret word at the top, not "'+data+'"!');
       }, function(data) {
         opentabs.processMsg(data, showContacts);
-      }, function() {
+      }, function(data) {
         document.getElementById('login').style.display='none';
         document.getElementById('mainView').style.display='block';
+        var nick = data.split('@')[0];
+	var me = {
+	   name: nick,
+	   userAddress: data,
+	   avatar: 'http://opentabs.net/screens/avatars/'+nick
+	};
+	opentabs.setMe(me);
       });
     }
     function bodyOnLoad() {
       if(msg.isConnected()) {
         document.getElementById('login').style.display='none';
         document.getElementById('mainView').style.display='block';
+        showContacts();
       } else {
         msg.getCharacters(function(characters) {
 	  var str = '<table><tr>';
@@ -131,7 +139,6 @@
 	  document.getElementById('characters').innerHTML= str+'</tr></table>';
 	});
       }
-      showContacts();
     }
   </script>
 </head>
@@ -141,6 +148,9 @@
   Our secret word: <input id="secret"><br>
   Get into character:<br>
   <div id="characters"></div>
+</article>
+<article class="feedbackBar">
+<input type="submit" value="reset" onclick="localStorage.clear();window.location='';">
 </article>
 <article class="mainView" id="mainView">
   <header>
