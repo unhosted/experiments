@@ -75,16 +75,16 @@
           +'      <input type="submit" value="borrow" onclick="borrowA('+i+');">'
           +'      <input type="submit" value="lend" onclick="lendA('+i+');">'
           +'  </div>'
-          +'  <div class="contactDialog" id="borrowDialog'+i+'">'
+          +'  <form class="contactDialog" id="borrowDialog'+i+'">'
           +'    <input id="borrowInput'+i+'">'
           +'    <input type="submit" value="Borrow" class="borrowButton" onclick="borrowB('+i+');">'
           +'    <input type="submit" value="x" class="cancelButton" onclick="cancelBB('+i+');">'
-          +'  </div>'
-          +'  <div class="contactDialog" id="lendDialog'+i+'">'
+          +'  </form>'
+          +'  <form class="contactDialog" id="lendDialog'+i+'">'
           +'    <input id="lendInput'+i+'">'
           +'    <input type="submit" value="Lend" class="lendButton" onclick="lendB('+i+');">'
           +'    <input type="submit" value="x" class="cancelButton" onclick="cancelLB('+i+');">'
-          +'  </div>'
+          +'  </form>'
           +'</div>';
         var tabLists = makeTabLists(contacts[i].tabs);
         if(tabLists.notif.length) {
