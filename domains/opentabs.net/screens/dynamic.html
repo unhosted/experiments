@@ -5,27 +5,88 @@
   <meta charset="utf8">
   <link rel="stylesheet" type="text/css" href="/screens.css">
   <script>
-    function getContacts(filter) {
-      var contacts = [
-        { name: 'Zed' },
-        { name: 'Vincent' },
-        { name: 'Fabienne'},
-        { name: 'Wolf' },
-        { name: 'Jules' },
-        { name: 'Marcellus' },
-        { name: 'Mia' },
-      ];
-      if(filter.length) {
+       /////////////
+      // backend //
+     /////////////
+     var opentabs = (function() {
+       var contacts;
+       function generateAlphaIdentities() {
+         var contacts = [
+          { name: 'Zed' },
+          { name: 'Vincent' },
+          { name: 'Fabienne'},
+          { name: 'Wolf' },
+          { name: 'Jules' },
+          { name: 'Marcellus' },
+          { name: 'Mia' },
+        ];
         for(var i in contacts) {
-          if(contacts[i].name.substring(0, filter.length) == filter) {
-            //keep it
-  	  } else {
-	    delete contacts[i];
+          contacts[i].avatar = 'http://opentabs.net/screens/avatars/'
+            +contacts[i].name.toLowerCase();
+          contacts[i].userAddress = contacts[i].name.toLowerCase()+'@opentabs.net';
+          contacts[i].tabs = [];
+	}
+        return contacts;
+      }
+      function getContacts(filter) {
+        if(!contacts) {
+          contacts = generateAlphaIdentities();
+        }
+        if(filter && filter.length) {
+          for(var i in contacts) {
+            var prefix = contacts[i].name.substring(0, filter.length);
+            if(prefix.toLowerCase() == filter.toLowerCase()) {
+              //keep it
+              } else {
+              delete contacts[i];
+            }
           }
         }
+        return contacts;
       }
-      return contacts;
-    }
+      function getMe() {
+        return {
+          name: 'Butch',
+          userAddress: 'butch@opentabs.net',
+          avatar: 'http://opentabs.net/screens/avatars/butch'
+        }
+      }
+      function getContact(contactId) {
+        if(!contacts) {
+          contacts = generateAlphaIdentities();
+        }
+        return contacts[contactId];
+      }
+      function addTab(contactId, tab) {
+        if(!contacts) {
+          contacts = generateAlphaIdentities();
+        }
+        contacts[contactId].tabs.push(tab);
+      }
+      function sendTab(contactId, type, description) {
+        var tab = {};
+        if(type == 'borrow') {
+          tab.payee = getContact(contactId).userName;
+          tab.payer = getMe().userName;
+        } else {
+          tab.payer = getContact(contactId).userName;
+          tab.payee = getMe().userName;
+        }
+        tab.description = description;
+        tab.timestamp = (new Date().getTime());
+	var me = getMe().userAddress;
+        tab.signatures = {me: 'yours truly'};
+        addTab(contactId, tab);
+      }
+      return {
+        getContacts: getContacts,
+        sendTab: sendTab
+      }
+    })();
+
+       //////////////
+      // frontend //
+     //////////////
     function borrowA(i) {
       document.getElementById('contactButtons'+i).style.display='none';
       document.getElementById('borrowDialog'+i).style.display='block';
@@ -37,43 +98,56 @@
     function borrowB(i) {
       document.getElementById('contactButtons'+i).style.display='block';
       document.getElementById('borrowDialog'+i).style.display='none';
+      opentabs.sendTab(i, 'borrow', document.getElementById('borrowInput'+i).value);
+      showContacts();
     }
     function lendB(i) {
       document.getElementById('contactButtons'+i).style.display='block';
       document.getElementById('lendDialog'+i).style.display='none';
+      opentabs.sendTab(i, 'lend', document.getElementById('borrowInput'+i).value);
+      showContacts();
+    }
+    function makeTabLists(tabs) {
+      return {notif: tabs}
     }
     function showContacts(filter) {
-      var contacts = getContacts(filter);
+      var contacts = opentabs.getContacts(filter);
       document.getElementById('contacts').innerHTML='';
       for(var i in contacts) {
         var li = document.createElement('li');
-	li.setAttribute('class', 'contact');
-	li.innerHTML=
+        li.setAttribute('class', 'contact');
+        li.innerHTML=
           '<div id="summary" class="summary">'
           +'  <div class="avatar">'
-          +'    <img src="avatars/'+contacts[i].name+'">'
+          +'    <img src="'+contacts[i].avatar+'">'
           +'  </div>'
-          +'  <a class="name" href="openTab.html">'
-          +'    '+contacts[i].name
-          +'  </a>'
-	  +'  <div class="contactButtons" id="contactButtons'+i+'">'
-	  +'      <br><input type="submit" value="borrow" onclick="borrowA('+i+');">'
-	  +'      <input type="submit" value="lend" onclick="lendA('+i+');">'
-	  +'  </div>'
-	  +'  <div class="contactDialog" id="borrowDialog'+i+'">'
-	  +'    <input>'
-	  +'    <input type="submit" value="Borrow" class="borrowButton" onclick="borrowB('+i+');">'
-	  +'  </div>'
-	  +'  <div class="contactDialog" id="lendDialog'+i+'">'
-	  +'    <input>'
-	  +'    <input type="submit" value="Lend" class="lendButton" onclick="lendB('+i+');">'
-	  +'  </div>'
+          +'  '+contacts[i].name
+          +'  <div class="contactButtons" id="contactButtons'+i+'">'
+          +'      <br><input type="submit" value="borrow" onclick="borrowA('+i+');">'
+          +'      <input type="submit" value="lend" onclick="lendA('+i+');">'
+          +'  </div>'
+          +'  <div class="contactDialog" id="borrowDialog'+i+'">'
+          +'    <input id="borrowInput'+i+'">'
+          +'    <input type="submit" value="Borrow" class="borrowButton" onclick="borrowB('+i+');">'
+          +'  </div>'
+          +'  <div class="contactDialog" id="lendDialog'+i+'">'
+          +'    <input id="lendInput'+i+'">'
+          +'    <input type="submit" value="Lend" class="lendButton" onclick="lendB('+i+');">'
+          +'  </div>'
           +'</div>';
-	document.getElementById('contacts').appendChild(li);
+        var tabLists = makeTabLists(contacts[i].tabs);
+	if(tabLists.notif) {
+	  li.innerHTML +='<div><ul>';
+          for(var j in tabLists.notif) {
+            li.innerHTML += '<li>'+tabLists.notif[j].description+'</li>';
+	  }
+	  li.innerHTML +='</ul></div>';
+	}
+        document.getElementById('contacts').appendChild(li);
       }
     }
     function bodyOnLoad() {
-      showContacts('');
+      showContacts();
     }
   </script>
 </head>
