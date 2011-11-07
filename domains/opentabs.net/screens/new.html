@@ -9,6 +9,29 @@
   <script src="http://opentabs.net/msg.js"></script>
   <script src="http://opentabs.net/biz.js"></script>
   <script>
+// structure: 
+// presentation: css,html, hide/show logic, from:
+// list of user addresses from filter,
+// messages come in, how do they trigger DOM updates?
+// frontend <-> backend <-> msg <-> hub <-> msg <-> app <-> biz <-> pres
+// fronted provides draw(userAddress) function to biz
+// keep everything in the dom all the time, just hide things.
+// controller interface:
+//   init(updateView(contactId, data))
+//   setUserAddress(userAddress)
+//   setSecret(secret)
+//   addContact(userAddress)
+//   borrow(contactId, amount, currency, description)
+//   lend(contactId, amount, currency, description)
+//   tabAction(contactId, tabId, action)
+
+// backend interface:
+//   init(updateContact(contactId, data))
+//   setUserAddress(userAddress)
+//   setSecret(secret)
+//   addContact(userAddress)
+//   addTab(contactId, tab)
+//   updateTab(contactId, tabId, tab) 
 
        //////////////
       // frontend //
