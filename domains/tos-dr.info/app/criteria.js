@@ -1,4 +1,3 @@
-
 $(function(){
   window.criteria =
        { 'BY':         //attribution. Like the 'BY' in CC licenses
@@ -16,10 +15,11 @@ $(function(){
              }
            }
        , 'DEL':        //about data retention vs. DELetion
-           { options: ['grey', 'red', 'green']
+           { options: ['grey', 'red', 'orange', 'green']
            , text:
-             { red:    'We might keep a copy of your data, even if you don\'t want us to'
-             , green:  'We will delete both your primary data and your secondary data quickly after you close your account'
+             { red:    'We might keep a copy of your data, even if you don\'t want us to',
+               orange: 'We will keep a copy of your data unless you explicitly say otherwise',
+               green:  'We will delete both your primary data and your secondary data quickly after you close your account'
              }
            }
        , 'END':        //what happens when we END your service
@@ -39,16 +39,17 @@ $(function(){
              }
            }
        , 'GOV':        //what happens when the GOVernment (law enforcement) wants to see your data
-           { options: ['grey', 'red', 'green']
+           { options: ['grey', 'red', 'orange', 'green']
            , text:
-             { red:    ''
-             , green:  'We will try to help you get a chance to defend yourself when law enforcement requests access to your data'
+             { red:    'We will give law enforcement access to your data even when they don\'t have a subpoena',
+               orange: 'We will only give law enforcement access to your data when they have a subpoena / we will let you know about it first',
+               green:  'We will try to help you get a chance to defend yourself when law enforcement requests access to your data'
              }
            }
        , 'OPP':        //You down with O.ther P.eople's P.urposes? Or should we stick to using your data to serve only your purposes?
            { options: ['grey', 'red', 'orange', 'green']
            , text:
-             { red:    ''
+             { red:    'We will use your personal data for the purposes of people other than yours'
              , orange: 'We may use aggregated data for the purposes of people other than yourself, but then you will not be identifiable'
              , green:  'We will not use your primary nor your secondary data for serving any purposes other than yours'
              }
@@ -56,7 +57,7 @@ $(function(){
        , 'DL':         //Data Liberation
            { options: ['grey', 'red', 'orange', 'green']
            , text:
-             { red:    ''
+             { red:    'You can not export or import your data'
              , orange: 'You can export your primary data at any time, but to a format that even we ourselves don\'t support for import'
              , green:  'You can import and export your primary data at any time'
              }
@@ -84,6 +85,14 @@ $(function(){
              , orange: 'The software behind this service is FOSS. Be aware though, that each node forms a restrictive island of user interaction'
              , green:  'This service is distributed; using a a different instance will not give you significant loss of interaction with other users'
              }
-           }
+           },
+        'LOC':        //where the applicable court of law is LOCated, not sure about the exact wording of the ratings yet
+          { options: ['grey', 'red', 'orange', 'green'],
+            text: {
+              red: 'The court of law is located in an oppressive regime',
+              orange: '',
+              green: 'The court of law is located in a democracy where you can defend yourself'
+            }
+          }
        }
 })
