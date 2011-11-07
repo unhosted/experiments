@@ -103,6 +103,7 @@
         }
         document.getElementById('contacts').appendChild(li);
       }
+      document.getElementById('loggedInAs').innerHTML=opentabs.getMe().userAddress;
     }
     function enter(userAddress) {
       var secret=document.getElementById('secret').value;
@@ -121,6 +122,7 @@
            avatar: 'http://opentabs.net/screens/avatars/'+nick
         };
         opentabs.setMe(me);
+	showContacts();
       });
     }
     function bodyOnLoad() {
@@ -132,13 +134,13 @@
         if(localStorage.getItem('secret') && localStorage.getItem('me')) {
           document.getElementById('secret').value=localStorage.getItem('secret');
           var me= JSON.parse(localStorage.getItem('me'))
-          enter(me.nick);
+          enter(me.userAddress);
         } else {
           msg.getCharacters(function(characters) {
             var str = '<table><tr>';
             for(var i in characters) {
               str += '<td onclick="enter(\''
-                +characters[i].name+'\');"><div class="avatarBig"><img src="'
+                +characters[i].userAddress+'\');"><div class="avatarBig"><img src="'
                 +characters[i].avatar+'"><br><h2>'
                 +characters[i].name+'</h2></div></td>';
             }
@@ -151,13 +153,14 @@
 </head>
 <body onload="bodyOnLoad();">
 <div class="main">
+<article class="feedbackBar">
+<input type="submit" value="reset" onclick="localStorage.clear();window.location='';">
+<span id="loggedInAs"></span>
+</article>
 <article class="login" id="login">
   Our secret word: <input id="secret"><br>
   Get into character:<br>
   <div id="characters"></div>
-</article>
-<article class="feedbackBar">
-<input type="submit" value="reset" onclick="localStorage.clear();window.location='';">
 </article>
 <article class="mainView" id="mainView">
   <header>

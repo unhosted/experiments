@@ -87,6 +87,7 @@
        processMsg: function(data) {
          alert(data);
        },
+       getMe: getMe,
        setMe: function(data) {
          localStorage.setItem('me', JSON.stringify(data));
        }
