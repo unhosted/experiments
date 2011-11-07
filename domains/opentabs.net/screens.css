@@ -18,7 +18,7 @@ div {border-radius:10px}
 .mainView header {height:40px;}
 .mainView header .title {float:left}
 .searchBox {float:right}
-.searchBoxA {float:left}
+.mainView header {height:80px;}
 .contacts .contact .summary {height:120px;}
 .contacts .contact .summary .currencySum {float:right;}
 .openTabDialog .description {}

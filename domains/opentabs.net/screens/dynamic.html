@@ -5,6 +5,27 @@
   <meta charset="utf8">
   <link rel="stylesheet" type="text/css" href="/screens.css">
   <script>
+    function getContacts(filter) {
+      var contacts = [
+        { name: 'Zed' },
+        { name: 'Vincent' },
+        { name: 'Fabienne'},
+        { name: 'Wolf' },
+        { name: 'Jules' },
+        { name: 'Marcellus' },
+        { name: 'Mia' },
+      ];
+      if(filter.length) {
+        for(var i in contacts) {
+          if(contacts[i].name.substring(0, filter.length) == filter) {
+            //keep it
+  	  } else {
+	    delete contacts[i];
+          }
+        }
+      }
+      return contacts;
+    }
     function borrowA(i) {
       document.getElementById('contactButtons'+i).style.display='none';
       document.getElementById('borrowDialog'+i).style.display='block';
@@ -21,7 +42,9 @@
       document.getElementById('contactButtons'+i).style.display='block';
       document.getElementById('lendDialog'+i).style.display='none';
     }
-    function showContacts(contacts) {
+    function showContacts(filter) {
+      var contacts = getContacts(filter);
+      document.getElementById('contacts').innerHTML='';
       for(var i in contacts) {
         var li = document.createElement('li');
 	li.setAttribute('class', 'contact');
@@ -50,16 +73,7 @@
       }
     }
     function bodyOnLoad() {
-      var contacts = [
-        { name: 'Zed' },
-        { name: 'Vincent' },
-        { name: 'Fabienne'},
-        { name: 'Wolf' },
-        { name: 'Jules' },
-        { name: 'Marcellus' },
-        { name: 'Mia' },
-      ];
-      showContacts(contacts);
+      showContacts('');
     }
   </script>
 </head>
@@ -69,7 +83,7 @@
   <header>
     <div class="searchBoxA">
       Search/add:
-      <input size="3">
+      <input size="3" onkeyup="showContacts(this.value);">
     </div>
   </header>
   <ul class="contacts" id="contacts">
