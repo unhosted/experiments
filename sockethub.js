@@ -7,6 +7,13 @@ var msgQ = {};
 //var testingContacts = [];
 
 socketio.on('connection', function(socket) {
+  socket.on('testSecret', function(secret) {
+    if(secret == config.socketHubSecret) {
+      socket.emit('testOK', 'yes');
+    } else {
+      socket.emit('testErr', 'no');
+    }
+  });
   socket.on('register', function(data) {
     if(data.secret == config.socketHubSecret) {
       sockets[data.userAddress] = socket;

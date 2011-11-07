@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="minimal.css">
+    <script src="http://opentabs.net:9000/socket.io/socket.io.js"></script>
+    <script src="tab.js"></script>
+    <script src="msg.js"></script>
+    <script src="user.js"></script>
+    <script src="controller.js"></script>
+    <script>
+      function onBodyLoad() {
+        if(localStorage.secret) {
+          controller.testSecret(localStorage.secret, function() {
+            alert('wrong!');
+            localStorage.removeItem('secret');
+          }, function() {
+            document.getElementById('secretForm').style.display='none';
+            if(localStorage.userAddress) {
+              controller.setUserAddress(
+                localStorage.userAddress, localStorage.secret,
+              function() {
+                alert('disconnected!');
+                localStorage.removeItem('userAddress');
+                document.getElementById('charactersForm').style.display='block';
+              }, function() {
+                localStorage.setItem('userAddress', userAddress);
+                document.getElementById('mainView').style.display='block';
+              });
+            } else {
+              document.getElementById('charactersForm').style.display='block';
+            }
+          });
+        }
+      }
+      function submitSecret() {
+        var secret = document.getElementById('secret').value;
+        controller.testSecret(secret, function() {
+          alert('wrong!')
+        }, function() {
+          localStorage.setItem('secret', secret);
+          onBodyLoad();
+        });
+      }
+      function submitNick() {
+        var userAddress = document.getElementById('nick').value+'@opentabs.net';
+        controller.setUserAddress(userAddress, localStorage.secret, function() {
+          alert('wrong!')
+        }, function() {
+          localStorage.setItem('userAddress', userAddress);
+          onBodyLoad();
+        });
+      }
+    </script>
+  </head>
+  <body onload="onBodyLoad();">
+    <form class="secretForm" id="secretForm">
+      Our secret word:
+      <input id="secret">
+      <input type="submit" onclick="submitSecret();return false;">
+    </form>
+    <div class="charactersForm" id="charactersForm">
+      Let's get into character:
+      <input id="nick">@opentabs.net
+      <input type="submit" onclick="submitNick(); return false;">
+    </div>
+    <div class="mainView">
+      <header>
+        Search/add:<input>
+      </header>
+      <div class="contacts" id="contacts">
+      </div>
+    </div>
+  </body>
+</html>
