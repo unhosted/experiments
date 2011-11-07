@@ -3,13 +3,12 @@
 <head>
   <title>Opentabs.net wire frames</title>
   <meta charset="utf8">
-  <link rel="stylesheet" type="text/css" href="/screens.css">
+  <link rel="stylesheet" type="text/css" href="minimal.css">
   <script>
        /////////////
       // backend //
      /////////////
      var opentabs = (function() {
-       var contacts;
        function generateAlphaIdentities() {
          var contacts = [
           { name: 'Zed' },
@@ -28,21 +27,31 @@
 	}
         return contacts;
       }
+      function setContacts(contacts) {
+        localStorage.contacts = JSON.stringify(contacts);
+      }
       function getContacts(filter) {
-        if(!contacts) {
-          contacts = generateAlphaIdentities();
+        if(!localStorage.contacts) {
+          setContacts(generateAlphaIdentities());
         }
+	var contacts = JSON.parse(localStorage.contacts);
         if(filter && filter.length) {
+	  var filtered = {};
           for(var i in contacts) {
             var prefix = contacts[i].name.substring(0, filter.length);
             if(prefix.toLowerCase() == filter.toLowerCase()) {
-              //keep it
-              } else {
-              delete contacts[i];
+              filtered[i]=contacts[i];
             }
           }
+	  return filtered;
+        } else {
+          //return contacts;
+	  var filtered = {};
+          for(var i in contacts) {
+            filtered[i]=contacts[i];
+	  }
+	  return filtered;
         }
-        return contacts;
       }
       function getMe() {
         return {
@@ -52,16 +61,13 @@
         }
       }
       function getContact(contactId) {
-        if(!contacts) {
-          contacts = generateAlphaIdentities();
-        }
+	var contacts = getContacts();
         return contacts[contactId];
       }
       function addTab(contactId, tab) {
-        if(!contacts) {
-          contacts = generateAlphaIdentities();
-        }
+	var contacts = getContacts();
         contacts[contactId].tabs.push(tab);
+        setContacts(contacts);
       }
       function sendTab(contactId, type, description) {
         var tab = {};
@@ -90,10 +96,20 @@
     function borrowA(i) {
       document.getElementById('contactButtons'+i).style.display='none';
       document.getElementById('borrowDialog'+i).style.display='block';
+      document.getElementById('borrowInput'+i).focus();
     }
     function lendA(i) {
       document.getElementById('contactButtons'+i).style.display='none';
       document.getElementById('lendDialog'+i).style.display='block';
+      document.getElementById('lendInput'+i).focus();
+    }
+    function cancelBB(i) {
+      document.getElementById('contactButtons'+i).style.display='block';
+      document.getElementById('borrowDialog'+i).style.display='none';
+    }
+    function cancelLB(i) {
+      document.getElementById('contactButtons'+i).style.display='block';
+      document.getElementById('lendDialog'+i).style.display='none';
     }
     function borrowB(i) {
       document.getElementById('contactButtons'+i).style.display='block';
@@ -104,7 +120,7 @@
     function lendB(i) {
       document.getElementById('contactButtons'+i).style.display='block';
       document.getElementById('lendDialog'+i).style.display='none';
-      opentabs.sendTab(i, 'lend', document.getElementById('borrowInput'+i).value);
+      opentabs.sendTab(i, 'lend', document.getElementById('lendInput'+i).value);
       showContacts();
     }
     function makeTabLists(tabs) {
@@ -121,27 +137,32 @@
           +'  <div class="avatar">'
           +'    <img src="'+contacts[i].avatar+'">'
           +'  </div>'
-          +'  '+contacts[i].name
+          +'  <div>'
+	  +'    '+contacts[i].name
+          +'  </div>'
+          +'  <br>'
           +'  <div class="contactButtons" id="contactButtons'+i+'">'
-          +'      <br><input type="submit" value="borrow" onclick="borrowA('+i+');">'
+          +'      <input type="submit" value="borrow" onclick="borrowA('+i+');">'
           +'      <input type="submit" value="lend" onclick="lendA('+i+');">'
           +'  </div>'
           +'  <div class="contactDialog" id="borrowDialog'+i+'">'
           +'    <input id="borrowInput'+i+'">'
           +'    <input type="submit" value="Borrow" class="borrowButton" onclick="borrowB('+i+');">'
+          +'    <input type="submit" value="x" class="cancelButton" onclick="cancelBB('+i+');">'
           +'  </div>'
           +'  <div class="contactDialog" id="lendDialog'+i+'">'
           +'    <input id="lendInput'+i+'">'
           +'    <input type="submit" value="Lend" class="lendButton" onclick="lendB('+i+');">'
+          +'    <input type="submit" value="x" class="cancelButton" onclick="cancelLB('+i+');">'
           +'  </div>'
           +'</div>';
         var tabLists = makeTabLists(contacts[i].tabs);
 	if(tabLists.notif) {
-	  li.innerHTML +='<div><ul>';
+	  var notifs = '<div><ul>';
           for(var j in tabLists.notif) {
-            li.innerHTML += '<li>'+tabLists.notif[j].description+'</li>';
+            notifs += '<li>'+tabLists.notif[j].description+'</li>';
 	  }
-	  li.innerHTML +='</ul></div>';
+	  li.innerHTML += notifs+'</ul></div>';
 	}
         document.getElementById('contacts').appendChild(li);
       }
