@@ -76,7 +76,8 @@
        tab.description = description;
        tab.timestamp = (new Date().getTime());
        var me = getMe().userAddress;
-       tab.signatures = {me: 'yours truly'}
+       tab.signatures = {};
+       tab.signatures[me]= 'yours truly';
        addTab(contactId, tab);
        var contacts = getContacts();
        msg.sendMsg(contacts[contactId].userAddress, tab);
@@ -85,7 +86,7 @@
        getContacts: getContacts,
        sendTab: sendTab,
        processMsg: function(data) {
-         alert(data);
+         alert(JSON.stringify(data));
        },
        getMe: getMe,
        setMe: function(data) {
