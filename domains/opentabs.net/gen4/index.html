@@ -30,6 +30,16 @@
             document.getElementById('secret').value='';
           },
           onSecretOK: function(data) {
+            controller.getCharacters(function(characters) {
+              var str = '<table><tr>';
+              for(var i in characters) {
+                str += '<td onclick="enter(\''
+                  +characters[i].userAddress+'\');"><div class="avatarBig"><img src="'
+                  +characters[i].avatar+'"><br><h2>'
+                  +characters[i].name+'</h2></div></td>';
+              }
+              document.getElementById('characters').innerHTML= str+'</tr></table>';
+            });
             document.getElementById('secretForm').style.display='none';
             if(localStorage.userAddress) {
               controller.setUserAddress(localStorage.userAddress,
@@ -50,10 +60,20 @@
           }
         });
         controller.init(updateView);
-
         if(localStorage.secret) {
           controller.testSecret(localStorage.secret);
         }
+      }
+      function showSettings() {
+        document.getElementById('settings').innerHTML = 
+          '<div onclick="hideSettings();">Logged in as:<br>'
+            +localStorage.userAddress+'</div>';
+        document.getElementById('settings').style.display='block';
+        document.getElementById('settingsIcon').style.display='none';
+      }
+      function hideSettings() {
+        document.getElementById('settings').style.display='none';
+        document.getElementById('settingsIcon').style.display='block';
       }
       function submitReset(e) {
         e.preventDefault();
@@ -66,9 +86,8 @@
         localStorage.setItem('secret', secret);
         controller.testSecret(secret);
       }
-      function submitNick(e) {
-        e.preventDefault();
-        var userAddress = document.getElementById('nick').value+'@opentabs.net';
+      function enter(nick) {
+        var userAddress = nick+'@opentabs.net';
         localStorage.setItem('userAddress', userAddress);
         controller.setUserAddress(userAddress, localStorage.secret);
       }
@@ -85,12 +104,17 @@
     </div>
     <div class="charactersForm" id="charactersForm">
       Let's get into character:
-      <input id="nick">@opentabs.net
-      <input type="submit" onclick="submitNick(event);">
+      <div id="characters">
+      </div>
     </div>
     <div class="mainView" id="mainView">
       <header>
         Search/add:<input>
+        <div class="settings" id="settings">
+        </div>
+        <div class="settingsIcon" id="settingsIcon" onclick="showSettings();">
+          <h2>*</h2>
+        </div>
       </header>
       <div class="contacts" id="contacts">
       </div>

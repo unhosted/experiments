@@ -38,7 +38,11 @@ var controller= (function() {
   }
   function tabAction(contactId, tabId, action) {
   }
+  function getCharacters(cb) {
+    user.getCharacters(cb);
+  }
   return {
+    getCharacters: getCharacters,
     init: init,
     setCallbacks: setCallbacks,
     setUserAddress: setUserAddress,
