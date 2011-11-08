@@ -130,7 +130,8 @@ function keydownHandler()
 {
 	recalculateHeight(this.id);
 	if(this.storeTimeout) clearTimeout(this.storeTimeout);
-	this.storeTimeout = setTimeout('storeValueForItemId("' + this.id + '")', 100);
+
+	//this.storeTimeout = setTimeout('storeValueForItemId("' + this.id + '")', 100);
 }
 
 function checkItem()
@@ -350,8 +351,6 @@ function loadCalendarAroundDate(seedDate)
 
 window.onload = function()
 {
-	remoteStorage.init('continuousCalendar', function() {
-	});
 
 	calendarTableElement = document.getElementById('calendar');
 	todayDate = new Date;
