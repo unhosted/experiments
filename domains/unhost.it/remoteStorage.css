@@ -1,5 +1,4 @@
-#remoteStorageDiv { position:fixed; right:0; top:0; z-index:9999; opacity:.5; }
-#remoteStorageDiv:hover { opacity:1; }
+#remoteStorageDiv { position:fixed; right:0; top:0; z-index:9999; }
 #remoteStorageDiv input {
     display:inline; margin:.5em; padding:.5em .6em; font-size:.8em;
 	color:#333; text-shadow:0 1px 1px rgba(255, 255, 255, 0.75);
@@ -15,7 +14,7 @@
 	-webkit-transition:0.1s linear all; -moz-transition:0.1s linear all; transition:0.1s linear all;
 }
 #remoteStorageDiv #userAddressInput {
-	background:#fff no-repeat; opacity:.7;
+	background:#fff no-repeat;
 	background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#e6e6e6), color-stop(0.25, #e6e6e6), to(#fff));
 	background-image:-webkit-linear-gradient(#e6e6e6, #e6e6e6 0.25, #fff);
 	background-image:-moz-linear-gradient(#e6e6e6, #e6e6e6 0.25, #fff);
@@ -25,9 +24,9 @@
 	-webkit-box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05); -moz-box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05); box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
 	-webkit-transition:0.1s linear all; -moz-transition:0.1s linear all; transition:0.1s linear all;
 }
-#remoteStorageDiv #userAddressInput:hover { background-position:0 -1em; text-decoration:none; opacity:1; }
+#remoteStorageDiv #userAddressInput:hover { background-position:0 -1em; text-decoration:none; }
 #remoteStorageDiv #userButton { margin-left:-.5em; }
-#remoteStorageDiv .red {
+#remoteStorageDiv .red:hover {
 	color:#fff; text-shadow:0 -1px 0 rgba(0, 0, 0, 0.25);
 	border-color:#c43c35 #c43c35 #882a25; border-color:rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 	background:#c43c35 repeat-x;
