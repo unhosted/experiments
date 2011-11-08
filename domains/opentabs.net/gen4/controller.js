@@ -6,11 +6,8 @@ var controller= (function() {
   function setCallbacks(callbacks) {
     callbacks.onMsg=function(data) {
     }
-    msg.setCallbacks(callbacks);
-  }
-  function setUserAddress(userAddress, secret, onErr, cb) {
-    msg.register(userAddress, secret, onErr, function() {
-      localStorage.setItem('userAddress', userAddress);
+    var origOnWelcome = callbacks.onWelcome;
+    callbacks.onWelcome = function() {
       updateView('zed@opentabs.net', {
         name: 'Zed',
         avatar: 'http://opentabs.net/screens/avatars/zed',
@@ -23,11 +20,15 @@ var controller= (function() {
           }
         }
       });
-      cb();
-    });
+      origOnWelcome();
+    };
+    msg.setCallbacks(callbacks);
   }
-  function testSecret(secret, onErr, cb) {
-    msg.testSecret(secret, onErr, cb);
+  function setUserAddress(userAddress, secret) {
+    msg.register(userAddress, secret);
+  }
+  function testSecret(secret) {
+    msg.testSecret(secret);
   }
   function addContact(userAddress) {
   }
