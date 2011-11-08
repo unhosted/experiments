@@ -1,4 +1,4 @@
-{
+var user = function(){
     getCharacters: function(cb) {
       var names = ['Butch', 'Zed', 'Marcellus', 'Jules', 'Mia', 'Fabienne', 'Vincent'];
       var characters = [];
@@ -12,4 +12,4 @@
 
       cb(characters);
     }
-    };
+})();

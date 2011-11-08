@@ -3,10 +3,8 @@ var controller= (function() {
   function init(setUpdateViewCb) {
     updateView = setUpdateViewCb;
   }
-  function setUserAddress(userAddress) {
-    msg.register(userAddress, localStorage.secret, function() {
-      alert('not registered!');
-    }, function() {
+  function setUserAddress(userAddress, secret, onErr, cb) {
+    msg.register(userAddress, secret, onErr, function() {
       localStorage.setItem('userAddress', userAddress);
       updateView('zed@opentabs.net', {
         name: 'Zed',
@@ -20,6 +18,7 @@ var controller= (function() {
           }
         }
       });
+      cb();
     });
   }
   function onMsg(data) {

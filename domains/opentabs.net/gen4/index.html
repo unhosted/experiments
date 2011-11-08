@@ -8,8 +8,23 @@
     <script src="user.js"></script>
     <script src="controller.js"></script>
     <script>
+      function renderContact(obj) {
+        return '<h2>'+obj.name+'</h2>';
+      }
+      function updateView(userAddress, obj) {
+        if(document.getElementById('contact'+userAddress)) {
+          document.getElementById('contact'+userAddress).innerHTML=
+            renderContact(obj);
+        } else {
+          var div = document.createElement('div');
+          div.innerHTML=
+            renderContact(obj);
+          document.getElementById('contacts').appendChild(div);
+        }
+      }
       function onBodyLoad() {
-        if(localStorage.secret) {
+       controller.init(updateView);
+       if(localStorage.secret) {
           controller.testSecret(localStorage.secret, function() {
             alert('wrong!');
             localStorage.removeItem('secret');
@@ -23,7 +38,6 @@
                 localStorage.removeItem('userAddress');
                 document.getElementById('charactersForm').style.display='block';
               }, function() {
-                localStorage.setItem('userAddress', userAddress);
                 document.getElementById('mainView').style.display='block';
               });
             } else {
@@ -63,7 +77,7 @@
       <input id="nick">@opentabs.net
       <input type="submit" onclick="submitNick(); return false;">
     </div>
-    <div class="mainView">
+    <div class="mainView" id="mainView">
       <header>
         Search/add:<input>
       </header>
