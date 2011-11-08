@@ -1,18 +1,18 @@
 var msg = (function() {
   var socket = io.connect('http://opentabs.net:9000');
-  function testSecret(secret, onErr, onReg) {
+  function setCallbacks(callbacks) {
     //listen client-side:
-    socket.on('testErr', onErr);
-    socket.on('testOK', onReg);
+    socket.on('testErr', callbacks.onSecretErr);
+    socket.on('testOK', callbacks.onSecretOK);
+    socket.on('go away', callbacks.onGoAway);
+    socket.on('welcome', callbacks.onWelcome);
+    socket.on('msg', callbacks.onMsg);
+  }
+  function testSecret(secret, onErr, onReg) {
     socket.emit('testSecret', secret);
   }
   function register(userAddress, secret, onErr, cb) {
-    socket.on('go away', onErr);
-    socket.on('welcome', cb);
     socket.emit('register', {userAddress: userAddress, secret: secret});
-  }
-  function setMsgCb(onMsg) {
-    socket.on('msg', onMsg);
   }
   function sendMsg(to, msg) {
     var dataObj = {
@@ -22,6 +22,7 @@ var msg = (function() {
     socket.emit('msg', dataObj);
   }
   return {
+    setCallbacks: setCallbacks,
     testSecret: testSecret,
     register: register,
     sendMsg: sendMsg,

@@ -3,6 +3,11 @@ var controller= (function() {
   function init(setUpdateViewCb) {
     updateView = setUpdateViewCb;
   }
+  function setCallbacks(callbacks) {
+    callbacks.onMsg=function(data) {
+    }
+    msg.setCallbacks(callbacks);
+  }
   function setUserAddress(userAddress, secret, onErr, cb) {
     msg.register(userAddress, secret, onErr, function() {
       localStorage.setItem('userAddress', userAddress);
@@ -21,9 +26,6 @@ var controller= (function() {
       cb();
     });
   }
-  function onMsg(data) {
-
-  }
   function testSecret(secret, onErr, cb) {
     msg.testSecret(secret, onErr, cb);
   }
@@ -37,6 +39,7 @@ var controller= (function() {
   }
   return {
     init: init,
+    setCallbacks: setCallbacks,
     setUserAddress: setUserAddress,
     testSecret: testSecret,
     addContact: addContact,

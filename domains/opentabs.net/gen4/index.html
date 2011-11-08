@@ -23,59 +23,70 @@
         }
       }
       function onBodyLoad() {
-       controller.init(updateView);
-       if(localStorage.secret) {
-          controller.testSecret(localStorage.secret, function() {
+        controller.setCallbacks({
+          onSecretErr: function(data) {
             alert('wrong!');
             localStorage.removeItem('secret');
-          }, function() {
+            document.getElementById('secret').value='';
+          },
+          onSecretOK: function(data) {
             document.getElementById('secretForm').style.display='none';
             if(localStorage.userAddress) {
-              controller.setUserAddress(
-                localStorage.userAddress, localStorage.secret,
-              function() {
-                alert('disconnected!');
-                localStorage.removeItem('userAddress');
-                document.getElementById('charactersForm').style.display='block';
-              }, function() {
-                document.getElementById('mainView').style.display='block';
-              });
+              controller.setUserAddress(localStorage.userAddress,
+                localStorage.secret);
             } else {
               document.getElementById('charactersForm').style.display='block';
             }
-          });
+          },
+          onErr: function(data) {
+            alert('disconnected!');
+            localStorage.removeItem('userAddress');
+            document.getElementById('charactersForm').style.display='block';
+          },
+          onWelcome: function(data) {
+            //document.getElementById('secretForm').style.display='none';
+            document.getElementById('charactersForm').style.display='none';
+            document.getElementById('mainView').style.display='block';
+          }
+        });
+        controller.init(updateView);
+
+        if(localStorage.secret) {
+          controller.testSecret(localStorage.secret);
         }
       }
-      function submitSecret() {
-        var secret = document.getElementById('secret').value;
-        controller.testSecret(secret, function() {
-          alert('wrong!')
-        }, function() {
-          localStorage.setItem('secret', secret);
-          onBodyLoad();
-        });
+      function submitReset(e) {
+        e.preventDefault();
+        localStorage.clear();
+        window.location='';
       }
-      function submitNick() {
+      function submitSecret(e) {
+        e.preventDefault();
+        var secret = document.getElementById('secret').value;
+        localStorage.setItem('secret', secret);
+        controller.testSecret(secret);
+      }
+      function submitNick(e) {
+        e.preventDefault();
         var userAddress = document.getElementById('nick').value+'@opentabs.net';
-        controller.setUserAddress(userAddress, localStorage.secret, function() {
-          alert('wrong!')
-        }, function() {
-          localStorage.setItem('userAddress', userAddress);
-          onBodyLoad();
-        });
+        localStorage.setItem('userAddress', userAddress);
+        controller.setUserAddress(userAddress, localStorage.secret);
       }
     </script>
   </head>
   <body onload="onBodyLoad();">
-    <form class="secretForm" id="secretForm">
+    <div class="feedbackBar" id="feedbackBar">
+      <input type="submit" value="reset" onclick="submitReset(event);">
+    </div>
+    <div class="secretForm" id="secretForm">
       Our secret word:
       <input id="secret">
-      <input type="submit" onclick="submitSecret();return false;">
-    </form>
+      <input type="submit" onclick="submitSecret(event);">
+    </div>
     <div class="charactersForm" id="charactersForm">
       Let's get into character:
       <input id="nick">@opentabs.net
-      <input type="submit" onclick="submitNick(); return false;">
+      <input type="submit" onclick="submitNick(event);">
     </div>
     <div class="mainView" id="mainView">
       <header>
