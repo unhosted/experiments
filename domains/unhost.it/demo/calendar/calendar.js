@@ -41,7 +41,7 @@ function lookupItemsForParentId(parentId, callback)
 {
 	if(remoteStorage.getItem(parentId))
 	{
-		var parentIdsToItemIds = remoteStorage.getItem(parentId).split(',');
+		var parentIdsToItemIds = (remoteStorage.getItem(parentId)).split(',');
 		var list = [];
 
 		for(var i in parentIdsToItemIds)
@@ -63,7 +63,7 @@ function storeValueForItemId(itemId)
 		var parentId = item.parentNode.id;
 		remoteStorage.setItem(itemId, item.value);
 
-		var parentIdsToItemIds = remoteStorage.getItem(parentId) ? remoteStorage.getItem(parentId).split(',') : [];
+		var parentIdsToItemIds = remoteStorage.getItem(parentId) ? (remoteStorage.getItem(parentId)).split(',') : [];
 		var found = false;
 		for(var i in parentIdsToItemIds)
 		{
@@ -90,7 +90,7 @@ function removeValueForItemId(itemId)
 	var parentId = item.parentNode.id;
 	if(remoteStorage.getItem(parentId))
 	{
-		var parentIdsToItemIds = remoteStorage.getItem(parentId).split(',');
+		var parentIdsToItemIds = (remoteStorage.getItem(parentId)).split(',');
 		for(var i in parentIdsToItemIds)
 		{
 			if(parentIdsToItemIds[i] == itemId)
