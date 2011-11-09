@@ -11,6 +11,10 @@ var controller= (function() {
       users.getContacts(function(user) {
         tabs.getTabs(user, function(tabs) {
           user.notif=tabs;//put all tabs under notif for now
+          user.actions={
+            borrow: 'Borrow',
+            lend: 'Lend'
+          };
           updateView(user.userAddress, user);
         });
       });

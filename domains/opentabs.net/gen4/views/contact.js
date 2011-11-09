@@ -7,10 +7,12 @@
           +'    '+obj.name
           +'  </div>'
           +'  <br>'
-          +'  <div class="contactButtons" id="contactButtons'+obj.contactId+'">'
-          +'      <input type="submit" value="borrow" onclick="borrowA('+obj.contactId+');">'
-          +'      <input type="submit" value="lend" onclick="lendA('+obj.contactId+');">'
-          +'  </div>'
+          +'  <div class="contactButtons" id="contactButtons'+obj.contactId+'">';
+        for(var i in obj.actions) {
+          str +='      <input type="submit" value="'+obj.actions[i]
+            +'" onclick="contactAction('+obj.contactId+', \''+i+'\');">';
+        }
+        str += '  </div>'
           +'  <form class="contactDialog" id="borrowDialog'+obj.contactId+'">'
           +'    <input id="borrowInput'+obj.contactId+'">'
           +'    <input type="submit" value="Borrow" class="borrowButton" onclick="borrowB('+obj.contactId+');">'
