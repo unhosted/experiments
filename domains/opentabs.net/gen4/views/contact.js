@@ -9,14 +9,18 @@ var contactView = (function() {
       +'  </div>'
       +'  <br>';
     if(obj.actions) {
+      var paramsSpec='{}';
       str += '  <div class="contactButtons" >';
       if(obj.actions.input) {
-        str += '    <input>';
+        var uniqueStr = obj.userAddress.replace('@', ':');
+        paramsSpec = '{text: document.getElementById(\'input_'+uniqueStr+'\').value}';
+        str += '    <input id="input_'+uniqueStr+'">';
       }
       for(var i in obj.actions) {
         if(i != 'input') {
           str +='      <input type="submit" value="'+obj.actions[i]
-            +'" onclick="controller.contactAction(\''+obj.userAddress+'\', \''+i+'\');">';
+            +'" onclick="controller.contactAction(\''+obj.userAddress+'\', \''+i
+            +'\', '+paramsSpec+');">';
         }
       }
     }

@@ -9,8 +9,8 @@ var controller= (function() {
     var origOnWelcome = callbacks.onWelcome;
     callbacks.onWelcome = function() {
       //it's OK if contacts are added one-by-one in async here:
-      contacts.getContacts(function(contactAddress) {
-        showUser(contactAddress, 'rest');
+      contacts.getContacts(function(userAddress) {
+        showUser(userAddress, 'rest');
       });
       origOnWelcome();
     };
@@ -38,32 +38,47 @@ var controller= (function() {
       return {};
     }
   }
-  function showUser(contactAddress, interfaceState) { 
+  function showUser(userAddress, interfaceState) { 
     //no RTTs here! this should be snappy:
-    var obj = contacts.getUser(contactAddress);
-    obj.notif = tabs.getTabs(contactAddress);
+    var obj = contacts.getUser(userAddress);
+    obj.notif = tabs.getTabs(userAddress);
     obj.actions = calcUserActions(interfaceState);
-    updateView(contactAddress, obj);
+    updateView(userAddress, obj);
   }
-  function setUserAddress(contactAddress, secret) {
-    msg.register(contactAddress, secret);
+  function setUserAddress(userAddress, secret) {
+    msg.register(userAddress, secret);
   }
   function testSecret(secret) {
     msg.testSecret(secret);
   }
-  //function addContact(contactAddress) {
+  //function addContact(userAddress) {
   //}
+  function createTab(userAddress, params, borrow) {
+
+  }
   function globalAction(contactId, amount, currency, description) {
   }
-  function triggerAction(contactAddress, action) {
-    return 'borrowDialog';
+  function triggerAction(userAddress, action, params) {
+    if(action == 'borrowA') {
+      return 'borrowDialog';
+    } else if(action == 'lendA') {
+      return 'lendDialog';
+    } else if(action=='borrowB') {
+      createTab(userAddress, params, true);
+      return 'rest';
+    } else if(action=='lendB') {
+      createTab(userAddress, params, false);
+      return 'rest';
+    } else {
+      return 'rest';
+    }
   }
-  function contactAction(contactAddress, action) {
-    var newState = triggerAction(contactAddress, action);//no RTTs here! this should be snappy
+  function contactAction(userAddress, action, params) {
+    var newState = triggerAction(userAddress, action, params);//no RTTs here! this should be snappy
     //redraw contact from scratch:
-    showUser(contactAddress, newState);
+    showUser(userAddress, newState);
   }
-  function tabAction(contactId, tabId, action) {
+  function tabAction(userAddress, tabId, action) {
   }
   function getCharacters(cb) {
     contacts.getCharacters(cb);
