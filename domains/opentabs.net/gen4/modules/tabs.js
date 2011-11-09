@@ -17,13 +17,37 @@ var tabs = (function() {
     tabs[userAddress].push(tab);
     localStorage.setItem('tabs', JSON.stringify(tabs));
   }
-  function cancel(userAddress, timestamp) {
+  function getTab(userAddress, timestamp) {
     if(!tabs[userAddress]) {
       return false;
     }
     for(var i in tabs[userAddress]) {
       if(tabs[userAddress][i].timestamp == timestamp) {
-        tabs[userAddress].splice(i, 1);
+        return tabs[userAddress][i];
+      }
+    }
+    return false;
+  }
+  function addSignature(userAddress, timestamp, signature) {
+    if(!tabs[userAddress]) {
+      return false;
+    }
+    for(var i in tabs[userAddress]) {
+      if(tabs[userAddress][i].timestamp == timestamp) {
+        tabs[userAddress][i].signatures[localStorage.userAddress] = signature;
+        localStorage.setItem('tabs', JSON.stringify(tabs));
+        return true;
+      }
+    }
+    return false;
+  }
+  function setStatus(userAddress, timestamp, newStatus) {
+    if(!tabs[userAddress]) {
+      return false;
+    }
+    for(var i in tabs[userAddress]) {
+      if(tabs[userAddress][i].timestamp == timestamp) {
+        tabs[userAddress][i].status = newStatus;
         localStorage.setItem('tabs', JSON.stringify(tabs));
         return true;
       }
@@ -32,7 +56,9 @@ var tabs = (function() {
   }
   return {
     getTabs: getTabs,
+    getTab: getTab,
     store: store,
-    cancel: cancel
+    setStatus: setStatus,
+    addSignature: addSignature
   }
 })();

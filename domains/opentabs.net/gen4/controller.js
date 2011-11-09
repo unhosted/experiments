@@ -64,13 +64,13 @@ var controller= (function() {
     if (tab.hurry) {
         return 'hurry';
     }
-    if(tab.sent) {
+    if(tab.status == 'sent') {
         return 'sent';
     }
-    if(tab.cancelled) {
+    if(tab.status == 'cancelled') {
         return 'cancelled';
     }
-    if(tab.closed) {
+    if(tab.status == 'closed') {
         return 'closed';
     }
     return 'open';
@@ -201,9 +201,23 @@ var controller= (function() {
     //redraw contact from scratch:
     showContact(userAddress, newState);
   }
-  function tabAction(userAddress, tabId, action) {
+  function tabAction(userAddress, tabId, action, params) {
     if(action=='cancel') {
-      tabs.cancel(userAddress, tabId);
+      tabs.setStatus(userAddress, tabId, 'cancelled');
+    } else if(action=='accept') {
+      tabs.addSignature(userAddress, tabId, crypto.sign(tabs.getTab(userAddress, tabId)));
+    } else if(action=='declineA') {
+      tabs.setStatus(userAddress, tabId, 'declining');
+    } else if(action=='declineB') {
+      tabs.comment(userAddress, tabId, 'declined: '+params.text);
+      tabs.setStatus(userAddress, tabId, 'declined');
+    } else if(action=='settle') {
+      var tab = tabs.getTab(userAddress, tabId);
+      if(tab.type == 'B') {
+        tabs.setStatus(userAddress, tabId, 'sent');
+      } else {
+        tabs.setStatus(userAddress, tabId, 'closed');
+      }
     } else {
       alert('action not recognised: '+action);
     }

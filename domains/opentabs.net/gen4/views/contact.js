@@ -3,14 +3,14 @@ var contactView = (function() {
     var paramsSpec='{}';
     var str = '  <div class="tabButtons" >';
     if(tab.actions.input) {
-      var uniqueStr = userAddress.replace('@', ':')+':'+tab.timestamp;
+      var uniqueStr = userAddress.replace('@', ':')+':'+tab.tab.timestamp;
       paramsSpec = '{text: document.getElementById(\'input_'+uniqueStr+'\').value}';
       str += '    <input id="input_'+uniqueStr+'">';
     }
     for(var i in tab.actions) {
       if(i != 'input') {
         str +='      <input type="submit" value="'+tab.actions[i]
-          +'" onclick="controller.tabAction(\''+userAddress+'\', '+tab.timestamp+', \''+i
+          +'" onclick="controller.tabAction(\''+userAddress+'\', '+tab.tab.timestamp+', \''+i
           +'\', '+paramsSpec+');">';
       }
     }
