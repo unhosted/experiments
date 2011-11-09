@@ -38,10 +38,32 @@ var controller= (function() {
       return {};
     }
   }
+  function chooseIcon(tab) {
+    return '?';
+  }
+  function chooseDescription(tab) {
+    return tab.amount+' '+tab.currency;
+  }
+  function chooseActions(tab) {
+    return {
+      cancel: 'Cancel'
+    };
+  }
   function showUser(userAddress, interfaceState) { 
     //no RTTs here! this should be snappy:
     var obj = contacts.getUser(userAddress);
-    obj.notif = tabs.getTabs(userAddress);
+    obj.notif = [];
+    obj.track = [];
+    obj.open = [];
+    obj.history = [];
+    var peerTabs = tabs.getTabs(userAddress);
+    for(var i in peerTabs) {
+      var thisTab = peerTabs[i];
+      thisTab.icon= chooseIcon(thisTab);
+      thisTab.description = chooseDescription(thisTab);
+      thisTab.actions = chooseActions(thisTab);
+      obj.track.push(thisTab);
+    }
     obj.actions = calcUserActions(interfaceState);
     updateView(userAddress, obj);
   }
