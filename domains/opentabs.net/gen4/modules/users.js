@@ -5,7 +5,8 @@ var users = (function(){
     for(var i in names) {
     	if(localStorage.userAddress != names[i].toLowerCase()+'@opentabs.net') {
         characters.push({
-	        name: names[i],
+	        contactId: i,
+          name: names[i],
       	  userAddress: names[i].toLowerCase()+'@opentabs.net',
 	        avatar:'http://opentabs.net/screens/avatars/'+names[i].toLowerCase()
 	      });

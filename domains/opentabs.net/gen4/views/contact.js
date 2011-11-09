@@ -1,5 +1,5 @@
       function renderContact(obj) {
-        return '<div id="summary" class="summary">'
+        var str = '<div id="summary" class="summary">'
           +'  <div class="avatar">'
           +'    <img src="'+obj.avatar+'">'
           +'  </div>'
@@ -22,21 +22,19 @@
           +'    <input type="submit" value="x" class="cancelButton" onclick="cancelLB('+obj.contactId+');">'
           +'  </form>'
           +'</div>';
-        //dead code:
-        var tabLists = makeTabLists(contacts[i].tabs);
-        if(tabLists.notif.length) {
+        if(obj.notif) {
            var notifs = '<div class="notifList"><h4>Notif:</h4><ul>';
-          for(var j in tabLists.notif) {
-            notifs += '<li>'+tabLists.notif[j].icon+tabLists.notif[j].description+'</li>';
+          for(var j in obj.notif) {
+            notifs += '<li>'+obj.notif[j].icon+obj.notif[j].description+'</li>';
           }
-          li.innerHTML += notifs+'</ul></div>';
+          str += notifs+'</ul></div>';
         }
-        if(tabLists.track.length) {
-           var tracks = '<div class="trackList"><h4>Track:</h4><ul>';
-          for(var j in tabLists.track) {
-            tracks += '<li>'+tabLists.track[j].icon+tabLists.track[j].description+'</li>';
+        if(obj.track) {
+          var tracks = '<div class="trackList"><h4>Track:</h4><ul>';
+          for(var j in obj.track) {
+            tracks += '<li>'+obj.track[j].icon+obj.track[j].description+'</li>';
           }
-          li.innerHTML += tracks+'</ul></div>';
+          str += tracks+'</ul></div>';
         }
-        return '<h2>'+obj.name+'</h2>';
+        return str;
       }
