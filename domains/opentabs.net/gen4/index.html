@@ -37,21 +37,21 @@
             document.getElementById('secret').value='';
           },
           onSecretOK: function(data) {
-            controller.getCharacters(function(characters) {
-              var str = '<table><tr>';
-              for(var i in characters) {
-                str += '<td onclick="enter(\''
-                  +characters[i].userAddress+'\');"><div class="avatarBig"><img src="'
-                  +characters[i].avatar+'"><br><h2>'
-                  +characters[i].name+'</h2></div></td>';
-              }
-              document.getElementById('characters').innerHTML= str+'</tr></table>';
-            });
             document.getElementById('secretForm').style.display='none';
             if(localStorage.userAddress) {
-              controller.setUserAddress(localStorage.userAddress,
-                localStorage.secret);
+              controller.setUserAddress(localStorage.userAddress, localStorage.secret);
             } else {
+              controller.getCharacters(function(characters) {
+                var str = '<table><tr>';
+                for(var i in characters) {
+                  var character = contacts.getUser(characters[i]);
+                  str += '<td onclick="enter(\''
+                    +character.userAddress+'\');"><div class="avatarBig"><img src="'
+                    +character.avatar+'"><br><h2>'
+                    +character.name+'</h2></div></td>';
+                }
+                document.getElementById('characters').innerHTML= str+'</tr></table>';
+              });
               document.getElementById('charactersForm').style.display='block';
             }
           },
