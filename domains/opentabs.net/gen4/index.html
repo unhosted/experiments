@@ -126,8 +126,7 @@
         localStorage.setItem('secret', secret);
         controller.testSecret(secret);
       }
-      function enter(nick) {
-        var userAddress = nick+'@opentabs.net';
+      function enter(userAddress) {
         localStorage.setItem('userAddress', userAddress);
         controller.setUserAddress(userAddress, localStorage.secret);
       }
