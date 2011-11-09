@@ -10,11 +10,13 @@
     <script src="views/contact.js"></script>
     <script>
       function updateView(userAddress, obj) {
-        if(document.getElementById('contact'+userAddress)) {
-          document.getElementById('contact'+userAddress).innerHTML=
+        var idStr = 'contact_'+obj.userAddress.replace('@', ':');
+        if(document.getElementById(idStr)) {
+          document.getElementById(idStr).innerHTML=
             contactView.renderContact(obj);
         } else {
           var div = document.createElement('div');
+          div.setAttribute('id', idStr);
           div.innerHTML=
             contactView.renderContact(obj);
           document.getElementById('contacts').appendChild(div);

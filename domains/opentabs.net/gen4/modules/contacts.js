@@ -1,4 +1,4 @@
-var users = (function(){
+var contacts = (function(){
   function deriveName(userAddress) {
     var parts = userAddress.split('@');
     return parts[0].charAt(0).toUpperCase() + parts[0].slice(1);

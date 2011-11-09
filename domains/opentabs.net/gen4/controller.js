@@ -38,11 +38,6 @@ var controller= (function() {
       return {};
     }
   }
-  function contactAction(contactAddress, action) {
-    var newState = triggerAction(contactAddress, action);//no RTTs here! this should be snappy
-    //redraw contact from scratch:
-    showUser(contactAddress, newState);
-  }
   function showUser(contactAddress, interfaceState) { 
     //no RTTs here! this should be snappy:
     var obj = contacts.getUser(contactAddress);
@@ -60,9 +55,13 @@ var controller= (function() {
   //}
   function globalAction(contactId, amount, currency, description) {
   }
+  function triggerAction(contactAddress, action) {
+    return 'borrowDialog';
+  }
   function contactAction(contactAddress, action) {
-    if(action=='borrowA') {
-
+    var newState = triggerAction(contactAddress, action);//no RTTs here! this should be snappy
+    //redraw contact from scratch:
+    showUser(contactAddress, newState);
   }
   function tabAction(contactId, tabId, action) {
   }
