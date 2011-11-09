@@ -1,6 +1,6 @@
 .feedbackBar {border-style:solid;border-radius:5px;border-width:1px;}
 .mainView header {border-style:solid;border-radius:5px;border-width:1px;}
-.settings,.settingsIcon {float:right}
+.settings,.settingsIcon {display:inline;float:right}
 .mainView {width:380px}
 
 .mainView,.charactersForm {display:none}

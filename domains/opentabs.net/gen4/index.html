@@ -3,9 +3,9 @@
   <head>
     <link rel="stylesheet" type="text/css" href="minimal.css">
     <script src="http://opentabs.net:9000/socket.io/socket.io.js"></script>
-    <script src="tab.js"></script>
+    <script src="tabs.js"></script>
     <script src="msg.js"></script>
-    <script src="user.js"></script>
+    <script src="users.js"></script>
     <script src="controller.js"></script>
     <script>
       function renderContact(obj) {
@@ -109,9 +109,11 @@
     </div>
     <div class="mainView" id="mainView">
       <header>
-        Search/add:<input>
-        <div class="settings" id="settings">
-        </div>
+        <span>
+          Search/add:<input>
+        </span>
+        <span class="settings" id="settings">
+        </span>
         <div class="settingsIcon" id="settingsIcon" onclick="showSettings();">
           <h2>*</h2>
         </div>

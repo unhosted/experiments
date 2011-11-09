@@ -8,17 +8,11 @@ var controller= (function() {
     }
     var origOnWelcome = callbacks.onWelcome;
     callbacks.onWelcome = function() {
-      updateView('zed@opentabs.net', {
-        name: 'Zed',
-        avatar: 'http://opentabs.net/screens/avatars/zed',
-        notif: {
-          0: {
-            icon: '?',
-            description: '1 EUR',
-            colour: 'red',
-            buttons: ['cancel']
-          }
-        }
+      users.getContacts(function(user) {
+        tabs.getTabs(user, function(tabs) {
+          user.notif=tabs;//put all tabs under notif for now
+          updateView(user.userAddress, user);
+        });
       });
       origOnWelcome();
     };
@@ -30,16 +24,16 @@ var controller= (function() {
   function testSecret(secret) {
     msg.testSecret(secret);
   }
-  function addContact(userAddress) {
-  }
-  function borrow(contactId, amount, currency, description) {
-  }
-  function lend(contactId, amount, currency, description) {
-  }
-  function tabAction(contactId, tabId, action) {
-  }
+  //function addContact(userAddress) {
+  //}
+  //function borrow(contactId, amount, currency, description) {
+  //}
+  //function lend(contactId, amount, currency, description) {
+  //}
+  //function tabAction(contactId, tabId, action) {
+  //}
   function getCharacters(cb) {
-    user.getCharacters(cb);
+    users.getCharacters(cb);
   }
   return {
     getCharacters: getCharacters,
@@ -47,9 +41,9 @@ var controller= (function() {
     setCallbacks: setCallbacks,
     setUserAddress: setUserAddress,
     testSecret: testSecret,
-    addContact: addContact,
-    borrow: borrow,
-    lend: lend,
-    tabAction: tabAction
+    //addContact: addContact,
+    //borrow: borrow,
+    //lend: lend,
+    //tabAction: tabAction
   };
 })();
