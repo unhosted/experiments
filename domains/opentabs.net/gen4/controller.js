@@ -5,6 +5,8 @@ var controller= (function() {
   }
   function setCallbacks(callbacks) {
     callbacks.onMsg=function(data) {
+      console.log('incoming msg!');
+      console.log(data);
     }
     var origOnWelcome = callbacks.onWelcome;
     callbacks.onWelcome = function() {

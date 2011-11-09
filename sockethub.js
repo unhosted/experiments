@@ -20,15 +20,14 @@ socketio.on('connection', function(socket) {
       console.log('registered '+data.userAddress);
       socket.emit('welcome', data.userAddress);
 
-      //this is for testing:
-      //socket.emit('contacts', testingContacts);
-      //testingContacts.push(data.userAddress);
-
       if(msgQ[data.userAddress]) {
         for(var i in msgQ[data.userAddress]) {
-	  socket.emit('msg', msgQ[data.userAddress][i]);
-	}
-	delete msgQ[data.userAddress];
+          socket.emit('msg', msgQ[data.userAddress][i]);
+          console.log(msgQ[data.userAddress][i]);
+	      }
+        delete msgQ[data.userAddress];
+      } else {
+        console.log('no msg');
       }
     } else {
       console.log('attempt by '+data.userAddress+' with wrong secret '+data.secret);
