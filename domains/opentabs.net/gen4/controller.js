@@ -8,36 +8,66 @@ var controller= (function() {
     }
     var origOnWelcome = callbacks.onWelcome;
     callbacks.onWelcome = function() {
-      users.getContacts(function(user) {
-        tabs.getTabs(user, function(tabs) {
-          user.notif=tabs;//put all tabs under notif for now
-          user.actions={
-            borrow: 'Borrow',
-            lend: 'Lend'
-          };
-          updateView(user.userAddress, user);
-        });
+      //it's OK if contacts are added one-by-one in async here:
+      contacts.getContacts(function(contactAddress) {
+        showUser(contactAddress, 'rest');
       });
       origOnWelcome();
     };
     msg.setCallbacks(callbacks);
   }
-  function setUserAddress(userAddress, secret) {
-    msg.register(userAddress, secret);
+  function calcUserActions(interfaceState) {
+    if(interfaceState == 'rest') {
+      return {
+        borrowA: 'Borrow',
+        lendA: 'Lend'
+      };
+    } else if(interfaceState == 'borrowDialog') {
+      return {
+        input: 'descr',
+        borrowB: 'Send',
+        cancel: 'X'
+      };
+    } else if(interfaceState == 'lendDialog') {
+      return {
+        input: 'descr',
+        lendB: 'Send',
+        cancel: 'X'
+      };
+    } else {
+      return {};
+    }
+  }
+  function contactAction(contactAddress, action) {
+    var newState = triggerAction(contactAddress, action);//no RTTs here! this should be snappy
+    //redraw contact from scratch:
+    showUser(contactAddress, newState);
+  }
+  function showUser(contactAddress, interfaceState) { 
+    //no RTTs here! this should be snappy:
+    var obj = contacts.getUser(contactAddress);
+    obj.notif = tabs.getTabs(contactAddress);
+    obj.actions = calcUserActions(interfaceState);
+    updateView(contactAddress, obj);
+  }
+  function setUserAddress(contactAddress, secret) {
+    msg.register(contactAddress, secret);
   }
   function testSecret(secret) {
     msg.testSecret(secret);
   }
-  //function addContact(userAddress) {
+  //function addContact(contactAddress) {
   //}
-  //function borrow(contactId, amount, currency, description) {
-  //}
-  //function lend(contactId, amount, currency, description) {
-  //}
-  //function tabAction(contactId, tabId, action) {
-  //}
+  function globalAction(contactId, amount, currency, description) {
+  }
+  function contactAction(contactAddress, action) {
+    if(action=='borrowA') {
+
+  }
+  function tabAction(contactId, tabId, action) {
+  }
   function getCharacters(cb) {
-    users.getCharacters(cb);
+    contacts.getCharacters(cb);
   }
   return {
     getCharacters: getCharacters,
@@ -45,9 +75,8 @@ var controller= (function() {
     setCallbacks: setCallbacks,
     setUserAddress: setUserAddress,
     testSecret: testSecret,
-    //addContact: addContact,
-    //borrow: borrow,
-    //lend: lend,
-    //tabAction: tabAction
+    globalAction: globalAction,
+    contactAction: contactAction,
+    tabAction: tabAction
   };
 })();

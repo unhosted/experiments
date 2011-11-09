@@ -5,18 +5,18 @@
     <script src="http://opentabs.net:9000/socket.io/socket.io.js"></script>
     <script src="modules/tabs.js"></script>
     <script src="modules/msg.js"></script>
-    <script src="modules/users.js"></script>
+    <script src="modules/contacts.js"></script>
     <script src="controller.js"></script>
     <script src="views/contact.js"></script>
     <script>
       function updateView(userAddress, obj) {
         if(document.getElementById('contact'+userAddress)) {
           document.getElementById('contact'+userAddress).innerHTML=
-            renderContact(obj);
+            contactView.renderContact(obj);
         } else {
           var div = document.createElement('div');
           div.innerHTML=
-            renderContact(obj);
+            contactView.renderContact(obj);
           document.getElementById('contacts').appendChild(div);
         }
       }
