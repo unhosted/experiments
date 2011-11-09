@@ -43,16 +43,91 @@ var controller= (function() {
       return {};
     }
   }
-  function chooseIcon(tab) {
-    return '?';
+  function calcTabType(tab) {
+    var me = localStorage.userAddress;
+    return (tab.borrower == me ? 'B' : 'L');
   }
-  function chooseDescription(tab) {
+  function calcTabStatus(tab) {
+    if(tab.declining) {
+        return 'declining';
+    }
+    var me = localStorage.userAddress;
+    var peer = (tab.borrower == me ? tab.lender : tab.borrower);
+    var signedByMe = (tab.signatures[me] != undefined);
+    var signedByPeer = (tab.signatures[peer] != undefined);
+    if(!signedByMe) {
+      return 'pendingIn';
+    }
+    if(!signedByPeer) {
+      return 'pendingOut';
+    }
+    if (tab.hurry) {
+        return 'hurry';
+    }
+    if(tab.sent) {
+        return 'sent';
+    }
+    if(tab.cancelled) {
+        return 'cancelled';
+    }
+    if(tab.closed) {
+        return 'closed';
+    }
+    return 'open';
+  }
+  function calcTabIcon(tabStatus) {
+    if(tabStatus == 'pendingIn' || tabStatus == 'pendingOut') {
+      return '?';
+    }
+    if(tabStatus == 'hurry') {
+      return '!';
+    }
+    if(tabStatus == 'cancelled') {
+      return 'X';
+    }
+    if(tabStatus == 'sentOut' || tabStatus == 'sentIn' || tabStatus == 'closed') {
+      return '&check;';
+    }
+    return '';
+  }
+  function calcTabDescription(tab) {
     return tab.amount+' '+tab.currency;
   }
-  function chooseActions(tab) {
-    return {
-      cancel: 'Cancel'
-    };
+  function calcTabActions(status) {
+    if(status == 'pendingOut') {
+      return {cancel: 'Cancel'};
+    }
+    if(status == 'pendingIn') {
+      return {accept: 'Accept', declineA: 'Decline'};
+    }
+    if(status == 'declining') {
+      return {input: 'message', cancelDecline: 'Cancel', declineB: 'Decline'};
+    }
+    if(status == 'hurry' || status == 'open' || status == 'sentIn') {
+      return {settle: 'Mark as settled'};
+    }
+    return {};
+  }
+  function calcTabList(status) {
+    if(status == 'pendingOut') {
+      return {cancel: 'Cancel'};
+    }
+    if(status == 'pendingIn') {
+      return {accept: 'Accept', declineA: 'Decline'};
+    }
+    if(status == 'declining') {
+      return {input: 'message', cancelDecline: 'Cancel', declineB: 'Decline'};
+    }
+    if(status == 'hurryIn' || status == 'declining' || status == 'pendingIn' || status == 'sentIn') {
+      return 'notif';
+    }
+    if(status == 'sentOut' || status == 'pendingOut' || status == 'hurryOut') {
+      return 'track';
+    }
+    if(status == 'cancelled' || status == 'closed') {
+      return 'history';
+    }
+    return 'open';
   }
   function showContact(userAddress, interfaceState) { 
     //no RTTs here! this should be snappy:
@@ -63,10 +138,11 @@ var controller= (function() {
     obj.history = [];
     var peerTabs = tabs.getTabs(userAddress);
     for(var i in peerTabs) {
-      var thisTab = peerTabs[i];
-      thisTab.icon= chooseIcon(thisTab);
-      thisTab.description = chooseDescription(thisTab);
-      thisTab.actions = chooseActions(thisTab);
+      var thisTab = {tab: peerTabs[i]};
+      thisTab.description = calcTabDescription(thisTab.tab);
+      thisTab.status = calcTabStatus(thisTab.tab);
+      thisTab.icon= calcTabIcon(thisTab.status);
+      thisTab.actions = calcTabActions(thisTab.status);
       obj.track.push(thisTab);
     }
     obj.actions = calcUserActions(interfaceState);
