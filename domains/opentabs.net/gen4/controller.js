@@ -10,7 +10,7 @@ var controller= (function() {
     callbacks.onWelcome = function() {
       //it's OK if contacts are added one-by-one in async here:
       contacts.getContacts(function(userAddress) {
-        showUser(userAddress, 'rest');
+        showContact(userAddress, 'rest');
       });
       origOnWelcome();
     };
@@ -49,7 +49,7 @@ var controller= (function() {
       cancel: 'Cancel'
     };
   }
-  function showUser(userAddress, interfaceState) { 
+  function showContact(userAddress, interfaceState) { 
     //no RTTs here! this should be snappy:
     var obj = contacts.getUser(userAddress);
     obj.notif = [];
@@ -111,15 +111,22 @@ var controller= (function() {
       createTab(userAddress, params, false);
       return 'rest';
     } else {
+      alert('action not recognised: '+action);
       return 'rest';
     }
   }
   function contactAction(userAddress, action, params) {
     var newState = triggerAction(userAddress, action, params);//no RTTs here! this should be snappy
     //redraw contact from scratch:
-    showUser(userAddress, newState);
+    showContact(userAddress, newState);
   }
   function tabAction(userAddress, tabId, action) {
+    if(action=='cancel') {
+      tabs.cancel(userAddress, tabId);
+    } else {
+      alert('action not recognised: '+action);
+    }
+    showContact(userAddress, 'rest');//TODO: track interfaceState per contact in some way
   }
   function getCharacters(cb) {
     contacts.getCharacters(cb);
