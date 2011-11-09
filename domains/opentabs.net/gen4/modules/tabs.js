@@ -1,15 +1,24 @@
 var tabs = (function() {
+  var tabs = JSON.parse(localStorage.getItem('tabs'));
+  if(!tabs) {
+    tabs = {};
+  }
   function getTabs(userAddress) {
-    return {
-      0: {
-        icon: '?',
-        description: '1 EUR',
-        colour: 'red',
-        buttons: ['cancel']
-      }
-    };
+    if(tabs.userAddress) {
+      return tabs.userAddress;
+    } else {
+      return [];
+    }
+  }
+  function store(userAddress, tab) {
+    if(tabs.userAddress) {
+      tabs.userAddress = [];
+    }
+    tabs.userAddress.push(tab);
+    localStorage.setItem('tabs', JSON.stringify(tabs));
   }
   return {
-    getTabs: getTabs
+    getTabs: getTabs,
+    store: store
   }
 })();

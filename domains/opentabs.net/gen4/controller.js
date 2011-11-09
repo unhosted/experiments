@@ -54,7 +54,20 @@ var controller= (function() {
   //function addContact(userAddress) {
   //}
   function createTab(userAddress, params, borrow) {
-
+    var tab = parseTabCreationText(params.text);
+    var me = localStorage.userAddress;
+    if(borrow) {
+      tab.borrower=me;
+      tab.lender=userAddress;
+    } else {
+      tab.borrower=me;
+      tab.lender=userAddress;
+    }
+    tab.timestamp = (new Date().time());
+    tab.signatures = {};
+    tab.signatures[me] = crypto.sign(tab);
+    tabs.store(userAddress, tab);
+    msg.sendMsg(userAddress, tab);//interesting questions whether msg should have implicit or explicit speech act verbs
   }
   function globalAction(contactId, amount, currency, description) {
   }
