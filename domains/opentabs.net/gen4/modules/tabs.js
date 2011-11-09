@@ -11,7 +11,7 @@ var tabs = (function() {
     }
   }
   function store(userAddress, tab) {
-    if(tabs.userAddress) {
+    if(!tabs.userAddress) {
       tabs.userAddress = [];
     }
     tabs.userAddress.push(tab);

@@ -53,6 +53,12 @@ var controller= (function() {
   }
   //function addContact(userAddress) {
   //}
+  function parseTabCreationText(text) {
+    return {
+      amount: 1,
+      currency: text
+    };
+  }
   function createTab(userAddress, params, borrow) {
     var tab = parseTabCreationText(params.text);
     var me = localStorage.userAddress;
@@ -63,7 +69,7 @@ var controller= (function() {
       tab.borrower=me;
       tab.lender=userAddress;
     }
-    tab.timestamp = (new Date().time());
+    tab.timestamp = (new Date().getTime())/1000;
     tab.signatures = {};
     tab.signatures[me] = crypto.sign(tab);
     tabs.store(userAddress, tab);
