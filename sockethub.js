@@ -19,7 +19,7 @@ socketio.on('connection', function(socket) {
       sockets[data.userAddress] = socket;
       console.log('registered '+data.userAddress);
       socket.emit('welcome', data.userAddress);
-
+      socket.set('userAddress', data.userAddress);
       if(msgQ[data.userAddress]) {
         for(var i in msgQ[data.userAddress]) {
           socket.emit('msg', msgQ[data.userAddress][i]);
@@ -37,6 +37,7 @@ socketio.on('connection', function(socket) {
   socket.on('msg', function(data) {
     console.log('message for '+data.to);
     if(sockets[data.to]) {
+      data.from = socket.get('userAddress');
       sockets[data.to].emit('msg', data);
       console.log('delivered');
     } else {

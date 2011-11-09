@@ -7,6 +7,9 @@ var controller= (function() {
     callbacks.onMsg=function(data) {
       console.log('incoming msg!');
       console.log(data);
+      var sender = crypto.verifySender(data.msg);
+      tabs.store(sender, data.msg);
+      showContact(sender, 'rest');
     }
     var origOnWelcome = callbacks.onWelcome;
     callbacks.onWelcome = function() {
