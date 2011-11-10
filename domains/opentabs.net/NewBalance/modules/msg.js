@@ -14,14 +14,8 @@ var msg = (function() {
   function register(userAddress, secret, onErr, cb) {
     socket.emit('register', {userAddress: userAddress, secret: secret});
   }
-  function sendMsg(from, to, message, signature) {
-    var dataObj = {
-      to: to,
-      from: from,
-      message: message,
-      signature: signature
-    };
-    socket.emit('msg', dataObj);
+  function sendMsg(entry) {
+    socket.emit('msg', entry);
   }
   return {
     setCallbacks: setCallbacks,

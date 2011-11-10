@@ -159,24 +159,36 @@ var controller= (function() {
   function parseTabCreationText(text) {
     return {
       amount: 1,
-      currency: text
+      currency: text,
+      comment: ''
     };
   }
-  function createTab(userAddress, params, borrow) {
-    var tab = parseTabCreationText(params.text);
+  function createEntry(userAddress, params, borrow) {
+    var parsed = parseTabCreationText(params.text);
+    var previousRevision = getCurrRevision(userAddress, parsed.currency);
+    var diff = (borrow ? -1 : +1) * parsed.amount;
     var me = localStorage.userAddress;
-    if(borrow) {
-      tab.borrower=me;
-      tab.lender=userAddress;
-    } else {
-      tab.borrower=me;
-      tab.lender=userAddress;
+    var entry = {
+      from: me,
+      to: userAddress,
+      message: {
+        tab: {
+          borrower: (borrow ? me : userAddress),
+          lender: (borrow ? userAddress : me),
+          currency: parsed.currency
+        },
+        revision: {
+          timestamp: (new Date().getTime())/1000,
+          balance: previousRevision.balance + diff
+        },
+        previous: previousRevision.timestamp,
+        diff: diff,
+        comment: parsed.comment
+      }
     }
-    tab.timestamp = (new Date().getTime())/1000;
-    tab.signatures = {};
-    tab.signatures[me] = crypto.sign(tab);
-    tabs.store(userAddress, tab);
-    msg.sendMsg(userAddress, tab);//interesting questions whether msg should have implicit or explicit speech act verbs
+    entry.signature = crypto.sign(entry.message);
+    tabs.store(userAddress, entry);
+    msg.sendMsg(entry);
   }
   function globalAction(contactId, amount, currency, description) {
   }
@@ -186,10 +198,12 @@ var controller= (function() {
     } else if(action == 'lendA') {
       return 'lendDialog';
     } else if(action=='borrowB') {
-      createTab(userAddress, params, true);
+      createEntry(userAddress, params, true);
       return 'rest';
     } else if(action=='lendB') {
-      createTab(userAddress, params, false);
+      createEntry(userAddress, params, false);
+      return 'rest';
+    } else if(action=='cancel') {
       return 'rest';
     } else {
       alert('action not recognised: '+action);

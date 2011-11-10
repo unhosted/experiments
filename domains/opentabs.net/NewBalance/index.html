@@ -42,15 +42,15 @@
               controller.setUserAddress(localStorage.userAddress, localStorage.secret);
             } else {
               controller.getCharacters(function(characters) {
-                var str = '<table><tr>';
+                var str = '<table>';
                 for(var i in characters) {
                   var character = contacts.getUser(characters[i]);
-                  str += '<td onclick="enter(\''
+                  str += '<tr><td onclick="enter(\''
                     +character.userAddress+'\');"><div class="avatarBig"><img src="'
                     +character.avatar+'"><br><h2>'
-                    +character.name+'</h2></div></td>';
+                    +character.name+'</h2></div></td></tr>';
                 }
-                document.getElementById('characters').innerHTML= str+'</tr></table>';
+                document.getElementById('characters').innerHTML= str+'</table>';
               });
               document.getElementById('charactersForm').style.display='block';
             }

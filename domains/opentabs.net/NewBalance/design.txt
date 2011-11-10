@@ -1,9 +1,11 @@
 message timeline:
  [> propose]+
+  < ack
  [< decline]+
   > ack
 
  [> propose]+
+  < ack
  [< accept]+
   > ack
 
