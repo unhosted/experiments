@@ -94,47 +94,24 @@ var controller= (function() {
     return tab.amount+' '+tab.currency;
   }
   function calcTabActions(status) {
-    if(status == 'pendingOut') {
-      return {cancel: 'Cancel'};
-    }
     if(status == 'pendingIn') {
       return {accept: 'Accept', declineA: 'Decline'};
     }
     if(status == 'declining') {
       return {input: 'message', cancelDecline: 'Cancel', declineB: 'Decline'};
-    }
-    if(status == 'hurry' || status == 'open' || status == 'sentIn') {
-      return {settle: 'Mark as settled'};
     }
     return {};
   }
   function calcTabList(status) {
-    if(status == 'pendingOut') {
-      return {cancel: 'Cancel'};
+    if(status == 'pendingIn' || status == 'declining' || status == 'pendingOut') {
+      return 'important';
     }
-    if(status == 'pendingIn') {
-      return {accept: 'Accept', declineA: 'Decline'};
-    }
-    if(status == 'declining') {
-      return {input: 'message', cancelDecline: 'Cancel', declineB: 'Decline'};
-    }
-    if(status == 'hurryIn' || status == 'declining' || status == 'pendingIn' || status == 'sentIn') {
-      return 'notif';
-    }
-    if(status == 'sentOut' || status == 'pendingOut' || status == 'hurryOut') {
-      return 'track';
-    }
-    if(status == 'cancelled' || status == 'closed') {
-      return 'history';
-    }
-    return 'open';
+    return 'history';
   }
   function showContact(userAddress, interfaceState) { 
     //no RTTs here! this should be snappy:
     var obj = contacts.getUser(userAddress);
-    obj.notif = [];
-    obj.track = [];
-    obj.open = [];
+    obj.important = [];
     obj.history = [];
     var peerTabs = tabs.getTabs(userAddress);
     for(var i in peerTabs) {
@@ -143,7 +120,7 @@ var controller= (function() {
       thisTab.status = calcTabStatus(thisTab.tab);
       thisTab.icon= calcTabIcon(thisTab.status);
       thisTab.actions = calcTabActions(thisTab.status);
-      obj.track.push(thisTab);
+      obj[calcTabList(thisTab.status)].push(thisTab);
     }
     obj.actions = calcUserActions(interfaceState);
     updateView(userAddress, obj);
@@ -216,22 +193,13 @@ var controller= (function() {
     showContact(userAddress, newState);
   }
   function tabAction(userAddress, tabId, action, params) {
-    if(action=='cancel') {
-      tabs.setStatus(userAddress, tabId, 'cancelled');
-    } else if(action=='accept') {
+    if(action=='acceptLatest') {
       tabs.addSignature(userAddress, tabId, crypto.sign(tabs.getTab(userAddress, tabId)));
-    } else if(action=='declineA') {
+    } else if(action=='declineLatestA') {
       tabs.setStatus(userAddress, tabId, 'declining');
-    } else if(action=='declineB') {
+    } else if(action=='declineLatestB') {
       tabs.comment(userAddress, tabId, 'declined: '+params.text);
       tabs.setStatus(userAddress, tabId, 'declined');
-    } else if(action=='settle') {
-      var tab = tabs.getTab(userAddress, tabId);
-      if(tab.type == 'B') {
-        tabs.setStatus(userAddress, tabId, 'sent');
-      } else {
-        tabs.setStatus(userAddress, tabId, 'closed');
-      }
     } else {
       alert('action not recognised: '+action);
     }

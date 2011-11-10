@@ -23,10 +23,9 @@ tabs[userAddress][currency] = {ordered by timestamp, incr
       },
       revision: {
         timestamp: 1234567890.123,
-        balance: -123.45
+        balance: 123.45//always positive, so that borrow vs. lender is uniquely defined. if zero, take direction from prev rev
       },
       previous: 1234567890.123/null,
-      diff: -123.45
       comment: '...'
     },
     signature: '...' (pgp of utf-8 canonical json of message)
