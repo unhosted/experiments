@@ -67,8 +67,9 @@ var controller= (function() {
     }
     return '';
   }
-  function calcTabDescription(tab) {
-    return tab.amount+' '+tab.currency;
+  function calcTabDescription(userAddress, currency) {
+    var lastEntry = getLastEntry(userAddress, currency);
+    return lastEntry.message.revision.balance+' '+lastEntry.message.tab.currency;
   }
   function calcTabActions(status) {
     if(status == 'pendingIn') {
@@ -92,11 +93,10 @@ var controller= (function() {
     obj.history = [];
     var peerTabs = tabs.getTabs(userAddress);
     for(var i in peerTabs) {
-      var thisTab = {tab: peerTabs[i]};
-      thisTab.description = calcTabDescription(thisTab.tab);
-      thisTab.status = calcTabStatus(thisTab.tab);
-      thisTab.icon= calcTabIcon(thisTab.status);
-      thisTab.actions = calcTabActions(thisTab.status);
+      thisTab.description = calcTabDescription(userAddress, i);
+      thisTab.status = calcTabStatus(userAddress, i);
+      thisTab.icon= calcTabIcon(userAddress, i);
+      thisTab.actions = calcTabActions(userAddress, i);
       obj[calcTabList(thisTab.status)].push(thisTab);
     }
     obj.actions = calcUserActions(interfaceState);
