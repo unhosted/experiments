@@ -44,14 +44,14 @@ var tabs = (function() {
       return [];
     }
   }
-  function store(userAddress, message) {
+  function store(userAddress, entry) {
     if(!tabs[userAddress]) {
       tabs[userAddress] = {};
     }
-    if(!tabs[userAddress][message.currency]) {
-      tabs[userAddress][message.currency] = {};
+    if(!tabs[userAddress][entry.message.tab.currency]) {
+      tabs[userAddress][entry.message.tab.currency] = {};
     }
-    tabs[userAddress][message.currency][message.revision.timestamp] = message;
+    tabs[userAddress][entry.message.tab.currency][entry.message.revision.timestamp] = entry;
     localStorage.setItem('tabs', JSON.stringify(tabs));
   }
   function getTab(userAddress, currency) {

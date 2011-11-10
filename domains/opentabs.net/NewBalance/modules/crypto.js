@@ -1,9 +1,9 @@
 var crypto = (function() {
-  function sign(tab) {
+  function sign(message) {
     //FIXME: fake!
     return 'yours truly';
   }
-  function verifySender(tab) {
+  function verifySender(message) {
     //FIXME: fake!
     if(tab.borrower == localStorage.userAddress) {
       return tab.lender;
