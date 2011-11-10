@@ -7,7 +7,7 @@ var controller= (function() {
     callbacks.onMsg=function(data) {
       console.log('incoming msg!');
       console.log(data);
-      var sender = crypto.verifySender(data.msg);
+      var sender = crypto.verifySignature(data.msg);
       tabs.store(sender, data.msg);
       showContact(sender, 'rest');
     }
@@ -47,33 +47,10 @@ var controller= (function() {
     var me = localStorage.userAddress;
     return (tab.borrower == me ? 'B' : 'L');
   }
-  function calcTabStatus(tab) {
-    if(tab.declining) {
-        return 'declining';
-    }
+  function calcTabStatus(userAddress, currency) {
+    var lastEntry = getLastEntry(userAddress, currency);
     var me = localStorage.userAddress;
-    var peer = (tab.borrower == me ? tab.lender : tab.borrower);
-    var signedByMe = (tab.signatures[me] != undefined);
-    var signedByPeer = (tab.signatures[peer] != undefined);
-    if(!signedByMe) {
-      return 'pendingIn';
-    }
-    if(!signedByPeer) {
-      return 'pendingOut';
-    }
-    if (tab.hurry) {
-        return 'hurry';
-    }
-    if(tab.status == 'sent') {
-        return 'sent';
-    }
-    if(tab.status == 'cancelled') {
-        return 'cancelled';
-    }
-    if(tab.status == 'closed') {
-        return 'closed';
-    }
-    return 'open';
+    return 'pendingOut';
   }
   function calcTabIcon(tabStatus) {
     if(tabStatus == 'pendingIn' || tabStatus == 'pendingOut') {
@@ -140,6 +117,32 @@ var controller= (function() {
       comment: ''
     };
   }
+  function getLastEntry(userAddress, currency) {
+    var max = 0;
+    if(tabs[userAddress] && tab[userAddress][currency]) {
+      for(var i in tabs[userAddress][currency]) {
+        if(i > max) {
+          max = i;
+        }
+      }
+    }
+    if(max) {
+      return tabs[userAddress][currency][max];
+    } else {
+      return null;
+    }
+  }
+  function getCurrRevision(userAddress, currency) {
+    var lastEntry = getLastEntry(userAddress, currency);
+    if(lastEntry) {
+      return lastEntry.revision;
+    } else {
+      return {
+        timestamp: null,
+        balance: 0
+      };
+    }
+  }
   function createEntry(userAddress, params, borrow) {
     var parsed = parseTabCreationText(params.text);
     var previousRevision = getCurrRevision(userAddress, parsed.currency);
@@ -149,6 +152,7 @@ var controller= (function() {
       from: me,
       to: userAddress,
       message: {
+        verb: params.verb,
         tab: {
           borrower: (borrow ? me : userAddress),
           lender: (borrow ? userAddress : me),
@@ -194,12 +198,12 @@ var controller= (function() {
   }
   function tabAction(userAddress, tabId, action, params) {
     if(action=='acceptLatest') {
-      tabs.addSignature(userAddress, tabId, crypto.sign(tabs.getTab(userAddress, tabId)));
+      createEntry(userAddress, tabId, crypto.sign(tabs.getTab(userAddress, tabId)));
     } else if(action=='declineLatestA') {
-      tabs.setStatus(userAddress, tabId, 'declining');
+      createEntry(userAddress, tabId, 'declining');
     } else if(action=='declineLatestB') {
       tabs.comment(userAddress, tabId, 'declined: '+params.text);
-      tabs.setStatus(userAddress, tabId, 'declined');
+      createEntry(userAddress, tabId, 'declined');
     } else {
       alert('action not recognised: '+action);
     }

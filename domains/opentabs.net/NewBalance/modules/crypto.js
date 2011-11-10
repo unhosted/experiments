@@ -17,6 +17,6 @@ var crypto = (function() {
   }
   return {
     sign: sign,
-    verifySender: verifySender
+    verifySignature: verifySignature
   };
 })();
