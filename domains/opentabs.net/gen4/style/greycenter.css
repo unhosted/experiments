@@ -1,0 +1,12 @@
+.feedbackBar {border-style:solid;border-radius:5px;border-width:1px;}
+.mainView header {border-style:solid;border-radius:5px;border-width:1px;}
+.settings,.settingsIcon {display:inline;float:right}
+.mainView {width:380px}
+
+.mainView,.charactersForm {display:none}
+.avatar,.avatarBig {float:left}
+.avatar img {width:50px;height:50px;}
+.avatarBig img {width:150px;height:150px;}
+
+body {background: none repeat scroll 0 0 #DDDDDD; color:#333333; font:1em FreeSans,Helvetica,sans-serif; margin:1em auto; position:relative; width:25em;}
+div {background: none repeat scroll 0 0 #EEEEEE; border-radius:1em; box-shadow: 0 1px 0 #AAAAAA inset; margin-top: 2em;}
