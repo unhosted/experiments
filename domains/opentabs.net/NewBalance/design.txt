@@ -1,21 +1,33 @@
-contact [userAddress, name, avatar]
-  tab [currency]
-    iou [borrower, lender, amount, currency, timestamp], signatures //signatures: propose,accept,decline,remind
-    ...
-  ...
-...
+message timeline:
+ [> propose]+
+ [< decline]+
+  > ack
 
-messages= {
-  from: 'a@b',
-  to: 'c@d',
-  verb: ('propose'/'accept'/'decline'/'remind'),
-  iou: {
-    borrower: ...,
-    lender: ...,
-    amount: ...,
-    currency: ...,
-    timestamp: ...
+ [> propose]+
+ [< accept]+
+  > ack
+
+data structure for verbs 'propose', 'ack+decline', 'ack+accept', and if iou.diff==0, 'remind':
+tabs[userAddress][currency] = {ordered by timestamp, incr
+  timestamp: {
+    from: 'user@host',
+    to: 'user@host',
+    message: {
+      verb: 'propose'/'decline'/'accept'/'ack',
+      tab: {
+        borrower: 'user@host',
+        lender: 'user@host',
+        currency: 'USD',
+      },
+      revision: {
+        timestamp: 1234567890.123,
+        balance: -123.45
+      },
+      previous: 1234567890.123/null,
+      diff: -123.45
+      comment: '...'
+    },
+    signature: '...' (pgp of utf-8 canonical json of message)
   },
-  signature: ...,
-  comment: ...
-};
+  ...
+}
