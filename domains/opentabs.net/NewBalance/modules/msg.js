@@ -14,10 +14,12 @@ var msg = (function() {
   function register(userAddress, secret, onErr, cb) {
     socket.emit('register', {userAddress: userAddress, secret: secret});
   }
-  function sendMsg(to, msg) {
+  function sendMsg(from, to, message, signature) {
     var dataObj = {
       to: to,
-      msg: msg
+      from: from,
+      message: message,
+      signature: signature
     };
     socket.emit('msg', dataObj);
   }

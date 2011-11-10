@@ -3,15 +3,17 @@ var crypto = (function() {
     //FIXME: fake!
     return 'yours truly';
   }
-  function verifySender(message) {
+  function getPublicKey(userAddress) {
     //FIXME: fake!
-    if(tab.borrower == localStorage.userAddress) {
-      return tab.lender;
-    }
-    if(tab.lender == localStorage.userAddress) {
-      return tab.borrower;
-    }
-    return null;
+    return '';
+  }
+  function signatureOk(pubKey, plainText, signature) {
+    //FIXME: fake!
+    return true;
+  }
+  function verifySignature(entry) {
+    //FIXME: fake!
+    return (signatureOk(getPublicKey(entry.from), entry.message, entry.signature));
   }
   return {
     sign: sign,
