@@ -67,19 +67,9 @@ var contactView = (function() {
   }
   function renderContact(obj) {
     var str = renderSummary(obj);
-    if(obj.notif.length) {//TODO: add tabActions in here
-      str += '<div class="notifList"><h4>Notif:</h4>'
-        +renderTabsList(obj.notif, obj.userAddress);
-        + '</div>';
-    }
-    if(obj.track.length) {//TODO: add tabActions in here
-      str += '<div class="trackList"><h4>Track:</h4>'
-        +renderTabsList(obj.track, obj.userAddress);
-        + '</div>';
-    }
-    if(obj.open.length) {//TODO: add tabActions in here
-      str += '<div class="openList"><h4>Open:</h4>'
-        +renderTabsList(obj.open, obj.userAddress);
+    if(obj.important.length) {//TODO: add tabActions in here
+      str += '<div class="importantList"><h4>Important:</h4>'
+        +renderTabsList(obj.important, obj.userAddress);
         + '</div>';
     }
     if(obj.history.length) {//TODO: add tabActions in here
