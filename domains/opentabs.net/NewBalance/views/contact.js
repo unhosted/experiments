@@ -27,7 +27,7 @@ var contactView = (function() {
     var str = '<ul>';
     for(var j in tabs) {
       var tab = tabs[j];
-      str += '<li>'+renderTab(tabs[j], userAddress);
+      str += '<li class="tabSummary'+tab.type+'">'+renderTab(tabs[j], userAddress);
       str += '</li>';
     }
     return str+'</ul>';

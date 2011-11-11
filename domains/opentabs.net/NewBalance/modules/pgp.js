@@ -1,4 +1,4 @@
-var crypto = (function() {
+var pgp = (function() {
   function sign(message) {
     //FIXME: fake!
     return 'yours truly';

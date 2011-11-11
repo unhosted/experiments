@@ -7,7 +7,7 @@ var controller= (function() {
     callbacks.onMsg=function(data) {
       console.log('incoming msg!');
       console.log(data);
-      if(crypto.verifySignature(data)) {
+      if(pgp.verifySignature(data)) {
         tabs.store(data.from, data);
         showContact(data.from, 'rest');
       } else {
@@ -74,7 +74,7 @@ var controller= (function() {
     var lastEntry = tabs.getLastEntry(userAddress, currency);
     if(lastEntry) {
       if(calcTabType(userAddress, currency) == 'B') {
-        return -(lastEntry.message.revision.balance+' '+lastEntry.message.tab.currency);
+        return -(lastEntry.message.revision.balance)+' '+lastEntry.message.tab.currency;
       } else {
         return lastEntry.message.revision.balance+' '+lastEntry.message.tab.currency;
       }
@@ -123,15 +123,32 @@ var controller= (function() {
   }
   //function addContact(userAddress) {
   //}
-  function parseTabCreationText(text) {
-    return {
-      amount: 1,
-      currency: text,
-      comment: ''
-    };
+  function parseEntryCreationText(text) {
+    var words = text.split(' ');
+    if((words.length <= 1) || (parseInt(words[0]) == NaN)) {
+      return {
+        amount: 1,
+        currency: text,
+        comment: ''
+      };
+    } else {
+      if(words.length >= 3) {
+        comment = words[2];
+        for(var i = 3; i < words.length; i++) {
+          comment += ' '+words[i];
+        }
+      } else {
+        comment = '';
+      }
+      return {
+        amount: parseInt(words[0]),
+        currency: words[1],
+        comment: comment
+      };
+    }
   }
   function createEntry(userAddress, params, borrow) {
-    var parsed = parseTabCreationText(params.text);
+    var parsed = parseEntryCreationText(params.text);
     var lastEntry = tabs.getLastEntry(userAddress, parsed.currency);
     var previousTimestamp;
     var previousBalance;
@@ -169,7 +186,7 @@ var controller= (function() {
         comment: parsed.comment
       }
     }
-    entry.signature = crypto.sign(entry.message);
+    entry.signature = pgp.sign(entry.message);
     tabs.store(userAddress, entry);
     msg.sendMsg(entry);
   }
@@ -200,7 +217,7 @@ var controller= (function() {
   }
   function tabAction(userAddress, tabId, action, params) {
     if(action=='acceptLatest') {
-      createEntry(userAddress, tabId, crypto.sign(tabs.getTab(userAddress, tabId)));
+      createEntry(userAddress, tabId, pgp.sign(tabs.getTab(userAddress, tabId)));
     } else if(action=='declineLatestA') {
       createEntry(userAddress, tabId, 'declining');
     } else if(action=='declineLatestB') {
