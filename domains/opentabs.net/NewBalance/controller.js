@@ -73,7 +73,11 @@ var controller= (function() {
   function calcTabDescription(userAddress, currency) {
     var lastEntry = tabs.getLastEntry(userAddress, currency);
     if(lastEntry) {
-      return lastEntry.message.revision.balance+' '+lastEntry.message.tab.currency;
+      if(calcTabType(userAddress, currency) == 'B') {
+        return -(lastEntry.message.revision.balance+' '+lastEntry.message.tab.currency);
+      } else {
+        return lastEntry.message.revision.balance+' '+lastEntry.message.tab.currency;
+      }
     } else {
       return 'no entries in this tab';
     }
@@ -95,21 +99,21 @@ var controller= (function() {
   }
   function showContact(userAddress, interfaceState) { 
     //no RTTs here! this should be snappy:
-    var obj = contacts.getUser(userAddress);
-    obj.important = [];
-    obj.history = [];
+    var contact = contacts.getUser(userAddress);
+    contact.important = [];
+    contact.history = [];
     var peerTabs = tabs.getTabs(userAddress);
     for(var currency in peerTabs) {
-      thisTab = peerTabs[currency];
+      var thisTab = {};
       thisTab.description = calcTabDescription(userAddress, currency);
       thisTab.status = calcTabStatus(userAddress, currency);
       thisTab.icon= calcTabIcon(userAddress, currency);
       thisTab.type = calcTabType(userAddress, currency);
       thisTab.actions = calcTabActions(userAddress, currency);
-      obj[calcTabList(thisTab.status)].push(thisTab);
+      contact[calcTabList(thisTab.status)].push(thisTab);
     }
-    obj.actions = calcUserActions(interfaceState);
-    updateView(userAddress, obj);
+    contact.actions = calcUserActions(interfaceState);
+    updateView(userAddress, contact);
   }
   function setUserAddress(userAddress, secret) {
     msg.register(userAddress, secret);
@@ -128,22 +132,22 @@ var controller= (function() {
   }
   function createEntry(userAddress, params, borrow) {
     var parsed = parseTabCreationText(params.text);
-    var lastEntry = tabs.getLastEntry(userAddress, currency);
+    var lastEntry = tabs.getLastEntry(userAddress, parsed.currency);
+    var previousTimestamp;
+    var previousBalance;
+    var me = localStorage.userAddress;
     if(lastEntry) {
       previousTimestamp = lastEntry.message.revision.timestamp;
-      previousBorrow = (lastEntry.message.tab.borrower == me);
+      var previousBorrow = (lastEntry.message.tab.borrower == me);
       if(previousBorrow == borrow) {
         previousBalance = lastEntry.message.revision.balance;
       } else {
         previousBalance = -(lastEntry.message.revision.balance);
       }
     } else {
-      return {
-        timestamp: null,
-        balance: 0
-      };
+      previousTimestamp= null;
+      previousBalance= 0;
     }
-    var previousRevision = getCurrRevision(userAddress, parsed.currency);
     var diff = parsed.amount;
     var me = localStorage.userAddress;
     var entry = {
@@ -158,9 +162,9 @@ var controller= (function() {
         },
         revision: {
           timestamp: (new Date().getTime())/1000,
-          balance: previousRevision.balance + diff
+          balance: previousBalance + diff
         },
-        previous: previousRevision.timestamp,
+        previous: previousTimestamp,
         diff: diff,
         comment: parsed.comment
       }
