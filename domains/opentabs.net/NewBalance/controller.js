@@ -70,7 +70,19 @@ var controller= (function() {
     }
     return '';
   }
-  function calcTabDescription(userAddress, currency) {
+  function calcEntryDescription(userAddress, currency) {
+    var lastEntry = tabs.getLastEntry(userAddress, currency);
+    if(lastEntry) {
+      if(calcTabType(userAddress, currency) == 'B') {
+        return -(lastEntry.message.revision.balance)+' '+lastEntry.message.tab.currency;
+      } else {
+        return lastEntry.message.revision.balance+' '+lastEntry.message.tab.currency;
+      }
+    } else {
+      return 'no entries in this tab';
+    }
+  }
+  function calcTabSummary(userAddress, currency) {
     var lastEntry = tabs.getLastEntry(userAddress, currency);
     if(lastEntry) {
       if(calcTabType(userAddress, currency) == 'B') {
@@ -105,7 +117,7 @@ var controller= (function() {
     var peerTabs = tabs.getTabs(userAddress);
     for(var currency in peerTabs) {
       var thisTab = {};
-      thisTab.description = calcTabDescription(userAddress, currency);
+      thisTab.summary = calcTabSummary(userAddress, currency);
       thisTab.status = calcTabStatus(userAddress, currency);
       thisTab.icon= calcTabIcon(userAddress, currency);
       thisTab.type = calcTabType(userAddress, currency);

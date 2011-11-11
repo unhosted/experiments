@@ -17,7 +17,7 @@ var contactView = (function() {
     return str;
   }
   function renderTab(tab, userAddress) {
-    var str = '['+tab.type+tab.icon+'] '+tab.description;
+    var str = '['+tab.type+tab.icon+'] '+tab.summary;
     if(tab.actions) {
       str += renderTabActions(tab, userAddress);
     }
