@@ -69,7 +69,11 @@ var controller= (function() {
   }
   function calcTabDescription(userAddress, currency) {
     var lastEntry = getLastEntry(userAddress, currency);
-    return lastEntry.message.revision.balance+' '+lastEntry.message.tab.currency;
+    if(lastEntry) {
+      return lastEntry.message.revision.balance+' '+lastEntry.message.tab.currency;
+    } else {
+      return 'no entries in this tab';
+    }
   }
   function calcTabActions(status) {
     if(status == 'pendingIn') {
@@ -92,11 +96,12 @@ var controller= (function() {
     obj.important = [];
     obj.history = [];
     var peerTabs = tabs.getTabs(userAddress);
-    for(var i in peerTabs) {
-      thisTab.description = calcTabDescription(userAddress, i);
-      thisTab.status = calcTabStatus(userAddress, i);
-      thisTab.icon= calcTabIcon(userAddress, i);
-      thisTab.actions = calcTabActions(userAddress, i);
+    for(var currency in peerTabs) {
+      thisTab = peerTabs[currency];
+      thisTab.description = calcTabDescription(userAddress, currency);
+      thisTab.status = calcTabStatus(userAddress, currency);
+      thisTab.icon= calcTabIcon(userAddress, currency);
+      thisTab.actions = calcTabActions(userAddress, currency);
       obj[calcTabList(thisTab.status)].push(thisTab);
     }
     obj.actions = calcUserActions(interfaceState);
@@ -119,7 +124,8 @@ var controller= (function() {
   }
   function getLastEntry(userAddress, currency) {
     var max = 0;
-    if(tabs[userAddress] && tab[userAddress][currency]) {
+    var tabs = JSON.parse(localStorage.tabs);
+    if(tabs[userAddress] && tabs[userAddress][currency]) {
       for(var i in tabs[userAddress][currency]) {
         if(i > max) {
           max = i;
