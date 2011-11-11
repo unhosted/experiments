@@ -34,3 +34,5 @@ input:hover { background-position:0 -1em; text-decoration:none; }
 	background:#57a957 repeat-x;
 	background-image:linear-gradient(top, #62c462, #57a957);
 }
+.tabSummaryB {background-color: pink}
+.tabSummaryL {background-color: lightgreen}
