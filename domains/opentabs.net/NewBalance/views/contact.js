@@ -50,34 +50,34 @@ var contactView = (function() {
     return str;
   }
   function renderSummary(obj) {
-    var str = '<div class="summary">'
+    var str = '<tr><td><div class="summary">'
       +'  <div class="avatar">'
       +'    <img src="'+obj.avatar+'">'
       +'  </div>'
       +'  <div>'
       +'    '+obj.name
       +'  </div>'
-      +'  <br>';
+      +'  <br>'+'</td></tr>';
     if(obj.actions) {
-      str += renderContactActions(obj);
+      str += '<tr><td>'+renderContactActions(obj)+'</td></tr>';
     }
     str += '  </div>'//end contactButtons
       +'</div>';//end summary
     return str;
   }
   function renderContact(obj) {
-    var str = renderSummary(obj);
+    var str = '<table>'+renderSummary(obj);
     if(obj.important.length) {//TODO: add tabActions in here
-      str += '<div class="importantList"><h4>Important:</h4>'
+      str += '<tr><td><div class="importantList"><h4>Important:</h4>'
         +renderTabsList(obj.important, obj.userAddress);
-        + '</div>';
+        + '</div></td></tr>';
     }
     if(obj.history.length) {//TODO: add tabActions in here
-      str += '<div class="historyList"><h4>History:</h4>'
+      str += '<tr><td><div class="historyList"><h4>History:</h4>'
         +renderTabsList(obj.history, obj.userAddress);
-        + '</div>';
+        + '</div></td></tr>';
     }
-    return str;
+    return str+'</table>';
   }
   return {
     renderContact: renderContact,
