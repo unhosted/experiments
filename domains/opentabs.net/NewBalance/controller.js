@@ -101,7 +101,7 @@ var controller= (function() {
     if(status == 'declining') {
       return {input: 'message', cancelDecline: 'Cancel', declineB: 'Decline'};
     }
-    return {};
+    return {showEntries: '+'};
   }
   function calcTabList(status) {
     if(status == 'pendingIn' || status == 'declining' || status == 'pendingOut') {
@@ -122,6 +122,7 @@ var controller= (function() {
       thisTab.icon= calcTabIcon(userAddress, currency);
       thisTab.type = calcTabType(userAddress, currency);
       thisTab.actions = calcTabActions(userAddress, currency);
+      thisTab.currency = currency;
       contact[calcTabList(thisTab.status)].push(thisTab);
     }
     contact.actions = calcUserActions(interfaceState);
@@ -218,7 +219,7 @@ var controller= (function() {
     } else if(action=='cancel') {
       return 'rest';
     } else {
-      alert('action not recognised: '+action);
+      alert('not implemented yet: '+action);
       return 'rest';
     }
   }

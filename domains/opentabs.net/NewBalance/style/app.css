@@ -9,6 +9,7 @@ body { position:relative; margin:1em auto; width:380px; font:16px FreeSans,Helve
 	background:#eee; margin-top:2em; padding:1em;
 	border-radius:1em; box-shadow:0 1px 0 #fff; box-shadow:inset 0 1px 0 #aaa;
 }
+li { margin:1em; }
 
 input {
   display:inline; margin:.5em; padding:.5em; font-size:.8em;
