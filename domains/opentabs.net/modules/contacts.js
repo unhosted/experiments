@@ -7,11 +7,12 @@ var contacts = (function(){
     return {
       name: deriveName(userAddress),
       userAddress: userAddress,
-	    avatar:'http://opentabs.net/screens/avatars/'+deriveName(userAddress).toLowerCase()
+	    avatar:'http://opentabs.net/avatars/'+deriveName(userAddress).toLowerCase()
     };
   }
   function getCharacters(cb) {
-    var nicks = ['butch', 'zed', 'marcellus', 'jules', 'mia', 'fabienne', 'vincent'];
+    //var nicks = ['butch', 'zed', 'marcellus', 'jules', 'mia', 'fabienne', 'vincent'];
+    var nicks = ['mia', 'vincent', 'jules'];
     var characters = [];
     for(var i in nicks) {
       var userAddress = nicks[i]+'@opentabs.net';
