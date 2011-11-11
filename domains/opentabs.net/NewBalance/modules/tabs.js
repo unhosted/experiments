@@ -26,9 +26,26 @@ var tabs = (function() {
     }
     return tabs[userAddress][currency];
   }
+  function getLastEntry(userAddress, currency) {
+    var max = 0;
+    var tab = getTab(userAddress, currency);
+    if(tab) {
+      for(var i in tab) {
+        if(i > max) {
+          max = i;
+        }
+      }
+    }
+    if(max) {
+      return tab[max];
+    } else {
+      return null;
+    }
+  }
   return {
     getTabs: getTabs,
     getTab: getTab,
+    getLastEntry: getLastEntry,
     store: store
   }
 })();

@@ -7,10 +7,13 @@ var controller= (function() {
     callbacks.onMsg=function(data) {
       console.log('incoming msg!');
       console.log(data);
-      var sender = crypto.verifySignature(data.msg);
-      tabs.store(sender, data.msg);
-      showContact(sender, 'rest');
-    }
+      if(crypto.verifySignature(data)) {
+        tabs.store(data.from, data);
+        showContact(data.from, 'rest');
+      } else {
+        alert('messages signature from '+data.from+' does not match!');
+      }
+    };
     var origOnWelcome = callbacks.onWelcome;
     callbacks.onWelcome = function() {
       //it's OK if contacts are added one-by-one in async here:
@@ -43,12 +46,12 @@ var controller= (function() {
       return {};
     }
   }
-  function calcTabType(tab) {
+  function calcTabType(userAddress, currency) {
     var me = localStorage.userAddress;
-    return (tab.borrower == me ? 'B' : 'L');
+    return (tabs.getLastEntry(userAddress, currency).message.tab.borrower == me ? 'B' : 'L');
   }
   function calcTabStatus(userAddress, currency) {
-    var lastEntry = getLastEntry(userAddress, currency);
+    var lastEntry = tabs.getLastEntry(userAddress, currency);
     var me = localStorage.userAddress;
     return 'pendingOut';
   }
@@ -68,7 +71,7 @@ var controller= (function() {
     return '';
   }
   function calcTabDescription(userAddress, currency) {
-    var lastEntry = getLastEntry(userAddress, currency);
+    var lastEntry = tabs.getLastEntry(userAddress, currency);
     if(lastEntry) {
       return lastEntry.message.revision.balance+' '+lastEntry.message.tab.currency;
     } else {
@@ -101,6 +104,7 @@ var controller= (function() {
       thisTab.description = calcTabDescription(userAddress, currency);
       thisTab.status = calcTabStatus(userAddress, currency);
       thisTab.icon= calcTabIcon(userAddress, currency);
+      thisTab.type = calcTabType(userAddress, currency);
       thisTab.actions = calcTabActions(userAddress, currency);
       obj[calcTabList(thisTab.status)].push(thisTab);
     }
@@ -122,37 +126,25 @@ var controller= (function() {
       comment: ''
     };
   }
-  function getLastEntry(userAddress, currency) {
-    var max = 0;
-    var tabs = JSON.parse(localStorage.tabs);
-    if(tabs[userAddress] && tabs[userAddress][currency]) {
-      for(var i in tabs[userAddress][currency]) {
-        if(i > max) {
-          max = i;
-        }
-      }
-    }
-    if(max) {
-      return tabs[userAddress][currency][max];
-    } else {
-      return null;
-    }
-  }
-  function getCurrRevision(userAddress, currency) {
-    var lastEntry = getLastEntry(userAddress, currency);
+  function createEntry(userAddress, params, borrow) {
+    var parsed = parseTabCreationText(params.text);
+    var lastEntry = tabs.getLastEntry(userAddress, currency);
     if(lastEntry) {
-      return lastEntry.revision;
+      previousTimestamp = lastEntry.message.revision.timestamp;
+      previousBorrow = (lastEntry.message.tab.borrower == me);
+      if(previousBorrow == borrow) {
+        previousBalance = lastEntry.message.revision.balance;
+      } else {
+        previousBalance = -(lastEntry.message.revision.balance);
+      }
     } else {
       return {
         timestamp: null,
         balance: 0
       };
     }
-  }
-  function createEntry(userAddress, params, borrow) {
-    var parsed = parseTabCreationText(params.text);
     var previousRevision = getCurrRevision(userAddress, parsed.currency);
-    var diff = (borrow ? -1 : +1) * parsed.amount;
+    var diff = parsed.amount;
     var me = localStorage.userAddress;
     var entry = {
       from: me,
