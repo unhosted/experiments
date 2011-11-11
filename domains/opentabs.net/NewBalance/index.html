@@ -98,18 +98,29 @@
         controller.setUserAddress(userAddress, localStorage.secret);
       }
     </script>
+    <style>
+      #background { width:100%; position:fixed; bottom:0; left:0; z-index:-1; }
+      .charactersForm div {clear:both;margin-top:20px;margin-left:10px;}
+    </style>
   </head>
   <body onload="onBodyLoad();">
     <div class="feedbackBar" id="feedbackBar">
+      <img id="background" src="../bankerwanker.jpg" alt="" />
       <input type="submit" value="reset" onclick="submitReset(event);">
     </div>
     <div class="secretForm" id="secretForm">
-      Our secret word:
-      <input id="secret">
-      <input type="submit" onclick="submitSecret(event);">
+      <p>
+        Our secret word:
+        <input size="8" id="secret">
+        <input type="submit" value="Join the Experiment" onclick="submitSecret(event);">
+      </p>
     </div>
     <div class="charactersForm" id="charactersForm">
-      Let's get into character:
+      <div>
+        <h2>
+          Let's get into character:
+        </h2>
+      </div>
       <div id="characters">
       </div>
     </div>
