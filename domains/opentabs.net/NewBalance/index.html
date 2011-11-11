@@ -17,6 +17,10 @@
     
     <script>
       function updateView(userAddress, obj) {
+        if(localStorage.userAddress) {
+          document.getElementById('youAre').innerHTML = 
+            'You are '+localStorage.userAddress;
+        }
         var idStr = 'contact_'+obj.userAddress.replace('@', ':');
         if(document.getElementById(idStr)) {
           document.getElementById(idStr).innerHTML=
@@ -31,12 +35,6 @@
         }
       }
       function onBodyLoad() {
-        if(localStorage.userAddress) {
-          document.getElementById('youAre').innerHTML = 
-            'You are '+localStorage.userAddress;
-        } else {
-          document.getElementById('feedbackBar').style.display='none';
-        }
         controller.setCallbacks({
           onSecretErr: function(data) {
             alert('wrong!');
@@ -116,10 +114,6 @@
     </style>
   </head>
   <body onload="onBodyLoad();">
-    <div class="feedbackBar" id="feedbackBar">
-      <input type="submit" value="reset" onclick="submitReset(event);">
-      <div class="youAre" id="youAre"></div>
-    </div>
     <div class="secretForm" id="secretForm">
       <img id="background" src="../bankerwanker.jpg" alt="" />
       <p>
@@ -139,6 +133,10 @@
       </article>
     </div>
     <div class="mainView" id="mainView">
+      <div class="feedbackBar" id="feedbackBar">
+        <input type="submit" value="reset" onclick="submitReset(event);">
+        <div class="youAre" id="youAre"></div>
+      </div>
       <header>
         <span>
           Search/add:<input>

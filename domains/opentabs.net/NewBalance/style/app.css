@@ -1,11 +1,12 @@
 body { position:relative; margin:1em auto; width:380px; font:16px FreeSans,Helvetica,sans-serif; color:#333; background:#ddd; }
 
+.mainView,.charactersForm {display:none}
 .avatar {float:left;padding:1px;}
 .avatar img {width:2em;height:2em;border-radius:0.3em;}
 .contact .summary {height:2em;padding:1px;}
 .textbox {position:relative;padding:1em;}
 .textbox span {float:left;position:absolute;bottom:0.2em;}
-.contact {
+.contact,.secretForm,h2,td {
 	background:#eee; margin-top:2em; padding:1em;
 	border-radius:1em; box-shadow:0 1px 0 #fff; box-shadow:inset 0 1px 0 #aaa;
 }

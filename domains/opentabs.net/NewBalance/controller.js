@@ -53,19 +53,17 @@ var controller= (function() {
   function calcTabStatus(userAddress, currency) {
     var lastEntry = tabs.getLastEntry(userAddress, currency);
     var me = localStorage.userAddress;
-    return 'pendingOut';
+    var suffix = (lastEntry.from == me ? 'Out' : 'In');
+    return lastEntry.message.verb +suffix;
   }
   function calcTabIcon(tabStatus) {
-    if(tabStatus == 'pendingIn' || tabStatus == 'pendingOut') {
+    if(tabStatus == 'proposeIn' || tabStatus == 'proposeOut') {
       return '?';
     }
-    if(tabStatus == 'hurry') {
-      return '!';
+    if(tabStatus == 'declineOut' || tabStatus == 'declineIn') {
+      return '&check;';
     }
-    if(tabStatus == 'cancelled') {
-      return 'X';
-    }
-    if(tabStatus == 'sentOut' || tabStatus == 'sentIn' || tabStatus == 'closed') {
+    if(tabStatus == 'acceptOut' || tabStatus == 'acceptIn') {
       return '&check;';
     }
     return '';
@@ -95,7 +93,7 @@ var controller= (function() {
     }
   }
   function calcTabActions(status) {
-    if(status == 'pendingIn') {
+    if(status == 'proposeIn') {
       return {accept: 'Accept', declineA: 'Decline'};
     }
     if(status == 'declining') {
@@ -104,7 +102,7 @@ var controller= (function() {
     return {showEntries: '+'};
   }
   function calcTabList(status) {
-    if(status == 'pendingIn' || status == 'declining' || status == 'pendingOut') {
+    if(status == 'proposeIn' || status == 'declining' || status == 'proposeOut') {
       return 'important';
     }
     return 'history';
@@ -121,7 +119,7 @@ var controller= (function() {
       thisTab.status = calcTabStatus(userAddress, currency);
       thisTab.icon= calcTabIcon(userAddress, currency);
       thisTab.type = calcTabType(userAddress, currency);
-      thisTab.actions = calcTabActions(userAddress, currency);
+      thisTab.actions = calcTabActions(thisTab.status);
       thisTab.currency = currency;
       contact[calcTabList(thisTab.status)].push(thisTab);
     }
@@ -211,9 +209,11 @@ var controller= (function() {
     } else if(action == 'lendA') {
       return 'lendDialog';
     } else if(action=='borrowB') {
+      params.verb='propose';
       createEntry(userAddress, params, true);
       return 'rest';
     } else if(action=='lendB') {
+      params.verb='propose';
       createEntry(userAddress, params, false);
       return 'rest';
     } else if(action=='cancel') {
@@ -237,7 +237,7 @@ var controller= (function() {
       tabs.comment(userAddress, tabId, 'declined: '+params.text);
       createEntry(userAddress, tabId, 'declined');
     } else {
-      alert('action not recognised: '+action);
+      alert('not implemented yet: '+action);
     }
     showContact(userAddress, 'rest');//TODO: track interfaceState per contact in some way
   }
