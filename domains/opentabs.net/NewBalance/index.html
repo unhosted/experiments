@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" type="text/css" href="style/greycenter.css">
+    <link rel="stylesheet" type="text/css" href="style/app.css">
     <script src="http://opentabs.net:9000/socket.io/socket.io.js"></script>
     <!-- modules: -->
     <script src="modules/msg.js"></script>
@@ -24,12 +24,19 @@
         } else {
           var div = document.createElement('div');
           div.setAttribute('id', idStr);
+          div.setAttribute('class', 'contact');
           div.innerHTML=
             contactView.renderContact(obj, idStr);
           document.getElementById('contacts').appendChild(div);
         }
       }
       function onBodyLoad() {
+        if(localStorage.userAddress) {
+          document.getElementById('youAre').innerHTML = 
+            'You are '+localStorage.userAddress;
+        } else {
+          document.getElementById('feedbackBar').style.display='none';
+        }
         controller.setCallbacks({
           onSecretErr: function(data) {
             alert('wrong!');
@@ -100,15 +107,21 @@
     </script>
     <style>
       #background { width:100%; position:fixed; bottom:0; left:0; z-index:-1; }
-      .charactersForm div {clear:both;margin-top:20px;margin-left:10px;}
+      #youAre {float:left;font-size:1.2em;margin:1px;padding:10px;}
+      .charactersForm header {padding:10px;}
+      .charactersForm article {padding-left:120px;}
+      .charactersForm article table tr td {text-align:center;border-style:solid;border-width:5px;border-radius:5px}
+      .charactersForm article table tr td img {border-radius:20px}
+      .charactersForm header h2 {text-align:center;}
     </style>
   </head>
   <body onload="onBodyLoad();">
     <div class="feedbackBar" id="feedbackBar">
-      <img id="background" src="../bankerwanker.jpg" alt="" />
       <input type="submit" value="reset" onclick="submitReset(event);">
+      <div class="youAre" id="youAre"></div>
     </div>
     <div class="secretForm" id="secretForm">
+      <img id="background" src="../bankerwanker.jpg" alt="" />
       <p>
         Our secret word:
         <input size="8" id="secret">
@@ -116,13 +129,14 @@
       </p>
     </div>
     <div class="charactersForm" id="charactersForm">
-      <div>
+      <img id="background" src="../bankerwanker.jpg" alt="" />
+      <header>
         <h2>
           Let's get into character:
         </h2>
-      </div>
-      <div id="characters">
-      </div>
+      </header>
+      <article id="characters">
+      </article>
     </div>
     <div class="mainView" id="mainView">
       <header>
