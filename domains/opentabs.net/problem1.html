@@ -15,15 +15,15 @@
     <script>
       function onBodyLoad() {
               controller.getCharacters(function(characters) {
-                var str = '<table>';
+                var str = '<div class="charactersList">';
                 for(var i in characters) {
                   var character = contacts.getUser(characters[i]);
-                  str += '<tr><td onclick="enter(\''
+                  str += '<div class="character" onclick="enter(\''
                     +character.userAddress+'\');"><div class="avatarBig"><img src="'
                     +character.avatar+'"><br><h2>'
-                    +character.name+'</h2></div></td></tr>';
+                    +character.name+'</h2></div></div>';
                 }
-                document.getElementById('characters').innerHTML= str+'</table>';
+                document.getElementById('characters').innerHTML= str+'</div>';
                 document.getElementById('charactersForm').style.display='block';
                });
       }
@@ -31,11 +31,12 @@
     <style>
       #background { width:100%; position:fixed; bottom:0; left:0; z-index:-1; }
       #youAre {float:left;font-size:1.2em;margin:1px;padding:10px;}
-      .charactersForm header {padding:10px;}
-      .charactersForm article {padding-left:120px;}
-      .charactersForm article table tr td {text-align:center;border-style:solid;border-width:5px;border-radius:5px}
-      .charactersForm article table tr td img {border-radius:20px}
-      .charactersForm header h2 {text-align:center;}
+      .charactersList {margin-left:auto;margin-right:auto;}
+      .character {padding:1px;margin:3em;text-align:center;background-color:#eee;border-radius:3em}
+      .charactersForm header {padding:1px;text-align:center;background-color:#eee;border-radius:3em}
+      .character img {margin-top:2em;border-radius:3em}
+      .character h2 {margin-bottom:1em;border-radius:3em}
+      .charactersForm header h2 {text-align:center;margin:1em;}
     </style>
   </head>
   <body onload="onBodyLoad();">

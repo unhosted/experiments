@@ -22,6 +22,8 @@
 
 (function() {
   if(!window.remoteStorage) {//shim switch
+var jsFileName = 'remoteStorage.js';
+var cssFilePath = '../style/remoteStorage.css';
       ///////////////////////
      // poor man's jQuery //
     ///////////////////////
@@ -32,7 +34,7 @@
       {
         var scripts = document.getElementsByTagName('script');
         for(i in scripts) {
-          if(/remoteStorage.js$/.test(scripts[i].src)) {
+          if((new RegExp(jsFileName+'$')).test(scripts[i].src)) {
             var options = (new Function('return ' + scripts[i].innerHTML.replace(/\n|\r/g, '')))();
             window.remoteStorage.init(options);
           }
@@ -592,7 +594,8 @@
         },
         _init: function() {
           backend.sync();
-        }
+        },
+        cssFilePath: cssFilePath
       }
     })()
   }
@@ -665,7 +668,7 @@ window.remoteStorage.init = function(options) {
   }
   var divEl = document.createElement('div');
   divEl.id = 'remoteStorageDiv';
-  divEl.innerHTML = '<link rel="stylesheet" href="../style/remoteStorage.css" />'
+  divEl.innerHTML = '<link rel="stylesheet" href="'+remoteStorage.cssFilePath+'" />'
     +'<input id="userAddressInput" type="text" placeholder="you@yourremotestorage" onkeyup="InputKeyUp(this);">'
     +'<span id="userAddress" style="display:none" onmouseover="SpanMouseOver(this);" onmouseout="SpanMouseOut(this);" onclick="SpanClick(this)"></span>'
     +'<input id="userButton" type="submit" value="Sign in" onclick="ButtonClick(this,'
