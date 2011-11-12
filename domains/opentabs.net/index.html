@@ -1,160 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" type="text/css" href="style/app.css">
-    <script src="http://opentabs.net:9000/socket.io/socket.io.js"></script>
-    <!-- modules: -->
-    <script src="modules/remoteStorage.js">{
-      category: 'opentabs'
-    }</script>
-    <script src="modules/msg.js"></script>
-    <script src="modules/pgp.js"></script>
-    <script src="modules/tabs.js"></script>
-    <script src="modules/contacts.js"></script>
-    
-    <!-- controller: -->
-    <script src="controller.js"></script>
-    
-    <!-- views: -->
-    <script src="views/contact.js"></script>
-    
+    <title>Opentabs.net: decentralized transactions</title>
     <script>
-      function updateView(userAddress, obj) {
-        if(localStorage.userAddress) {
-          document.getElementById('youAre').innerHTML = 
-            'You are '+localStorage.userAddress;
-        }
-        var idStr = 'contact_'+obj.userAddress.replace('@', ':');
-        if(document.getElementById(idStr)) {
-          document.getElementById(idStr).innerHTML=
-            contactView.renderContact(obj);
-        } else {
-          var div = document.createElement('article');
-          div.setAttribute('id', idStr);
-          div.setAttribute('class', 'contact');
-          div.innerHTML=
-            contactView.renderContact(obj, idStr);
-          document.getElementById('contacts').appendChild(div);
-        }
-      }
-      function onBodyLoad() {
-        controller.setCallbacks({
-          onSecretErr: function(data) {
-            alert('wrong!');
-            localStorage.removeItem('secret');
-            document.getElementById('secret').value='';
-          },
-          onSecretOK: function(data) {
-            document.getElementById('secretForm').style.display='none';
-            if(localStorage.userAddress) {
-              controller.setUserAddress(localStorage.userAddress, localStorage.secret);
-            } else {
-              controller.getCharacters(function(characters) {
-                var str = '<table>';
-                for(var i in characters) {
-                  var character = contacts.getUser(characters[i]);
-                  str += '<tr><td onclick="enter(\''
-                    +character.userAddress+'\');"><div class="avatarBig"><img src="'
-                    +character.avatar+'"><br><h2>'
-                    +character.name+'</h2></div></td></tr>';
-                }
-                document.getElementById('characters').innerHTML= str+'</table>';
-              });
-              document.getElementById('charactersForm').style.display='block';
+      function submit() {
+        var emailAddress = document.getElementById('email').value;
+        document.getElementById('button').disabled=true;
+        var xhr = new XMLHttpRequest();
+        xhr.open('PUT', 'http://invite.opentabs.net:1605/', true);
+        xhr.onreadystatechange=function() {
+          if(xhr.readyState==4) {
+            if(xhr.status==200) {
+              document.getElementById('button').disabled=false;
+              document.getElementById('button').value="Thank you!";
             }
-          },
-          onErr: function(data) {
-            alert('disconnected!');
-            localStorage.removeItem('userAddress');
-            document.getElementById('charactersForm').style.display='block';
-          },
-          onWelcome: function(data) {
-            //document.getElementById('secretForm').style.display='none';
-            document.getElementById('charactersForm').style.display='none';
-            document.getElementById('mainView').style.display='block';
           }
-        });
-        controller.init(updateView);
-        if(localStorage.secret) {
-          controller.testSecret(localStorage.secret);
         }
-      }
-      function showSettings() {
-        document.getElementById('settings').innerHTML = 
-          '<div onclick="hideSettings();">Logged in as:<br>'
-            +localStorage.userAddress+'</div>';
-        document.getElementById('settings').style.display='block';
-        document.getElementById('settingsIcon').style.display='none';
-      }
-      function hideSettings() {
-        document.getElementById('settings').style.display='none';
-        document.getElementById('settingsIcon').style.display='block';
-      }
-      function submitReset(e) {
-        e.preventDefault();
-        localStorage.clear();
-        window.location='';
-      }
-      function submitSecret(e) {
-        e.preventDefault();
-        var secret = document.getElementById('secret').value;
-        localStorage.setItem('secret', secret);
-        controller.testSecret(secret);
-      }
-      function enter(userAddress) {
-        localStorage.setItem('userAddress', userAddress);
-        controller.setUserAddress(userAddress, localStorage.secret);
+        xhr.send(emailAddress);
       }
     </script>
     <style>
+      body { background:#000; color:#fff; font:1em/1.5em FreeSans,Helvetica,sans-serif; margin:0; }
       #background { width:100%; position:fixed; bottom:0; left:0; z-index:-1; }
-      #youAre {float:left;font-size:1.2em;margin:1px;padding:10px;}
-      .charactersForm header {padding:10px;}
-      .charactersForm article {padding-left:120px;}
-      .charactersForm article table tr td {text-align:center;border-style:solid;border-width:5px;border-radius:5px}
-      .charactersForm article table tr td img {border-radius:20px}
-      .charactersForm header h2 {text-align:center;}
+      article { margin:7em auto; padding:1em 2em 1.5em; width:20em; background:rgba(0,0,0,.92); }
+      input { font-size:1em; background:rgba(200,200,200,.15); color:#ddd; border:none; padding:.5em; width:9em; }
+      input[type="submit"] { margin-right:1em; background:rgba(200,200,200,.10); }
+      input:hover, input:focus, input:active { background:rgba(200,200,200,.2); color:#fff; }
+      footer { font-size:1em; color:#666; position:relative; bottom:0; margin:7em auto 0; padding:1em 2em; width:20em; background:rgba(0,0,0,.9); }
+      footer a { color:#999; text-decoration:none; }
     </style>
   </head>
-  <body onload="onBodyLoad();">
-    <div class="secretForm" id="secretForm">
-      <img id="background" src="../bankerwanker.jpg" alt="" />
-      <p>
-        Our secret word:
-        <input size="8" id="secret">
-        <input type="submit" value="Join the Experiment" onclick="submitSecret(event);">
-        <br>
-        <br>
-        (...or come chat about this in <a target="_blank" href="http://webchat.freenode.net/?channels=unhosted">#unhosted</a>).
-      </p>
-    </div>
-    <div class="charactersForm" id="charactersForm">
-      <img id="background" src="../bankerwanker.jpg" alt="" />
-      <header>
-        <h2>
-          Let's get into character:
-        </h2>
-      </header>
-      <article id="characters">
-      </article>
-    </div>
-    <div class="mainView" id="mainView">
-      <div class="feedbackBar" id="feedbackBar">
-        <input type="submit" value="reset" onclick="submitReset(event);">
-        <div class="youAre" id="youAre"></div>
-      </div>
-      <header>
-        <span>
-          Search/add:<input>
-        </span>
-        <span class="settings" id="settings">
-        </span>
-        <div class="settingsIcon" id="settingsIcon" onclick="showSettings();">
-          <h2>*</h2>
-        </div>
-      </header>
-      <div class="contacts" id="contacts">
-      </div>
-    </div>
+  <body>
+    <article>
+      <h1>Decentralized transactions</h1>
+      <p>Opentabs.net is a free software web app to help the 99% be less dependent on abusive banking fees.</p>
+      <h2>Now in private alpha</h2>
+      <p>We closed alpha registration after the 99th person signed up. These fine people will help us test drive the app before we open it up to a wider public later this year.</p>
+  </article>
+<img id="background" src="bankerwanker.jpg" alt="" />
+<article>
+  <h2>Why it&apos;s needed</h2>
+    <p>Imagine you owe me money from something I bought for you. If it was a small amount, we can decide to forget about it (gift economy). But if it was a noteworthy sum, then we would probably end up using the Plain Old Banking System to settle this little peer-to-peer transaction.</p>
+    <p>People use banking between friends, between house mates, and even between family members, and abusive banking fees play too big a role in our day-to-day life. This has to stop. With Opentabs.net there will be a third option: just tab it!</p>
+    <h2>How it works</h2>
+    <p>The Opentabs.net web app does not make actual transactions. It is not a currency, and it is not a bank. It just helps you to cryptographically sign open tabs (&raquo;IOUs&laquo;) between peers, as an alternative to actually executing a bank transfer. This way we can both forget about what we owe each other, and strike it off against other transactions, until maybe at the end of the year we clear the balance once, and settle the tab. Just like tabs in a bar.</p>
+  </article>
+  <footer>photo by <a href="http://www.flickr.com/photos/bixentro/3298070970/in/photostream/">bixentro</a>, poster by Paul Le Chien</footer>
   </body>
 </html>
