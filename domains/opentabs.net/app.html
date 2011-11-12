@@ -20,9 +20,9 @@
     
     <script>
       function updateView(userAddress, obj) {
-        if(localStorage.userAddress) {
+        if(remoteStorage.getUserAddress()) {
           document.getElementById('youAre').innerHTML = 
-            'You are '+localStorage.userAddress;
+            'You are '+remoteStorage.getUserAddress();
         }
         var idStr = 'contact_'+obj.userAddress.replace('@', ':');
         if(document.getElementById(idStr)) {
@@ -46,8 +46,8 @@
           },
           onSecretOK: function(data) {
             document.getElementById('secretForm').style.display='none';
-            if(localStorage.userAddress) {
-              controller.setUserAddress(localStorage.userAddress, localStorage.secret);
+            if(remoteStorage.getUserAddress()) {
+              controller.setUserAddress(remoteStorage.getUserAddress(), localStorage.secret);
             } else {
               controller.getCharacters(function(characters) {
                 var str = '<table>';
@@ -65,7 +65,6 @@
           },
           onErr: function(data) {
             alert('disconnected!');
-            localStorage.removeItem('userAddress');
             document.getElementById('charactersForm').style.display='block';
           },
           onWelcome: function(data) {
@@ -82,7 +81,7 @@
       function showSettings() {
         document.getElementById('settings').innerHTML = 
           '<div onclick="hideSettings();">Logged in as:<br>'
-            +localStorage.userAddress+'</div>';
+            +remoteStorage.getUserAddress()+'</div>';
         document.getElementById('settings').style.display='block';
         document.getElementById('settingsIcon').style.display='none';
       }
@@ -92,7 +91,7 @@
       }
       function submitReset(e) {
         e.preventDefault();
-        localStorage.clear();
+        remoteStorage.clear();
         window.location='';
       }
       function submitSecret(e) {
