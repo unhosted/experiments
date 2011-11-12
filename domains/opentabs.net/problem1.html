@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="style/app.css">
+    <script src="modules/pgp.js"></script>
+    <script src="modules/tabs.js"></script>
+    <script src="modules/contacts.js"></script>
+    
+    <!-- controller: -->
+    <script src="controller.js"></script>
+    
+    <!-- views: -->
+    <script src="views/contact.js"></script>
+    
+    <script>
+      function onBodyLoad() {
+              controller.getCharacters(function(characters) {
+                var str = '<table>';
+                for(var i in characters) {
+                  var character = contacts.getUser(characters[i]);
+                  str += '<tr><td onclick="enter(\''
+                    +character.userAddress+'\');"><div class="avatarBig"><img src="'
+                    +character.avatar+'"><br><h2>'
+                    +character.name+'</h2></div></td></tr>';
+                }
+                document.getElementById('characters').innerHTML= str+'</table>';
+                document.getElementById('charactersForm').style.display='block';
+               });
+      }
+    </script>
+    <style>
+      #background { width:100%; position:fixed; bottom:0; left:0; z-index:-1; }
+      #youAre {float:left;font-size:1.2em;margin:1px;padding:10px;}
+      .charactersForm header {padding:10px;}
+      .charactersForm article {padding-left:120px;}
+      .charactersForm article table tr td {text-align:center;border-style:solid;border-width:5px;border-radius:5px}
+      .charactersForm article table tr td img {border-radius:20px}
+      .charactersForm header h2 {text-align:center;}
+    </style>
+  </head>
+  <body onload="onBodyLoad();">
+    <div class="charactersForm" id="charactersForm">
+      <img id="background" src="../bankerwanker.jpg" alt="" />
+      <header>
+        <h2>
+          Let's get into character:
+        </h2>
+      </header>
+      <article id="characters">
+      </article>
+    </div>
+  </body>
+</html>
