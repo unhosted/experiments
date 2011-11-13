@@ -36,14 +36,12 @@ var cssFilePath = '../style/remoteStorage.css';
         for(i in scripts) {
           if((new RegExp(jsFileName+'$')).test(scripts[i].src)) {
             var options = (new Function('return ' + scripts[i].innerHTML.replace(/\n|\r/g, '')))();
-            window.remoteStorage.init(options);
+            window.remoteStorage.configure(options);
           }
         }
         oauth.harvestToken(function(token) {
           backend.setToken(token);
-          //backend.sync();
         });
-        //remoteStorage.init('sandwiches');
       }
     }, false)
 
@@ -257,12 +255,12 @@ var cssFilePath = '../style/remoteStorage.css';
     ///////////////////////////
 
     var oauth = (function() {
-      function go(address, dataScope, userAddress) {
+      function go(address, category, userAddress) {
         var loc = encodeURIComponent((''+window.location).split('#')[0]);
         window.location = address
           + '?client_id=' + loc
           + '&redirect_uri=' + loc
-          + '&scope=' + dataScope
+          + '&scope=' + category
           + '&user_address=' + userAddress
           + '&response_type=token';
       }
@@ -312,7 +310,7 @@ var cssFilePath = '../style/remoteStorage.css';
     var backend = (function(){
       function keyToAddress(key) {
         var userAddressParts = localStorage.getItem('_remoteStorageUserAddress').split('@')
-        var resource = localStorage.getItem('_remoteStorageDataScope');
+        var resource = localStorage.getItem('_remoteStorageCategory');
         var address = localStorage.getItem('_remoteStorageKV') + key
         return address
       }
@@ -382,20 +380,20 @@ var cssFilePath = '../style/remoteStorage.css';
             });
           }
         },
-        connect: function(userAddress, dataScope, cb) {
+        connect: function(userAddress, category, cb) {
           var onError = function(errorMsg) {
             alert(errorMsg);
           }
           var callback = function(rsAuth, rStemplate, rSapi) {
             cb();
             var rSkvParts = rStemplate.split('{scope}');
-            var rSkv = rSkvParts[0]+dataScope+rSkvParts[1];
+            var rSkv = rSkvParts[0]+category+rSkvParts[1];
             localStorage.setItem('_remoteStorageUserAddress', userAddress);
-            localStorage.setItem('_remoteStorageDataScope', dataScope);
+            localStorage.setItem('_remoteStorageCategory', category);
             localStorage.setItem('_remoteStorageKV', rSkv)
             localStorage.setItem('_remoteStorageAPI', rSapi)
             localStorage.setItem('_remoteStorageAuthAddress', rSauth)
-            oauth.go(rSauth, dataScope, userAddress);
+            oauth.go(rSauth, category, userAddress);
           }
           webfinger.getDavBaseAddress(userAddress, onError, callback);
         },
@@ -504,7 +502,6 @@ var cssFilePath = '../style/remoteStorage.css';
         return len;
       }
 
-
       return {
         length: calcLength(),
         key: function(req) {
@@ -551,18 +548,22 @@ var cssFilePath = '../style/remoteStorage.css';
           work();
         },
         clear: function() {
+          var keysToRemove = [];
           for(var i=0;i<localStorage.length;i++) {
             if(localStorage.key(i).substring(0,15)=='_remoteStorage_') {
-              localStorage.removeItem(localStorage.key(i));
-              localStorage.removeItem('_remoteStorageWorking_'+localStorage.key(i));
+              keysToRemove.push(localStorage.key(i));
+              keysToRemove.push('_remoteStorageWorking_'+localStorage.key(i));
               markDirty(localStorage.key(i));
             }
           }
+          keysToRemove.forEach(function(key){
+            localStorage.removeItem(key);
+          });
           window.remoteStorage.length = 0;
           work();
         },
-        connect: function(userAddress, dataScope) {
-          backend.connect(userAddress, dataScope, function() {
+        connect: function(userAddress, category) {
+          backend.connect(userAddress, category, function() {
             work();
           })
         },
@@ -574,23 +575,25 @@ var cssFilePath = '../style/remoteStorage.css';
         },
         disconnect: function() {
           localStorage.removeItem('_remoteStorageUserAddress');
-          localStorage.removeItem('_remoteStorageDataScope');
+          localStorage.removeItem('_remoteStorageCategory');
           localStorage.removeItem('_remoteStorageKV');
           localStorage.removeItem('_remoteStorageAPI');
           localStorage.removeItem('_remoteStorageAuthAddress');
           localStorage.removeItem('_remoteStorageOauthToken');
           localStorage.removeItem('_remoteStorageDirties');
           localStorage.removeItem('remoteStorageIndex');
+          var keysToRemove = [];
           for(var i=0; i<localStorage.length; i++) {
             if(localStorage.key(i).substring(0,15)=='_remoteStorage_') {
-              var keyName = localStorage.key(i);
-              localStorage.removeItem(keyName);
-              if(window.remoteStorage.options.onChange) {
-                remoteStorage.options.onChange(keyName.substring(15), localStorage.getItem(keyName), null);
-              }
-              localStorage.removeItem(keyName);
+              keysToRemove.push(localStorage.key(i));
             }
           }
+          keysToRemove.forEach(function(key){
+            if(window.remoteStorage.options.onChange) {
+              remoteStorage.options.onChange(key.substring(15), localStorage.getItem(key), null);
+            }
+            localStorage.removeItem(key);
+          });
         },
         _init: function() {
           backend.sync();
@@ -647,36 +650,49 @@ function SpanMouseOut(el) {
 function SpanClick(el) {
   window.remoteStorage.disconnect();
 }
-function ButtonClick(el, dataScope) {
+function ButtonClick(el, category) {
   if(window.remoteStorage.isConnected()) {
     window.remoteStorage.disconnect();
     DisplayConnectionState();
   } else {
     if(document.getElementById('userAddressInput').value!='') {
-      window.remoteStorage.connect(document.getElementById('userAddressInput').value, dataScope);
+      window.remoteStorage.connect(document.getElementById('userAddressInput').value, category);
       DisplayConnectionState();
     }
   }
 }
 
-window.remoteStorage.init = function(options) {
-  if(!options) {
-    options = {};
+function NeedLoginBox() {
+  return 'legacy';
+}
+
+window.remoteStorage.configure = function(setOptions) {
+  window.remoteStorage.options = {//set defaults
+    category: location.host,
+    onChange: function() {},
+    preferBrowserSessionIfNative: true,
+    preferBrowserIdIfNative: true,
+    preferBrowserIdAlways: false
+  };
+  if(setOptions) {
+    for(var option in setOptions) {
+      window.remoteStorage.options[option] = setOptions[option];
+    }
   }
-  if (!(options.dataScope)) {
-    options.dataScope = location.host;
+  if(NeedLoginBox()=='legacy') {
+    var divEl = document.createElement('div');
+    divEl.id = 'remoteStorageDiv';
+    divEl.innerHTML = '<link rel="stylesheet" href="'+remoteStorage.cssFilePath+'" />'
+      +'<input id="userAddressInput" type="text" placeholder="you@yourremotestorage" onkeyup="InputKeyUp(this);">'
+      +'<span id="userAddress" style="display:none" onmouseover="SpanMouseOver(this);" onmouseout="SpanMouseOut(this);" onclick="SpanClick(this)"></span>'
+      +'<input id="userButton" type="submit" value="Sign in" onclick="ButtonClick(this,'
+      +'\''+window.remoteStorage.options.category+'\')">';
+    document.body.insertBefore(divEl, document.body.firstChild);
   }
-  var divEl = document.createElement('div');
-  divEl.id = 'remoteStorageDiv';
-  divEl.innerHTML = '<link rel="stylesheet" href="'+remoteStorage.cssFilePath+'" />'
-    +'<input id="userAddressInput" type="text" placeholder="you@yourremotestorage" onkeyup="InputKeyUp(this);">'
-    +'<span id="userAddress" style="display:none" onmouseover="SpanMouseOver(this);" onmouseout="SpanMouseOut(this);" onclick="SpanClick(this)"></span>'
-    +'<input id="userButton" type="submit" value="Sign in" onclick="ButtonClick(this,'
-    +'\''+options.dataScope+'\')">';
-  document.body.insertBefore(divEl, document.body.firstChild);
   if(window.remoteStorage.isConnected()) {
     window.remoteStorage._init();
   }
   DisplayConnectionState();
-  window.remoteStorage.options = options;
+
+  return window.remoteStorage.options;
 }
