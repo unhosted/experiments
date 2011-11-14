@@ -696,7 +696,8 @@ window.remoteStorage.configure = function(setOptions) {
   if(window.remoteStorage.isConnected()) {
     window.remoteStorage._init();
   }
-  DisplayConnectionState();
-
+  if(NeedLoginBox()=='legacy') {
+    DisplayConnectionState();
+  }
   return window.remoteStorage.options;
 }
