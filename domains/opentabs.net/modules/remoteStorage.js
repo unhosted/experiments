@@ -663,7 +663,11 @@ function ButtonClick(el, category) {
 }
 
 function NeedLoginBox() {
-  return 'legacy';
+  if(window.remoteStorage.options.suppressDialog) {
+    return 'none';
+  } else {
+    return 'legacy';
+  }
 }
 
 window.remoteStorage.configure = function(setOptions) {
