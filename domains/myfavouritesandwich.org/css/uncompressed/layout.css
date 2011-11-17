@@ -1,7 +1,7 @@
 body { margin:0; padding:0; font-family:'lucida grande', helvetica, arial, sans-serif; text-align:center; background:#83b457; }
 .preload { position:absolute; overflow:hidden; width:1px; height:1px; left:-5000px; }
 .preload { background-image:url('./img/changehover.png'); }
-#footerSpacer { padding-bottom:200px; /* bottom padding for footer */ }
+#footerSpacer { padding-bottom:130px; /* bottom padding for footer */ }
 html, body { height:100%; display:block; margin:0; padding:0; width:100%; }
 
 body { display:block; min-width:960px; margin:0 auto; overflow:visible; }
@@ -94,7 +94,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f59', endCol
 footer { background:#bed7a7 url('./img/footerback.png') repeat-x top left fixed; width:100%; font-size:1em; display:block; position:absolute; bottom:0px; margin:0 auto; color:#566f34; text-align:left; padding-top:30px; padding-bottom:10px; }
 footer a { color:#28381c; text-decoration:underline; }
 footer div { display:block; width:200px; float:left; width:380px; margin-left:10px; }
-footer figure { background:url('./img/island.png') no-repeat center top transparent; display:block; height:200px; width:190px; position:absolute; left:370px; margin:0 auto; }
+footer figure { background:url('./img/island.png') no-repeat center top transparent; display:block; height:130px; width:190px; position:absolute; left:370px; margin:0 auto; }
 footer div #rightcolumn { float:right; margin-right:10px; }
 footer div.wrapper { display:block; float:none; width:960px; margin:0 auto; position:relative;  }
 footer h3 { font-size:1.4em; font-weight:bold; text-shadow:8 8 8 #000; color:#284200; margin-bottom:10px; font-family:'lucida grande', helvetica, arial, sans-serif;  }
