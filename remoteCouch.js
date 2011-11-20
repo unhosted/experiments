@@ -120,7 +120,7 @@
 	  +'  <hm:Host xmlns="http://host-meta.net/xrd/1.0">'+config.facadeHost+'</hm:Host>\n'
 	  //+'  <Link rel="http://w3.org/ns/remoteStorage"\n'
 	  +'  <Link rel="remoteStorage"\n'
-          +'    template="http://'+config.proxyHost+'/{scope}/"\n'
+          +'    template="http://'+config.proxyHost+'/{category}/"\n'
           +'    auth="http://'+config.facadeHost+'/auth"\n'
           +'    api="CouchDB"\n'
 	  +'  ></Link>\n'
