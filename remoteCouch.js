@@ -56,16 +56,16 @@
     });
     var dbName, sec;
     if(public) {
-      dbName = dataScope;
+      dbName = dataScope.replace('.', '_');
       sec= {admins:{names:[userAddress]}};//leaving readers undefined
     } else {
-      dbName = dataScope;
+      dbName = dataScope.replace('.', '_');
       sec= {admins:{names:[userAddress]}, readers:{names:[userAddress]}};
     }
     var scopeDb = conn.database(dbName);
     scopeDb.exists(function(err, exists) {
       if(err) {
-        console.log('error looking for scopeDb:');
+        console.log('error looking for scopeDb:"'+dbName+'"');
         console.log(err);
       } else if(exists) {
         console.log('database "'+dbName+'" exists already!');
@@ -122,7 +122,7 @@
 	  +'  <Link rel="remoteStorage"\n'
           +'    template="http://'+config.proxyHost+'/{scope}/"\n'
           +'    auth="http://'+config.facadeHost+'/auth"\n'
-          +'    api="CouchDb"\n'
+          +'    api="CouchDB"\n'
 	  +'  ></Link>\n'
           +'</XRD>\n');
       } else if(req.url.substring(0, '/auth'.length)=='/auth') {
