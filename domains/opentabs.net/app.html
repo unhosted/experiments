@@ -4,14 +4,14 @@
     <link rel="stylesheet" type="text/css" href="style/app.css">
     <script src="http://opentabs.net:9000/socket.io/socket.io.js"></script>
     <!-- modules: -->
-    <script src="modules/remoteStorage.js">{
+    <script src="http://unhost.it/remoteStorage.js">{
       category: 'opentabs'
     }</script>
     <script src="modules/msg.js"></script>
     <script src="modules/pgp.js"></script>
     <script src="modules/tabs.js"></script>
     <script src="modules/contacts.js"></script>
-    
+   
     <!-- controller: -->
     <script src="controller.js"></script>
     
@@ -20,9 +20,9 @@
     
     <script>
       function updateView(userAddress, obj) {
-        if(remoteStorage.getUserAddress()) {
+        if(localStorage.userAddress) {
           document.getElementById('youAre').innerHTML = 
-            'You are '+remoteStorage.getUserAddress();
+            'You are '+localStorage.userAddress;
         }
         var idStr = 'contact_'+obj.userAddress.replace('@', ':');
         if(document.getElementById(idStr)) {
@@ -46,8 +46,8 @@
           },
           onSecretOK: function(data) {
             document.getElementById('secretForm').style.display='none';
-            if(remoteStorage.getUserAddress()) {
-              controller.setUserAddress(remoteStorage.getUserAddress(), localStorage.secret);
+            if(localStorage.userAddress) {
+              controller.setUserAddress(localStorage.userAddress, localStorage.secret);
             } else {
               controller.getCharacters(function(characters) {
                 var str = '<div class="charactersList">';
@@ -81,7 +81,7 @@
       function showSettings() {
         document.getElementById('settings').innerHTML = 
           '<div onclick="hideSettings();">Logged in as:<br>'
-            +remoteStorage.getUserAddress()+'</div>';
+            +localStorage.userAddress+'</div>';
         document.getElementById('settings').style.display='block';
         document.getElementById('settingsIcon').style.display='none';
       }
@@ -91,7 +91,7 @@
       }
       function submitReset(e) {
         e.preventDefault();
-        remoteStorage.clear();
+        localStorage.clear();
         window.location='';
       }
       function submitSecret(e) {

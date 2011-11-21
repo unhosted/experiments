@@ -47,12 +47,12 @@ var controller= (function() {
     }
   }
   function calcTabType(userAddress, currency) {
-    var me = remoteStorage.getUserAddress();
+    var me = localStorage.userAddress;
     return (tabs.getLastEntry(userAddress, currency).message.tab.borrower == me ? 'B' : 'L');
   }
   function calcTabStatus(userAddress, currency) {
     var lastEntry = tabs.getLastEntry(userAddress, currency);
-    var me = remoteStorage.getUserAddress();
+    var me = localStorage.userAddress;
     var suffix = (lastEntry.from == me ? 'Out' : 'In');
     return lastEntry.message.verb +suffix;
   }
@@ -163,7 +163,7 @@ var controller= (function() {
     var lastEntry = tabs.getLastEntry(userAddress, parsed.currency);
     var previousTimestamp;
     var previousBalance;
-    var me = remoteStorage.getUserAddress();
+    var me = localStorage.userAddress;
     if(lastEntry) {
       previousTimestamp = lastEntry.message.revision.timestamp;
       var previousBorrow = (lastEntry.message.tab.borrower == me);
@@ -177,7 +177,7 @@ var controller= (function() {
       previousBalance= 0;
     }
     var diff = parsed.amount;
-    var me = remoteStorage.getUserAddress();
+    var me = localStorage.userAddress;
     var entry = {
       from: me,
       to: userAddress,
