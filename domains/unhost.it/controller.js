@@ -1,24 +1,28 @@
 exports.controller = (function() {
+  var deadLine;
+  var working=false;
   var intervalTimer;
   var options = {
     onChange: function(key, oldValue, newValue) {
       console.log('item "'+key+'" changed from "'+oldValue+'" to "'+newValue+'"');
-    }
+      console.log('WARNING: Please configure an onChange function! Forcing full page refresh instead');
+      window.location = '';
+    },
+    category: location.host.replace('.', '_')
   };
   function onError(str) {
     alert(str);
   }
   function connect(userAddress) {
-    var dataCategory = location.host.replace('.', '_');
     exports.webfinger.getAttributes(userAddress, onError, function(attributes) {
-      var backendAddress = exports.webfinger.resolveTemplate(attributes.template, dataCategory);
+      var backendAddress = exports.webfinger.resolveTemplate(attributes.template, options.category);
       if(attributes.api == 'CouchDB') {
         localStorage.setItem('_shadowBackendModuleName', 'couch');
       } else {
         console.log('API "'+attributes.api+'" not supported! please try setting api="CouchDB" in webfinger');
       }
       exports.session.set('backendAddress', backendAddress);
-      exports.oauth.go(attributes.auth, dataCategory, userAddress);
+      exports.oauth.go(attributes.auth, options.category, userAddress);
     });
   }
   function disconnect() {
@@ -42,9 +46,6 @@ exports.controller = (function() {
     exports.button.on('disconnect', disconnect);
     exports.button.show(isConnected, userAddress);
   }
-  function initTimer() {
-    intervalTimer = setInterval("exports.controller.trigger('timer');", exports.config.autoSaveMilliseconds);
-  }
   function onLoad(setOptions) {
     configure(setOptions); 
     linkButtonToSession();
@@ -56,27 +57,40 @@ exports.controller = (function() {
       exports.sync.start();
     });
     exports.sync.setBackend(exports[localStorage.getItem('_shadowBackendModuleName')]);
-    initTimer();
+    trigger('timer');
   }
   function trigger(event) {
     console.log(event);
-    var newTimestamp = exports.versioning.takeLocalSnapshot()
-    if(newTimestamp) {
-      console.log('changes detected');
-      if(exports.session.isConnected()) {
-        console.log('pushing');
-        exports.sync.push(newTimestamp);
-      } else {
-        console.log('not connected');
-      }
+    if(event == 'timer') {
+      //if timer-triggered, update deadLine and immediately schedule next time
+      var now = (new Date()).getTime();
+      deadLine = now + exports.config.autoSaveMilliseconds;
+      setTimeout("exports.controller.trigger('timer');", exports.config.autoSaveMilliseconds);
     }
-    if(exports.session.isConnected()) {
-      exports.sync.work((exports.config.autoSaveMilliseconds * 9)/10, function(incomingKey, incomingValue) {
-        console.log('incoming value "'+incomingValue+'" for key "'+incomingKey+'".');
-        var oldValue = localStorage.getItem(incomingKey);
-        exports.versioning.incomingChange(incomingKey, incomingValue);
-        options.onChange(incomingKey, oldValue, incomingValue);
-      });
+    if(!working) {
+      working = true;
+      var newTimestamp = exports.versioning.takeLocalSnapshot()
+      if(newTimestamp) {
+        console.log('changes detected');
+        if(exports.session.isConnected()) {
+          console.log('pushing');
+          exports.sync.push(newTimestamp);
+        } else {
+          console.log('not connected');
+        }
+      }
+      if(exports.session.isConnected()) {
+        exports.sync.work(deadLine, function(incomingKey, incomingValue) {
+          console.log('incoming value "'+incomingValue+'" for key "'+incomingKey+'".');
+          var oldValue = localStorage.getItem(incomingKey);
+          exports.versioning.incomingChange(incomingKey, incomingValue);
+          options.onChange(incomingKey, oldValue, incomingValue);
+        }, function() {
+          working = false;
+        });
+      }
+    } else {
+      console.log('still working?');
     }
   }
   return {
