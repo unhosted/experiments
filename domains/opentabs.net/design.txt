@@ -1,3 +1,6 @@
+experiment:
+use real couch instances per user
+
 message timeline:
  [> propose]+
   < ack
