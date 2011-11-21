@@ -130,7 +130,8 @@
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end('<html><form method="GET" action="/doAuth">\n'
           +'  Your user address: <input name="userAddress" value="test@yourremotestorage.com"><br>\n'
-          +'  Your password:<input name="password" type="password" value="unhosted"><br>\n'
+          //+'  Your password:<input name="password" type="password" value="unhosted"><br>\n'
+          +'  Your password:<input name="password" type="password" value=""><br>\n'
           +'  <input type="hidden" name="redirect_uri" value="'+urlObj.query.redirect_uri+'"><br>\n'
           +'  <input type="hidden" name="scope" value="'+urlObj.query.scope+'"><br>\n'
           +'  <input type="submit" value="Allow this app to read and write on your couch">\n'
