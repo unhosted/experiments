@@ -12,7 +12,11 @@
 
     <!-- THE IMPORTANT PART: BEGIN -->
 
-    <script src="http://unhost.it/remoteStorage.js"></script>
+    <script src="http://unhost.it/remoteStorage.js">{
+      onChange: function() {
+        show();
+      }
+    }</script>
 
     <!-- THE IMPORTANT PART: END -->
 

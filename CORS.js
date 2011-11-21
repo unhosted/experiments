@@ -70,6 +70,8 @@ http.createServer(function (req, res) {
           res.end();
         });
       });
+      console.log('example.DATA:'+JSON.stringify({ingredients:['bacon', 'cheese']}));
+      console.log('B.DATA:'+dataStr);
       req2.write(dataStr);
       req2.end();
     }

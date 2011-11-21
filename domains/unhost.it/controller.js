@@ -1,11 +1,15 @@
 exports.controller = (function() {
   var intervalTimer;
-  var options = {};
+  var options = {
+    onChange: function(key, oldValue, newValue) {
+      console.log('item "'+key+'" changed from "'+oldValue+'" to "'+newValue+'"');
+    }
+  };
   function onError(str) {
     alert(str);
   }
   function connect(userAddress) {
-    var dataCategory = location.host;
+    var dataCategory = location.host.replace('.', '_');
     exports.webfinger.getAttributes(userAddress, onError, function(attributes) {
       var backendAddress = exports.webfinger.resolveTemplate(attributes.template, dataCategory);
       if(attributes.api == 'CouchDB') {
@@ -13,23 +17,27 @@ exports.controller = (function() {
       } else {
         console.log('API "'+attributes.api+'" not supported! please try setting api="CouchDB" in webfinger');
       }
-      exports[localStorage.getItem('_shadowBackendModuleName')].init(backendAddress);
+      exports.session.set('backendAddress', backendAddress);
       exports.oauth.go(attributes.auth, dataCategory, userAddress);
     });
   }
   function disconnect() {
     exports.session.disconnect();
     var isConnected = exports.session.isConnected();
-    var userAddress = exports.session.getUserAddress();
+    var userAddress = exports.session.get('userAddress');
     exports.button.show(isConnected, userAddress);
   }
   function configure(setOptions) {
     console.log(setOptions);
-    options = setOptions;
+    if(setOptions) {
+      for(var i in setOptions) {
+        options[i] = setOptions[i];
+      }
+    }
   }
   function linkButtonToSession () {
     var isConnected = exports.session.isConnected();
-    var userAddress = exports.session.getUserAddress();
+    var userAddress = exports.session.get('userAddress');
     exports.button.on('connect', connect);
     exports.button.on('disconnect', disconnect);
     exports.button.show(isConnected, userAddress);
@@ -41,7 +49,10 @@ exports.controller = (function() {
     configure(setOptions); 
     linkButtonToSession();
     exports.oauth.harvestToken(function(token) {
-      exports.session.setToken(token);
+      exports.session.set('token', token);
+      exports[localStorage.getItem('_shadowBackendModuleName')].init(
+        exports.session.get('backendAddress'),
+        token);
       exports.sync.start();
     });
     exports.sync.setBackend(exports[localStorage.getItem('_shadowBackendModuleName')]);
@@ -60,8 +71,11 @@ exports.controller = (function() {
       }
     }
     if(exports.session.isConnected()) {
-      exports.sync.work((exports.config.autoSaveMilliseconds * 9)/10, function() {
-        console.log('back in controller after work.');
+      exports.sync.work((exports.config.autoSaveMilliseconds * 9)/10, function(incomingKey, incomingValue) {
+        console.log('incoming value "'+incomingValue+'" for key "'+incomingKey+'".');
+        var oldValue = localStorage.getItem(incomingKey);
+        exports.versioning.incomingChange(incomingKey, incomingValue);
+        options.onChange(incomingKey, oldValue, incomingValue);
       });
     }
   }
