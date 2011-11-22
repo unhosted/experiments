@@ -1,27 +1,26 @@
 var backends = {
   statics: 8001,
   facade: 8002,
-  proxy: 8003
+  proxy: 8003,
+  userAddress: 8004
 };
 exports.config = {
   couch: {
-    host: '<you>.iriscouch.com',
+    parentDomain: 'iriscouch.com',
     port: 5984,
-    usr: 'remoteCouch',
-    pwd: '<pwd>'
   },
   backends: backends,
-  passwords: {
-    'test@example.com': '<pwd>'
-  },
   defaultPort: backends.statics,
-  proxyHost: 'proxy.example.com',
-  facadeHost: 'example.com',
+  proxyHost: 'proxy.yourremotestorage.com',
+  facadeHost: 'yourremotestorage.com',
   vhosts: {
-    'example.com' : backends.facade,
-    'proxy.example.com' : backends.proxy
-  }
+    'yourremotestorage.com' : backends.facade,
+    'yourremotestorage.net' : backends.facade,
+    'proxy.yourremotestorage.com' : backends.proxy,
+    'proxy.yourremotestorage.net' : backends.proxy,
+    'useraddress.net': backends.userAddress
+  },
   domainsDir: 'domains/',
-  sslDir: '/home/<you>/ssl-cert/',
-  socketHubSecret: '<something>'
+  sslDir: '/Users/mich/ssl-cert/',
+  socketHubSecret: '<secret for Opentabs.net pilot'
 };

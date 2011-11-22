@@ -23,7 +23,7 @@
     buffer.randomize();
     return buffer.toString('base64');
   }
-  function genUser(userAddress, cb) {
+  function genUser(clientId, conn, cb) {
     console.log('Generating pwd');
     var pwd=randStr(40);
     console.log(pwd);
@@ -33,37 +33,40 @@
     console.log('Generating sha');
     var sha1 = str2sha(pwd+salt);
     console.log(sha1);
-    var conn = new(cradle.Connection)(config.couch.host, config.couch.port, {
-      cache: true, raw: false,
-      auth: {username: config.couch.usr, password: config.couch.pwd}
-    });
-    conn.database('_users').save('org.couchdb.user:'+userAddress, {
+    console.log('will now add CouchDB user "'+clientId+'"');
+    conn.database('_users').save('org.couchdb.user:'+clientId, {
       type: 'user',
-      name: userAddress,
+      name: clientId,
       roles: [],
       password_sha: sha1,
       salt: salt
     }, function (err, res) {
-      console.log(JSON.stringify(err));
-      console.log(JSON.stringify(res)); // True
+      console.log('err of adding user:');
+      console.log(err);
+      console.log('res of adding user:');
+      console.log(res); // True
       cb(pwd);
     });
   }
-  function createScope(userAddress, dataScope, public, cb) {
-    var conn = new(cradle.Connection)(config.couch.host, config.couch.port, {
+  function createScope(userName, password, clientId, dataScope, public, cb) {
+    console.log('connecting to host '+userName+'.'+config.couch.parentDomain);
+    var conn = new(cradle.Connection)(userName+'.'+config.couch.parentDomain, config.couch.port, {
       cache: true, raw: false,
-      auth: {username: config.couch.usr, password: config.couch.pwd}
+      auth: {username: userName, password: password}
     });
     var dbName, sec;
     if(public) {
       dbName = dataScope.replace('.', '_');
-      sec= {admins:{names:[userAddress]}};//leaving readers undefined
+      sec= {admins:{names:[clientId]}};//leaving readers undefined
     } else {
       dbName = dataScope.replace('.', '_');
-      sec= {admins:{names:[userAddress]}, readers:{names:[userAddress]}};
+      sec= {admins:{names:[clientId]}, readers:{names:[clientId]}};
     }
     var scopeDb = conn.database(dbName);
     scopeDb.exists(function(err, exists) {
+      console.log('looking for '+dbName+':');
+      console.log(err);
+      console.log(exists);
       if(err) {
         console.log('error looking for scopeDb:"'+dbName+'"');
         console.log(err);
@@ -74,27 +77,32 @@
         scopeDb.create();//looking at https://github.com/cloudhead/cradle this seems to be a synchronous call?
         console.log('created database "'+dbName+'"');
       }
+      
+      console.log('adding users to database "'+dbName+'":');
+      console.log(sec);
       scopeDb.save('_security', sec, function (err, res) {
         console.log('result of saving security doc:');
-	console.log(sec);
-	console.log(err);
+        console.log(sec);
+        console.log('err:');
+        console.log(err);
+        console.log('res:');
         console.log(res);
-	if(err) {
-	  console.log('there was an error');
-	} else {
-	  console.log('db and security doc created, will now generate user:');
-          genUser(userAddress, cb);
-	}
+        if(err) {
+          console.log('there was an error');
+        } else {
+          console.log('db and security doc created, will now generate user:');
+          genUser(clientId, conn, cb);
+        }
       });
     });
   }
 
-  function createToken(userAddress, dataScope, cb) {
+  function createToken(userName, password, clientId, dataScope, cb) {
     var public = (dataScope == 'public');
-    createScope(userAddress, dataScope, public, function(password) {
+    createScope(userName, password, clientId, dataScope, public, function(password) {
       //make basic auth header match bearer token for easy proxying:
-      var bearerToken = (new Buffer(userAddress+':'+password)).toString('base64');
-      console.log(bearerToken+' <= '+userAddress+':'+password);
+      var bearerToken = (new Buffer(clientId+':'+password)).toString('base64');
+      console.log(bearerToken+' <= '+clientId+':'+password);
       cb(bearerToken);
     });
   }
@@ -127,33 +135,34 @@
           +'</XRD>\n');
       } else if(req.url.substring(0, '/auth'.length)=='/auth') {
         var urlObj = url.parse(req.url, true);
+        console.log(urlObj);
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end('<html><form method="GET" action="/doAuth">\n'
-          +'  Your user address: <input name="userAddress" value="test@yourremotestorage.com"><br>\n'
+          +'  Your '+config.couch.parentDomain+' user: <input name="userName" value="'+urlObj.query.userName+'"><br>\n'
           //+'  Your password:<input name="password" type="password" value="unhosted"><br>\n'
           +'  Your password:<input name="password" type="password" value=""><br>\n'
           +'  <input type="hidden" name="redirect_uri" value="'+urlObj.query.redirect_uri+'"><br>\n'
           +'  <input type="hidden" name="scope" value="'+urlObj.query.scope+'"><br>\n'
-          +'  <input type="submit" value="Allow this app to read and write on your couch">\n'
+          +'  <input type="submit" value="Allow this app to read and write on your couch"><br>\n'
+          +'  <a target="_blank" href="http://github.com/unhosted/experiments/">If you have your own server or domain, host this proxy yourself!</a><br>\n'
           +'</form></html>\n');
       } else if(req.url.substring(0, '/doAuth'.length)=='/doAuth') {
         var urlObj = url.parse(req.url, true);
         console.log(urlObj);
-        
-        var dataScope = urlObj.query.scope;
-        var userAddress = urlObj.query.userAddress;
-        if(config.passwords[userAddress] == str2sha(urlObj.query.password)) {
-          createToken(urlObj.query.userAddress, urlObj.query.scope, function(token) {
-            res.writeHead(302, {Location: urlObj.query.redirect_uri+'#access_token='+encodeURIComponent(token)});
-            res.end('Found');
-          });
-        } else {
-          res.writeHead(401, {'Content-Type': 'text/html'});
-          res.end('<html><h3>Please set passwords[\''+userAddress+'\'] to \''
-            +str2sha(urlObj.query.password)
-            +'\' in config.js to make that password work\n'
-            +'</h3></html>');
+        var clientId = '';//don't trust the clientId that the RP claims - instead, derive it from redirect_uri:
+        for(var i in urlObj.query.redirect_uri) {
+          var thisChar = urlObj.query.redirect_uri[i];
+          if((thisChar >= 'a' && thisChar <= 'z') || (thisChar >= 'A' && thisChar <= 'Z')) {
+            clientId += thisChar;
+          } else {
+            clientId += thisChar;
+          }
         }
+        console.log('Parsed redirect_uri to form clientId:'+clientId);
+        createToken(urlObj.query.userName, urlObj.query.password, clientId, urlObj.query.scope, function(token) {
+          res.writeHead(302, {Location: urlObj.query.redirect_uri+'#access_token='+encodeURIComponent(token)});
+          res.end('Found');
+        });
       } else {
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.end('Not found\n');
