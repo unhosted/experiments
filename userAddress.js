@@ -12,12 +12,13 @@
         res.writeHead(200, {
           'Content-Type': 'xrd+xml',
           'Access-Control-Allow-Origin': '*'});
+        var userName = (urlObj.query.userAddress.split('@'))[0];
         res.end('<?xml version="1.0" encoding="UTF-8"?>\n'
           +'<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0" xmlns:hm="http://host-meta.net/xrd/1.0">\n'
 	        +'  <hm:Host xmlns="http://host-meta.net/xrd/1.0">'+config.facadeHost+'</hm:Host>\n'
 	        +'  <Link rel="remoteStorage"\n'
-          +'    template="http://'+config.proxyHost+'/{category}/"\n'
-          +'    auth="http://'+config.facadeHost+'/auth?userName='+(urlObj.query.userAddress.split('@'))[0]+'"\n'
+          +'    template="http://'+userName+'.'+config.proxyParentDomain+'/{category}/"\n'
+          +'    auth="http://'+config.facadeHost+'/auth?userName='+userName+'"\n'
           +'    api="CouchDB"\n'
           +'  ></Link>\n'
           +'</XRD>\n');

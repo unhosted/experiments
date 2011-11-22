@@ -4,6 +4,12 @@ var httpProxy = require('http-proxy'),
 httpProxy.createServer(function (req, res, proxy) {
   console.log(':>');
   var host = req.headers.host.split(':')[0];
+  if(host.indexOf('.yourremotestorage.net')!=-1) {//hack for wildcard support
+    console.log(host+' is a wildcarder');
+    host='*.yourremotestorage.net';
+  } else {
+    console.log(host+' is a not wildcarder');
+  }
   console.log(host)
 
   var portToUse = config.vhosts[host]
