@@ -155,7 +155,7 @@
           if((thisChar >= 'a' && thisChar <= 'z') || (thisChar >= 'A' && thisChar <= 'Z')) {
             clientId += thisChar;
           } else {
-            clientId += thisChar;
+            clientId += '_';//thisChar;
           }
         }
         console.log('Parsed redirect_uri to form clientId:'+clientId);
