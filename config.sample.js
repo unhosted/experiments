@@ -11,16 +11,14 @@ exports.config = {
   },
   backends: backends,
   defaultPort: backends.statics,
-  proxyHost: 'proxy.yourremotestorage.com',
+  proxyHost: 'proxy.yourremotestorage.net',
   facadeHost: 'yourremotestorage.com',
   vhosts: {
     'yourremotestorage.com' : backends.facade,
-    'yourremotestorage.net' : backends.facade,
-    'proxy.yourremotestorage.com' : backends.proxy,
     'proxy.yourremotestorage.net' : backends.proxy,
     'useraddress.net': backends.userAddress
   },
   domainsDir: 'domains/',
   sslDir: '/Users/mich/ssl-cert/',
-  socketHubSecret: '<secret for Opentabs.net pilot'
+  socketHubSecret: '<secret for Opentabs.net pilot>'
 };
