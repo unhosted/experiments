@@ -109,6 +109,7 @@
 
   function serveFacade() {
     http.createServer(function (req, res) {
+      console.log('checking url '+req.url.substring(0, '/register'.length));
       if(req.url=='/.well-known/host-meta') {
         res.writeHead(200, {
           'Content-Type': 'xrd+xml',
@@ -133,6 +134,20 @@
           +'    api="CouchDB"\n'
 	  +'  ></Link>\n'
           +'</XRD>\n');
+      } else if(req.url.substring(0, '/register'.length)=='/register') {
+        var urlObj = url.parse(req.url, true);
+        console.log(urlObj);
+        var userName = urlObj.pathname.substring('/register/'.length);
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Iris Couch password-setter proxy</title>\n'
+          +'</head><body>Welcome '+userName+'\n'
+          +'<form method="GET" action="/doRegister">\n'
+          +'  Pick a password: <input type="password" name="pwd1">\n'
+          +'  Repeat: <input type="password" name="pwd2">\n'
+          +'  <input type="submit">\n'
+          +'  <input type="hidden" name="userName" value="'+userName+'"><br>\n'
+          +'  <input type="hidden" name="redirect_uri" value="'+urlObj.query.redirect_uri+'"><br>\n'
+          +'</form></body></html>');
       } else if(req.url.substring(0, '/auth'.length)=='/auth') {
         var urlObj = url.parse(req.url, true);
         console.log(urlObj);
