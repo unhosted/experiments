@@ -119,7 +119,7 @@
       console.log(err);
       console.log('res:');
       console.log(res);
-      //cb();
+      cb();
     });
   }
   function serveFacade() {
