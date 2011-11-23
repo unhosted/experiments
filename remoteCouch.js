@@ -106,7 +106,22 @@
       cb(bearerToken);
     });
   }
-
+  function setAdminPwd(userName, password, cb) {
+    //console.log('connecting to '+userName+'.'+config.couch.parentDomain+':'+config.couch.port);
+    //var conn = new(cradle.Connection)(userName+'.'+config.couch.parentDomain, config.couch.port, {
+    console.log('connecting to '+userName+'.'+config.proxyParentDomain+':80');
+    var conn = new(cradle.Connection)(userName+'.'+config.proxyParentDomain, 80, {
+      cache: true, raw: false
+    });
+    var configDb = conn.database('_config/admins');//note that cradle allows slashes in db names but not in doc names!
+    configDb.save(userName, password, function(err, res) {
+      console.log('err:');
+      console.log(err);
+      console.log('res:');
+      console.log(res);
+      //cb();
+    });
+  }
   function serveFacade() {
     http.createServer(function (req, res) {
       console.log('checking url '+req.url.substring(0, '/register'.length));
@@ -116,7 +131,7 @@
           'Access-Control-Allow-Origin': '*'});
         res.end('<?xml version="1.0" encoding="UTF-8"?>\n'
           +'<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0" xmlns:hm="http://host-meta.net/xrd/1.0">\n'
-	  +'  <hm:Host xmlns="http://host-meta.net/xrd/1.0">'+config.facadeHost+'</hm:Host>\n'
+          +'  <hm:Host xmlns="http://host-meta.net/xrd/1.0">'+config.facadeHost+'</hm:Host>\n'
           +'  <Link rel="lrdd" template="http://'+config.facadeHost+'/webfinger?q={uri}">\n'
           +'  </Link>\n'
           +'</XRD>\n');
@@ -126,13 +141,13 @@
           'Access-Control-Allow-Origin': '*'});
         res.end('<?xml version="1.0" encoding="UTF-8"?>\n'
           +'<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0" xmlns:hm="http://host-meta.net/xrd/1.0">\n'
-	  +'  <hm:Host xmlns="http://host-meta.net/xrd/1.0">'+config.facadeHost+'</hm:Host>\n'
-	  //+'  <Link rel="http://w3.org/ns/remoteStorage"\n'
-	  +'  <Link rel="remoteStorage"\n'
+          +'  <hm:Host xmlns="http://host-meta.net/xrd/1.0">'+config.facadeHost+'</hm:Host>\n'
+          //+'  <Link rel="http://w3.org/ns/remoteStorage"\n'
+          +'  <Link rel="remoteStorage"\n'
           +'    template="http://'+config.proxyHost+'/{category}/"\n'
           +'    auth="http://'+config.facadeHost+'/auth"\n'
           +'    api="CouchDB"\n'
-	  +'  ></Link>\n'
+          +'  ></Link>\n'
           +'</XRD>\n');
       } else if(req.url.substring(0, '/register'.length)=='/register') {
         var urlObj = url.parse(req.url, true);
@@ -148,6 +163,22 @@
           +'  <input type="hidden" name="userName" value="'+userName+'"><br>\n'
           +'  <input type="hidden" name="redirect_uri" value="'+urlObj.query.redirect_uri+'"><br>\n'
           +'</form></body></html>');
+      } else if(req.url.substring(0, '/doRegister'.length)=='/doRegister') {
+        var urlObj = url.parse(req.url, true);
+        console.log(urlObj);
+        if(urlObj.query.pwd1==urlObj.query.pwd2) {
+          setAdminPwd(urlObj.query.userName, urlObj.query.pwd1, function() {
+            res.writeHead(302, {Location: urlObj.query.redirect_uri+'#userAddress='+encodeURIComponent(urlObj.query.userName+'@'+config.couch.parentDomain)});
+            res.end('Found');
+          });
+        } else {
+          res.writeHead(200, {'Content-Type': 'text/html'});
+          res.end('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Iris Couch passwords differ</title>\n'
+          +'</head><body>Please enter the same password twice. <a href="/register/'
+          +urlObj.query.userName+'?redirect_uri='
+          +urlObj.query.redirect_uri+'">try again</a>.\n'
+          +'</body></html>');
+        }
       } else if(req.url.substring(0, '/auth'.length)=='/auth') {
         var urlObj = url.parse(req.url, true);
         console.log(urlObj);

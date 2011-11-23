@@ -49,7 +49,7 @@ http.createServer(function (req, res) {
         options.headers['Authorization'] = 'Basic '+bearerToken;
       }
 
-      console.log('\nB.OPTIONS:'+JSON.stringify(options.headers));
+      console.log('\nB.OPTIONS:'+JSON.stringify(options));
       var req2 = http.request(options, function(res2) {
         var responseHeaders = res2.headers;
         console.log('\nC.HEADERS:'+JSON.stringify(responseHeaders));
@@ -73,10 +73,11 @@ http.createServer(function (req, res) {
           res.end();
         });
       });
-      console.log('example.DATA:'+JSON.stringify({ingredients:['bacon', 'cheese']}));
+      //console.log('example.DATA:'+JSON.stringify({ingredients:['bacon', 'cheese']}));
       console.log('B.DATA:'+dataStr);
       req2.write(dataStr);
       req2.end();
     }
   });
 }).listen(config.backends.proxy);
+console.log('listening on '+config.backends.proxy);
