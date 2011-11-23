@@ -6,6 +6,9 @@ var http = require('http'),
 ////////////////
 
 http.createServer(function (req, res) {
+  var subdomain = (req.headers.host.split('.'))[0];
+  console.log('detected subdomain "'+subdomain+'"');
+
   var dataStr = '';
   req.on('data', function(chunk) {
     dataStr += chunk;
@@ -13,13 +16,13 @@ http.createServer(function (req, res) {
   });
   req.on('end', function() {
     console.log('A:END');
-    var options =
-      { 'host': config.couch.host
-      , 'port': config.couch.port
-      , 'method': req.method
-      , 'path': req.url
-      , 'headers': req.headers
-      };
+    var options = {
+      'host': subdomain+'.'+config.couch.parentDomain,
+      'port': config.couch.port,
+      'method': req.method,
+      'path': req.url,
+      'headers': req.headers
+    };
     if(req.method=='OPTIONS') {
       responseHeaders={}//should maybe get a base set from remote?
       var origin = req.headers.Origin;
