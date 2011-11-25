@@ -74,5 +74,5 @@ console.log('>:'+host)
 }
 
 http.createServer(serve).listen(config.backends.statics)
-https.createServer(ssl, serve).listen(1443)
+https.createServer(ssl, serve).listen(443)
 console.log('Server running at ports '+config.backends.statics+' and 443') 
