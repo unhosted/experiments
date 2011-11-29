@@ -5,6 +5,27 @@ exports.handler = (function() {
     fs = require('fs'),
     config = require('./config').config;
    
+  function serveFile(res, filename, contentType) {
+    fs.readFile(filename, 'binary', function(err, file) {
+      if(err) {
+        if(err.code == 'EISDIR') {
+          serveFile(res, filename+'/index.html', 'text/html');
+        } else {
+          console.log(err);
+          res.writeHead(500, {'Content-Type': 'text/plain'});
+          res.end(err + '\n');
+        }
+      } else {
+        res.writeHead(200, {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Content-Type': contentType
+        });
+        res.write(file, 'binary');
+        res.end();
+      }
+    });
+  }
   function serve(req, res, staticsMap) {
     var uripath = url.parse(req.url).pathname
       .replace(new RegExp('/$', 'g'), '/index.html');
@@ -43,29 +64,23 @@ exports.handler = (function() {
       contentType='text/plain';
     }
     path.exists(filename, function(exists) { 
-      if(!exists) { 
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write('404 Not Found\n'+filename);
-        res.end();
-        return;
-      } 
-   
-      fs.readFile(filename, 'binary', function(err, file) {
-        if(err) {
-          res.writeHead(500, {'Content-Type': 'text/plain'});
-          res.end(err + '\n');
-          return;
-        }
-
-        res.writeHead(200, {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Content-Type': contentType
+      if(exists) {
+        serveFile(res, filename, contentType);
+      } else {
+        //try adding .html:
+        var filename2 = filename+'.html';
+        path.exists(filename2, function(exists2) { 
+          if(exists2) {
+            contentType='text/html';
+            serveFile(res, filename2, contentType);
+          } else {
+            res.writeHead(404, {'Content-Type': 'text/plain'});
+              res.write('404 Not Found\n'+filename);
+              res.end();
+          }
         });
-        res.write(file, 'binary');
-        res.end();
-      });
-    })
+      }
+    });
   }
 
   return {
