@@ -37,6 +37,8 @@ exports.handler = (function() {
       contentType='text/javascript';
     } else if(/\.png$/g.test(uripath)) {
       contentType='image/png';
+    } else if(/\.svg$/g.test(uripath)) {
+      contentType='image/svg+xml';
     } else {
       contentType='text/plain';
     }
