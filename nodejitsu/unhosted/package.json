@@ -2,11 +2,27 @@
   "name": "unhosted.nodejitsu.com",
   "subdomain": "unhosted",
   "domains": [
+    "www.unhost.it",
+    "www.federoni.org",
+    "www.appsapp.org",
+    "www.syncstorage.org",
+    "www.apptorrent.mobi",
+    "www.apptorrent.org",
+    "www.apptorrent.net",
+    "www.milosurdie.info",
     "unhost.it",
+    "federoni.org",
+    "appsapp.org",
+    "syncstorage.org",
+    "apptorrent.mobi",
+    "apptorrent.org",
+    "apptorrent.net",
+    "milosurdie.info",
+    "www.unhosted.org",
     "unhosted.org"
   ],
   "scripts": {
     "start": "server.js"
   },
-  "version": "0.0.0-21"
+  "version": "0.0.0-28"
 }
