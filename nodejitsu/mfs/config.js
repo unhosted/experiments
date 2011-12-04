@@ -6,7 +6,7 @@ exports.config = {
     'www.myfavouritesandwich.org': 'myfavouritesandwich.org'
   },
   host: {
-    'myfavouritesandwich.nodejitsu.com': 'myfavouritesandwich.org/',
-    'myfavouritesandwich.org': 'myfavouritesandwich.org/',
+    'myfavouritesandwich.nodejitsu.com': 'MyFavouriteSandwich.org/',
+    'myfavouritesandwich.org': 'MyFavouriteSandwich.org/',
   }
 };
