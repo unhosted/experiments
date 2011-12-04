@@ -7,7 +7,7 @@ exports.handler = (function() {
     var urlObj = url.parse(req.url, true);
     console.log(urlObj);
     res.writeHead(200, {'Content-type': 'application/json'});
-    res.write('michielbdejong@iriscouch.com');
+    res.write(JSON.stringify({email: 'michielbdejong@iriscouch.com'}));
     res.end();
   }
 
