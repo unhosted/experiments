@@ -3,7 +3,7 @@ exports.config = {
   sslPort: 443,
   sslDir: 'ssl-cert/',
   redirect: {
-    'www.myfavouritesandwich.org': 'myfavouritesandwich.org'
+    'www.myfavouritesandwich.org': 'http://myfavouritesandwich.org/'
   },
   host: {
     'myfavouritesandwich.nodejitsu.com': 'MyFavouriteSandwich.org/',
