@@ -25,9 +25,11 @@ exports.config = {
   },
   path: {
     'unhosted.org/remoteStorage.js': 'remoteStorage.js/files/remoteStorage.js',
+    'charing-t.unhosted.org/remoteStorage.js': 'remoteStorage.js/files/remoteStorage.js'
   },
   host: {
     'unhosted.nodejitsu.com': 'remoteStorage.js/files/',
-    'unhosted.org': 'website/'
+    'unhosted.org': 'website/',
+    'charing-t.unhosted.org': 'website/'
   }
 };
