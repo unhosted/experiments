@@ -26,13 +26,13 @@ exports.handler = (function() {
       }
     });
   }
-  function serve(req, res, staticsMap) {
+  function serve(req, res, baseDir) {
     var uripath = url.parse(req.url).pathname
       .replace(new RegExp('/$', 'g'), '/index.html');
     var host = req.headers.host;
     if(config.redirect && config.redirect[host]) {
-      res.writeHead(302, {'Location': config.redirect[host]});
-      res.write('302 Location: '+config.redirect[host]+'\n');
+      res.writeHead(302, {'Location': 'http://'+config.redirect[host]});
+      res.write('302 Location: http://'+config.redirect[host]+'\n');
       res.end();
       return;
     }
@@ -41,11 +41,11 @@ exports.handler = (function() {
     console.log(uripath);
     var filename;
     if(config.path && config.path[host + uripath]) {
-      filename = config.path[host + uripath];
+      filename = baseDir + '/' + config.path[host + uripath];
     } else if(config.host && config.host[host]) {
-      filename = config.host[host] + uripath;
+      filename = baseDir + '/' + config.host[host] + uripath;
     } else {
-      filename = config.default + uripath;
+      filename = baseDir + '/' + config.default + uripath;
     }
     var contentType;
     if(/\.appcache$/g.test(uripath)) {

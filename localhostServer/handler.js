@@ -21,7 +21,7 @@ exports.handler = (function() {
     var filename;
     if (config.handler && config.handler[host]) {
       console.log('found handler:'+config.handler[host]);
-      return require(config.handler[host]+'/handler').handler.serve(req, res);
+      return require(config.handler[host]+'/handler').handler.serve(req, res, config.handler[host]);
     } else if(config.path && config.path[host + uripath]) {
       filename = config.path[host + uripath];
     } else if(config.host && config.host[host]) {
