@@ -5,7 +5,7 @@ var http = require('http'),
   config = require('./config').config;
  
 function serve(req, res) {
-  return handler.serve(req, res, config.staticsMap);
+  return handler.serve(req, res, '.');
 }
 http.createServer(serve).listen(config.port);
 https.createServer({
