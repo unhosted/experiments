@@ -1,14 +1,28 @@
 exports.handler = (function() {
   var url = require('url'),
     querystring = require('querystring'),
-    browseridVerifier = require('browserid-verifier');
+    browseridVerify = require('browserid-verifier');
    
   function serve(req, res, baseDir) {
-    var urlObj = url.parse(req.url, true);
-    console.log(urlObj);
-    res.writeHead(200, {'Content-type': 'application/json'});
-    res.write(JSON.stringify({email: 'michielbdejong@iriscouch.com'}));
-    res.end();
+    var dataStr = '';
+    req.on('data', function(chunk) {
+      dataStr += chunk;
+    });
+    req.on('end', function() {
+      postData = querystring.parse(dataStr);
+      postData.audience = 'http://myfavouritesandwich.org';
+      browseridVerify(postData, function(err, r) {
+        if(err) {
+          res.writeHead(200, {'Content-type': 'application/json'});
+          res.write(JSON.stringify(err));
+          res.end();
+        } else {
+          res.writeHead(200, {'Content-type': 'application/json'});
+          res.write(JSON.stringify(r));
+          res.end();
+        }
+      });
+    });
   }
 
   return {
