@@ -7,7 +7,7 @@ var http = require('http'),
 function serve(req, res) {
   return handler.serve(req, res, '.');
 }
-http.createServer(serve).listen(config.port);
+//http.createServer(serve).listen(config.port);
 https.createServer({
   ca:fs.readFileSync(config.sslDir +'sub.class1.server.ca.pem'),
   key:fs.readFileSync(config.sslDir +'ssl.key'),
