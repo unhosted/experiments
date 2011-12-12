@@ -1,0 +1,8 @@
+{
+  "name": "unhosted.nodejitsu.com",
+  "subdomain": "unhosted",
+  "scripts": {
+    "start": "server.js"
+  },
+  "version": "0.0.0-65"
+}
