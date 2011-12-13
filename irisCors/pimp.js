@@ -1,28 +1,35 @@
 var pimper = (function() {
   var couchAddress, adminUsr, adminPwd;//using module globals here to limit func args
-  function httpPut(address, value, withCredentials) {
-    var dataArg;
+  function httpPut(address, value, withCredentials, attachment, contentType) {
+    var options=' -X PUT';
     if(value) {
-      dataArg = '-d\''+JSON.stringify(value)+'\'';
-    } else {
-      dataArg = '';
+      options += ' -d\''+JSON.stringify(value)+'\'';
+    }
+    if(attachment) {
+      options += ' --data-urlencode '+attachment;
+    }
+    if(contentType) {
+      options += ' -H "'+contentType+'"';
     }
     if(withCredentials) {
-      console.log('curl -X PUT '+dataArg+' http://'+adminUsr+':'+adminPwd+'@'+address);
+      host = 'http://'+adminUsr+':'+adminPwd+'@'+address;
     } else {
-      console.log('curl -X PUT '+dataArg+' http://'+address);
+      host = 'http://'+address;
     }
+    console.log('curl '+options+' '+host); 
   }
   function createAdminUser() {
     httpPut(couchAddress+'/_config/admins/'+adminUsr, adminPwd);
   }
   function createDatabase(dbName) {
-    httpPut(couchAddress+'/'+dbName, '', true);
+    httpPut(couchAddress+'/'+dbName, null, true);
   }
   function createDocument(dbName, docName, value) {
     httpPut(couchAddress+'/'+dbName+'/'+docName, value, true);
   }
- 
+  function uploadAttachment(dbName, docName, attachmentName, localFileName, contentType) {
+    httpPut(couchAddress+'/'+dbName+'/'+docName+'/'+attachmentName, null, true, localFileName, contentType);
+  }
   function pimp(userAddress, password) {
     var userAddressParts = userAddress.split('@');
     if(userAddressParts.length != 2) {
@@ -67,9 +74,9 @@ var pimper = (function() {
           "};}"
       }
     });
-    uploadAttachment('cors', 'auth', 'auth/modal.html');
-    uploadAttachment('cors', 'auth', 'auth/base64.js');
-    uploadAttachment('cors', 'auth', 'auth/sha1.js');
+    uploadAttachment('cors', 'auth', 'modal.html', 'files/modal.html', 'text/html');
+    uploadAttachment('cors', 'base64', 'base64.js', 'files/base64.js', 'application/javascript');
+    uploadAttachment('cors', 'sha1', 'sha1.js', 'files/sha1.js', 'application/javascript');
   }
   return {
     pimp: pimp
