@@ -6,10 +6,10 @@ var pimper = (function() {
       options += " -d'"+value+"'";
     }
     if(attachment) {
-      options += ' --data-urlencode '+attachment;
+      options += ' -d @'+attachment;
     }
     if(contentType) {
-      options += ' -H "'+contentType+'"';
+      options += ' -H "Content-Type: '+contentType+'"';
     }
     if(withCredentials) {
       host = 'http://'+adminUsr+':'+adminPwd+'@'+address;
