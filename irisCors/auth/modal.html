@@ -8,20 +8,17 @@
         var couchAddress = 'michielbdejong.iriscouch.com';
         var couchUser = 'adpin';
         document.getElementById('formDiv').innerHTML =
-          '  If this is the first time you use '+couchAddress+' then click <a href="http://yourremotestorage.net/CouchDB/register/'+couchAddress+'?userName='+couchUser+'&redirect_uri='
-          +'http://yourremotestorage.net/CouchDB/auth/'+couchAddress+'/'+couchUser+'">'
-          +'here</a> to initialize it. Otherwise, enter your credentials below:<br>\n'
-          +'  You user: <input id="userName" value="'+couchUser+'"><br>\n'
+          'Check in your browser\'s address bar that you are on your couch, and enter your credentials below:<br>\n'
+          +'  Your user: <input id="userName" value="'+couchUser+'"><br>\n'
           +'  Your password:<input id="password" type="password" value=""><br>\n'
-          +'  <input type="submit" value="Allow this app to read and write on your couch" onclick="allow();"><br>\n'
-          +'  <a target="_blank" href="http://github.com/unhosted/yourremotestorage/">If you have your own server or domain, host this proxy yourself!</a><br>\n'
+          +'  <input type="submit" value="Allow this app to read and write on your couch" onclick="allow();"><br>\n';
       }
       function couchPut(couchAddress, user, pass, dbName, key, value, cb) {
         console.log('couchPut("'+couchAddress+'", "'+user+'", "'+pass+'", "'+dbName+'", "'+key+'", '+JSON.stringify(value)+', cb);');
         var xhr = new XMLHttpRequest();
-        xhr.open('PUT', 'http://yourremotestorage.net/CouchDB/proxy/'+couchAddress+'/'+dbName+'/'+key, true);
+        xhr.open('PUT', 'http://'+couchAddress+'/'+dbName+'/'+key, true);
         xhr.withCredentials = true;
-        xhr.setRequestHeader('Authorization', 'Bearer '+Base64.encode(user+':'+pass));
+        xhr.setRequestHeader('Authorization', 'Basic '+Base64.encode(user+':'+pass));
         xhr.onreadystatechange = function() {
           if(xhr.readyStatus == 4) {
             if(xhr.status == 200) {
