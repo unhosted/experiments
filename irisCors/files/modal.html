@@ -41,22 +41,22 @@
         xhr.send(JSON.stringify(value));
       }
       function couchPut(couchAddress, user, pass, dbName, key, value, cb) {
-        httpCall(couchAddress, user, pass, dbName, key, value, 'PUT', function(status) { 
-          if(status == 200) {
+        httpCall(couchAddress, user, pass, dbName, key, value, 'PUT', function(status, response) { 
+          if(status == 200 || status == 201 || (status == 412 && response == '{"error":"file_exists","reason":"The database could not be created, the file already exists."}\n')) {
             cb();
-          } if(status == 409) {
+          } else if(status == 409) {
             console.log('conflict; getting revision');
-            httpCall(couchAddress, user, pass, dbName, key, value, 'GET', function(status2, response) { 
+            httpCall(couchAddress, user, pass, dbName, key, value, 'GET', function(status2, response2) { 
               console.log('conflict; overwriting');
               try {
-                value._rev = JSON.parse(response)._rev;
+                value._rev = JSON.parse(response2)._rev;
                 console.log(value);
               } catch(e) {
                 console.log('could not re-revision');
                 return;
               }
               httpCall(couchAddress, user, pass, dbName, key, value, 'PUT', function(status3) {
-                if(status3 == 200) {
+                if(status3 == 200 || status3 == 201) {
                   console.log('rePUTting worked');
                   cb();
                 } else {
@@ -66,7 +66,7 @@
               });
             });
           } else {
-            console.log('oops! got a '+xhr.status+' from CouchDB PUT');
+            console.log('oops! got a '+status+' from CouchDB PUT');
             cb();
           }
         });
@@ -97,7 +97,7 @@
         couchPut(couchAddress, masterUser, masterPass, '_users', 'org.couchdb.user:'+newUser, userObj, cb);
       }
       function createDatabase(couchAddress, masterUser, masterPass, dbName, userName, isPublic, cb) {
-        couchPut(couchAddress, masterUser, masterPass, dbName, '', sec, function() {
+        couchPut(couchAddress, masterUser, masterPass, dbName, '', '', function() {
           var sec;
           if(isPublic) {
             sec = {
@@ -145,7 +145,9 @@
         var token = genToken(clientId, newPass);
         createUser(couchAddress, couchUser, couchPass, clientId, newPass, function() {
           createDatabase(couchAddress, couchUser, couchPass, scope.replace('.', '_'), clientId, (scope == 'public'), function() {
-            console.log('location = '+redirectUri + '#access_token='+token);
+            var placeToGo = decodeURIComponent(redirectUri) + '#access_token='+token;
+            console.log('window.location = '+placeToGo);
+            window.location = placeToGo;
           });
         });
       }
