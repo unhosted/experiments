@@ -1,3 +1,5 @@
+This tool will pimp your virgin CouchDB instance, making it (almost) compatible with [remoteStorage](http://www.w3.org/community/unhosted/wiki/RemoteStorage). If you don't have a CouchDB instance, you can get one for free as [Iris Couch](http://iriscouch.com), or set one up on your localhost.
+
 Say you have a virgin CouchDB instance (still in "admin party"), something like (futon): "http://michiel.iriscouch.com/_utils/". Then pick a password, say "secret". You still need a cors proxy (we're trying to fix that). So then you have the following parameters:
 
     user address: "me@michiel.iriscouch.com"
