@@ -63,7 +63,7 @@ var pimper = (function() {
             '    rel=\\\\\\"remoteStorage\\\\\\"\\\\\\n'+
             '    api=\\\\\\"CouchDB\\\\\\"\\\\\\n'+
             '    auth=\\\\\\"http://'+couchAddress+'/cors/auth/modal.html\\\\\\"\\\\\\n'+
-            '    template=\\\\\\"http://michielbdejong.iriscouch.com/cors/_design/proxy/{uri}/\\\\\\"\\\\\\n'+
+            '    template=\\\\\\"http://'+couchAddress+'/{category}/_design/remoteStorage/_show/cors/\\\\\\"\\\\\\n'+
             '  ></Link>\\\\\\n'+
             '</XRD>\\\\\\n\\",'+
             '\\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\", \\"Content-Type\\": \\"application/xml+xrd\\"}'+
