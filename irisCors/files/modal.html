@@ -5,31 +5,71 @@
     <script src="../base64/base64.js"></script>
     <script>
       function showForm() {
-        var couchAddress = 'michielbdejong.iriscouch.com';
-        var couchUser = 'adpin';
+        var couchAddress = location.host;
+        var searchParts = location.search.split('&');
+        var i, userAddress, partParts, couchUser='';
+        for(i=0; i< searchParts.length; i++) {
+          if(i==0) {
+            searchParts[i] = searchParts[i].substring(1);
+          }
+          partParts = searchParts[i].split('=');
+          if(partParts.length == 2 && partParts[0] == 'user_address') {
+            userAddress = partParts[1];
+          }
+        }
+        userAddressParts = userAddress.split('@');
+        if(userAddressParts.length == 2) {
+          couchUser = userAddressParts[0];
+        }
         document.getElementById('formDiv').innerHTML =
           'Check in your browser\'s address bar that you are on your couch, and enter your credentials below:<br>\n'
           +'  Your user: <input id="userName" value="'+couchUser+'"><br>\n'
           +'  Your password:<input id="password" type="password" value=""><br>\n'
           +'  <input type="submit" value="Allow this app to read and write on your couch" onclick="allow();"><br>\n';
       }
-      function couchPut(couchAddress, user, pass, dbName, key, value, cb) {
+      function httpCall(couchAddress, user, pass, dbName, key, value, method, cb) {
         console.log('couchPut("'+couchAddress+'", "'+user+'", "'+pass+'", "'+dbName+'", "'+key+'", '+JSON.stringify(value)+', cb);');
         var xhr = new XMLHttpRequest();
-        xhr.open('PUT', 'http://'+couchAddress+'/'+dbName+'/'+key, true);
+        xhr.open(method, 'http://'+couchAddress+'/'+dbName+'/'+key, true);
         xhr.withCredentials = true;
         xhr.setRequestHeader('Authorization', 'Basic '+Base64.encode(user+':'+pass));
         xhr.onreadystatechange = function() {
-          if(xhr.readyStatus == 4) {
-            if(xhr.status == 200) {
-              cb();
-            } else {
-              console.log('oops! got a '+xhr.status+' from CouchDB PUT');
-              cb();
-            }
+          if(xhr.readyState == 4) {
+            cb(xhr.status, xhr.responseText);
           }
         };
         xhr.send(JSON.stringify(value));
+      }
+      function couchPut(couchAddress, user, pass, dbName, key, value, cb) {
+        httpCall(couchAddress, user, pass, dbName, key, value, 'PUT', function(status) { 
+          if(status == 200) {
+            cb();
+          } if(status == 409) {
+            console.log('conflict; getting revision');
+            httpCall(couchAddress, user, pass, dbName, key, value, 'GET', function(status2, response) { 
+              console.log('conflict; overwriting');
+              try {
+                value._rev = JSON.parse(response)._rev;
+                console.log(value);
+              } catch(e) {
+                console.log('could not re-revision');
+                return;
+              }
+              httpCall(couchAddress, user, pass, dbName, key, value, 'PUT', function(status3) {
+                if(status3 == 200) {
+                  console.log('rePUTting worked');
+                  cb();
+                } else {
+                  console.log('rePUTting failed');
+                  cb();
+                }
+              });
+            });
+          } else {
+            console.log('oops! got a '+xhr.status+' from CouchDB PUT');
+            cb();
+          }
+        });
       }
       function genToken(clientId, password) {
         return Base64.encode(clientId+':'+password);
@@ -57,21 +97,23 @@
         couchPut(couchAddress, masterUser, masterPass, '_users', 'org.couchdb.user:'+newUser, userObj, cb);
       }
       function createDatabase(couchAddress, masterUser, masterPass, dbName, userName, isPublic, cb) {
-        var sec;
-        if(isPublic) {
-          sec = {
-            admins: {names:[userName]}
-          };
-        } else {
-          sec = {
-            admins: {names:[userName]},
-            readers: {names:[userName]}
-          };
-        }
-        couchPut(couchAddress, masterUser, masterPass, dbName, '_security', sec, cb);
+        couchPut(couchAddress, masterUser, masterPass, dbName, '', sec, function() {
+          var sec;
+          if(isPublic) {
+            sec = {
+              admins: {names:[userName]}
+            };
+          } else {
+            sec = {
+              admins: {names:[userName]},
+              readers: {names:[userName]}
+            };
+          }
+          couchPut(couchAddress, masterUser, masterPass, dbName, '_security', sec, cb);
+        });
       }
       function allow() {
-        var couchAddress = 'michielbdejong.iriscouch.com';
+        var couchAddress = location.host;
         var redirectUri, scope;
         var queryParts = location.search.split('&');
         if(queryParts.length > 0 && queryParts[0].length > 0) {

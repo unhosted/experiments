@@ -6,7 +6,7 @@ var pimper = (function() {
       options += " -d'"+value+"'";
     }
     if(attachment) {
-      options += ' -d @'+attachment;
+      options += ' --data-binary @'+attachment;
     }
     if(contentType) {
       options += ' -H "Content-Type: '+contentType+'"';
