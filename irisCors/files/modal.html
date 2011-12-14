@@ -112,6 +112,9 @@
           couchPut(couchAddress, masterUser, masterPass, dbName, '_security', sec, cb);
         });
       }
+      function createDocument(couchAddress, masterUser, masterPass, dbName, docName, value, cb) {
+        couchPut(couchAddress, masterUser, masterPass, dbName, docName, value, cb);
+      }
       function allow() {
         var couchAddress = location.host;
         var redirectUri, scope;
@@ -145,9 +148,22 @@
         var token = genToken(clientId, newPass);
         createUser(couchAddress, couchUser, couchPass, clientId, newPass, function() {
           createDatabase(couchAddress, couchUser, couchPass, scope.replace('.', '_'), clientId, (scope == 'public'), function() {
-            var placeToGo = decodeURIComponent(redirectUri) + '#access_token='+token;
-            console.log('window.location = '+placeToGo);
-            window.location = placeToGo;
+            var obj = {shows: {
+                "cors": 
+                   "function(doc, req) {"
+                  +"  delete(doc._revisions);"
+                  +"  return {"
+                  +"    \"body\": JSON.stringify(doc),"
+                  +"    \"headers\": {\"Access-Control-Allow-Origin:\": \"*\"}"
+                  +"  };"
+                  +"}"
+              }
+            };
+            createDocument(couchAddress, couchUser, couchPass, scope.replace('.', '_'), '_design/remoteStorage', obj, function() {
+              var placeToGo = decodeURIComponent(redirectUri) + '#access_token='+token;
+              console.log('window.location = '+placeToGo);
+              //window.location = placeToGo;
+            });
           });
         });
       }
