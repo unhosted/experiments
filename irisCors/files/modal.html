@@ -162,7 +162,7 @@
             createDocument(couchAddress, couchUser, couchPass, scope.replace('.', '_'), '_design/remoteStorage', obj, function() {
               var placeToGo = decodeURIComponent(redirectUri) + '#access_token='+token;
               console.log('window.location = '+placeToGo);
-              //window.location = placeToGo;
+              window.location = placeToGo;
             });
           });
         });
