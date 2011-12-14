@@ -16,6 +16,7 @@ var pimper = (function() {
     } else {
       host = 'http://'+address;
     }
+    console.log('echo curl '+options+' '+host); 
     console.log('curl '+options+' '+host); 
   }
   function createAdminUser() {
@@ -30,12 +31,18 @@ var pimper = (function() {
   function uploadAttachment(dbName, docName, attachmentName, localFileName, contentType) {
     httpPut(couchAddress+'/'+dbName+'/'+docName+'/'+attachmentName, null, true, localFileName, contentType);
   }
-  function pimp(userAddress, password) {
+  function pimp(userAddress, password, proxy) {
     var userAddressParts = userAddress.split('@');
+    var httpTemplate;
     if(userAddressParts.length != 2) {
       return '"'+userAddress+'" is not a user address';
     }
     couchAddress = userAddressParts[1]+':5984';
+    if(proxy) {
+      httpTemplate = 'http://'+proxy+userAddressParts[1]+'/{category}/';
+    } else {
+      httpTemplate = 'http://'+couchAddress+'/{category}/_design/remoteStorage/_show/cors/';
+    }
     adminUsr = userAddressParts[0];
     adminPwd = password;
     createAdminUser();
@@ -63,7 +70,7 @@ var pimper = (function() {
             '    rel=\\\\\\"remoteStorage\\\\\\"\\\\\\n'+
             '    api=\\\\\\"CouchDB\\\\\\"\\\\\\n'+
             '    auth=\\\\\\"http://'+couchAddress+'/cors/auth/modal.html\\\\\\"\\\\\\n'+
-            '    template=\\\\\\"http://'+couchAddress+'/{category}/_design/remoteStorage/_show/cors/\\\\\\"\\\\\\n'+
+            '    template=\\\\\\"'+httpTemplate+'\\\\\\"\\\\\\n'+
             '  ></Link>\\\\\\n'+
             '</XRD>\\\\\\n\\",'+
             '\\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\", \\"Content-Type\\": \\"application/xml+xrd\\"}'+
@@ -81,4 +88,12 @@ var pimper = (function() {
     pimp: pimp
   };
 })();
-pimper.pimp('me@michiel.iriscouch.com', 'asdf');
+
+var options;
+if(process && process.argv && process.argv.length >= 5 ) {
+  options = process.argv.splice(2);
+  pimper.pimp(options[0], options[1], options[2]);
+} else {
+  console.log('use as: node pimp.js {user}@{domain} {password} {yourremotestorage.net/CouchDB/proxy/}');
+  console.log('E.g.: node pimp.js me@michiel.iriscouch.com asdf yourremotestorage.net/CouchDB/proxy/');
+}
