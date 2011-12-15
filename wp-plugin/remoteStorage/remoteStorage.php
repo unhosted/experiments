@@ -16,7 +16,7 @@ class remoteStoragePlugin {
   }
 
   function onAdminMenu() {
-    add_options_page('remoteStorage Options', 'remoteStorage Plugin', 'manage_options', 'remoteStorage', array('remoteStoragePlugin', 'showPluginOptions'));
+    add_options_page('remoteStorage Options', 'remoteStorage', 'manage_options', 'remoteStorage', array('remoteStoragePlugin', 'showPluginOptions'));
   }
 
   function showPluginOptions() {
