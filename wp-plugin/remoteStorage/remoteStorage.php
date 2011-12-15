@@ -26,7 +26,7 @@ class remoteStoragePlugin {
     echo '<div class="wrap"><form method="post" action="options.php">';
     settings_fields('remoteStorage');
     do_settings_sections('remoteStorage');
-    echo '<p class="submit"><input type="submit" class="button-primary" value="<?php _e(\'Save Changes\') ?>" /></p>';
+    echo '<p class="submit"><input type="submit" class="button-primary" value="Save Changes" /></p>';
     echo '</form></div>';
   }
   function showPluginOptionsText() {
@@ -50,12 +50,11 @@ class remoteStoragePlugin {
   function onAdminInit() {
     register_setting( 'remoteStorage', 'xrdLinkAttr', array('remoteStoragePlugin', 'validateOptions'));
     add_settings_section('remoteStorage_main', 'Your remoteStorage details', array('remoteStoragePlugin', 'showPluginOptionsText'), 'remoteStorage');
-    add_settings_field('remoteStorageAttrTemplate', 'template', array('remoteStoragePlugin', 'templateField'), 'remotestorage', 'remoteStorage_main');
-    add_settings_field('remoteStorageAttrAuth', 'auth', array('remoteStoragePlugin', 'authField'), 'remotestorage', 'remoteStorage_main');
-    add_settings_field('remoteStorageAttrApi', 'api', array('remoteStoragePlugin', 'apiField'), 'remotestorage', 'remoteStorage_main');
+    add_settings_field('remoteStorage_template', 'template', array('remoteStoragePlugin', 'templateField'), 'remotestorage', 'remoteStorage_main');
+    add_settings_field('remoteStorage_auth', 'auth', array('remoteStoragePlugin', 'authField'), 'remotestorage', 'remoteStorage_main');
+    add_settings_field('remoteStorage_api', 'api', array('remoteStoragePlugin', 'apiField'), 'remotestorage', 'remoteStorage_main');
   }
 }
-
 add_action("webfinger_xrd", array('remoteStoragePlugin', 'onWebfingerXrd'));
 add_action('admin_menu', array('remoteStoragePlugin', 'onAdminMenu'));
 add_action('admin_init', array('remoteStoragePlugin', 'onAdminInit'));
