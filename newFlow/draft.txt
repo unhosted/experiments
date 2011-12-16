@@ -1,0 +1,86 @@
+what do we want to show?
+- logging in to Libre Docs with BrowserId
+- implications
+- BrowserAuth vs OAuth
+- Iris Couch enrollment through Libre Docs
+
+ways to get to 'signed in' state:
+N1: native BrowserId&session in browser, user is logged in to browser
+- get to Libre Docs. no login button, but session-chrome starts flashing
+- select your user address
+
+N2: native BrowserId&session in browser, user is not logged in, but their IdP is a primary
+- get to Libre Docs. no login button, but session-chrome starts flashing
+- fill in your email address
+- IdP opens in separate tab (popup?)
+- log in
+- switch back to Libre Docs tab
+
+N3: native BrowserId&session in browser, user is not logged in, IdP not a primary, but user is registered on browserid.org
+- get to Libre Docs. no login button, but session-chrome starts flashing
+- fill in your email address
+- browerid.org opens in popup
+- log in
+
+N4: native BrowserId&session in browser, user is not logged in, IdP not a primary, first time user sees BrowserId
+- get to Libre Docs. no login button, but session-chrome starts flashing
+- fill in your email address
+- browerid.org opens in popup
+- sign up
+- confirm email
+- log in
+
+N5: no native BrowserId&session, but user is registered on browserid.org
+- get to Libre Docs. have a big BrowserId login button
+- select your user address and log in
+
+N6: no native support, and also first time user sees BrowserId
+- get to Libre Docs. have a big BrowserId login button
+- sign up for BrowserId
+- confirm email user@hotmail.com
+- log in
+
+ways to continue from 'signed in' state to 'auth required' state:
+R1: user address has remoteStorage
+- that's it, you're through to the 'auth required' state.
+
+R2: user has no rS and chooses default
+- click "use Iris Couch" with prefilled 'user@user.iriscouch.com', or let user choose if taken
+- a second BrowserId dialog (myfavoriteshow.org style), this time with user@user.iriscouch.com. just confirm.
+
+R3: user has no rS and chooses advanced freedom
+- user is informed about the many options they can execute manually:
+  - Iris Couch
+  - Dutch student
+  - talk to your sysadmin
+  - talk to a geek friend
+  - own CouchDB instance
+  - GoogleData
+  - ownCloud
+  - WordPress+CouchDB/ownCloud/simple?
+  - Pagekite+CouchDB/ownCloud
+  - Freedombox?
+  - Locker Project?
+  - etc.
+- user goes through steps to set up their indie remoteStorage and comes back when they're done (start from the top)
+
+A1: Libre Docs supports BrowserAuth, and so does the user's rS
+- that's it, you're in. if you signed up for Iris Couch, then your couch will have been auto-pimped, and LibreDocs will run an auth proxy for you, which will be recorded in your iriscouch webfinger, with a link to your futon password inside browserid-ed libredocs.
+
+A2: Libre Docs uses the OAuth flow and you just enrolled for IrisCouch:
+- you need to set a password for pimping your couch
+- you're redirected to the OAuth page of your remote storage
+- you click 'allow'
+- you're connected
+
+A3: Libre Docs uses the OAuth flow and you have a password for your remoteStorage, but it's the first time you connect from this browser:
+- you're redirected to the OAuth page of your remote storage
+- you fill in your password
+- you click 'allow'
+- you're connected
+
+A4: Libre Docs uses the OAuth flow and you even though you weren't logged in to LibreDocs, you're logged in to your remoteStorage:
+- you're redirected to the OAuth page of your remote storage
+- you click 'allow'
+- you're connected
+
