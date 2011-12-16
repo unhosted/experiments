@@ -1,0 +1,6 @@
+the idea of BrowserAuth is to use only BrowserId, and no OAuth. it describes what Sauropod does to allow access to a data zone.
+
+i think there's a problem with it though, because if i want to phish, i can present the user a browserid button, and put in the wrong audience... ah no, the browser or shim would stop that. i think. ok, let's assume you can only give the audience that you are yourself hosted on, as an app.
+
+then we could package apps: contacts.guardcat.org/supercat/index.html, where supercat is the guardcat app. adapting the demo...
+hm, 'category' is no longer a good name if only the guardcat apps fall into categories from a user's point of view.

@@ -1,0 +1,19 @@
+idea for demo:
+
+contacts.guardcat.org is the category for the address book you're using.
+
+myfavouritecat.org lets you remember who your favourite cat is. it stores favouriteness in the myfavouritecat_org category (TODO: define mapping '.' -> '_' and check if it holds water for all characters that can be in URLs and the ones that can be in CouchDB db names). it uses BrowserAuth for this (so doesn't work with current remoteStorage accounts). if BrowserAuth is not available, it will fallback to OAuth.
+
+at the same time it will see if you have an intent available for choosing a contact. if so, it will use whatever contact picker you have. if not, it will revert to OAuth to contacts.guardcat.org.
+
+i think the BrowserAuth -> OAuth fallback for own data works, and the WebIntents -> OAuth fallback too.
+
+the main questions are about guardcat.org i think:
+- is guardcat a good name for this product?
+- will people understand they can trust this product? or will it feel weird?
+- maybe the app name and category ("data scope") name should be different. app category can be guard cat apps, and then we present specific guard cat apps, but don't make any centralized choice about a default guard cat app. we just package them, like on libre docs.
+
+demo flow 1: OAuth to myfavouritecat.org and to contacts_guardcat_org
+demo flow 2: BrowserAuth to myfavouritecat.org and WebIntents to contacts.guardcat.org/SuperCat/index.html contact picker
+
+problem: if guard cat apps are not packaged by us, then they need to either use OAuth or start pushing their own lock-in domain. in any case, guardcat.org poses centralized lock-in hub. that's not good enough, to be fair...
