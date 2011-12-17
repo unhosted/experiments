@@ -1,0 +1,14 @@
+<html>
+<script src="https://browserid.org/include.js"></script>
+<script>
+function go() {
+  navigator.id.getVerifiedEmail(function(assertion) {
+    location='http:///contacts.guardcat.org/3.html'
+  });
+}
+</script>
+<h2>This is your remoteStorage provider speaking</h2>
+Do you want to allow "<b>contacts.guardcat.org</b>" to access your "<b>contacts</b>" data?
+<br>
+<input value="confirm with BrowserId" type="submit" onclick="go();">
+</html>
