@@ -9,7 +9,7 @@ exports.handler = (function() {
      req.on('end', function(chunk) {
        var obj = {
          assertion: dataStr,
-         audience: "http://myfavouritecontact.org"
+         audience: "http://contacts.guardcat.org"
        }
        //console.log('obj start');
        //console.log(obj);

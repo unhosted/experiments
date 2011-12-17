@@ -10,8 +10,9 @@ function bodyOnload() {
     if(xhr.readyState == 4) {
       try {
         var response = JSON.parse(xhr.responseText);
-        document.getElementById('1').innerHTML = 'Your user address is '+response.email+'; we will use BrowserId-based auth to your remoteStorage, so no OAuth here! :)';
-
+        document.getElementById('1').innerHTML = 'Your user address is '+response.email+'; GuardCat is connecting to your "<b>contacts</b>" category...';
+        //remoteStorage.configure({userAddress: response.email});
+        location = 'http://yourremotestorage.com/';
       } catch(e) {
         document.getElementById('1').innerHTML = 'Njet robotet :(';
       }
@@ -22,13 +23,10 @@ function bodyOnload() {
 </script>
 </head>
 <body onload="bodyOnload();">
-<h2>My Favourite Contact</h2>
+<h2>GuardCat says meow!</h2>
 <div id="1">
-logging in...
+GuardCat is connecting to your "<b>contacts</b>" category...<br>
 </div>
-<br>
-<br>
-<br>
-<input value="pick your favourite contact" type="submit" onclick="location='http://contacts.guardcat.org/index.html'"
+
 </body>
 </html>
