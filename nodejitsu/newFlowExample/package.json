@@ -1,12 +1,13 @@
 {
-  "name": "myfavouritesandwich.org",
-  "subdomain": "myfavouritesandwich",
+  "name": "newflowexample",
+  "subdomain": "newflowexample",
   "domains": [
-    "myfavouritesandwich.org",
-    "www.myfavouritesandwich.org"
+    "myfavouritecontact.org",
+    "contacts.guardcat.org",
+    "yourremotestorage.com"
   ],
   "scripts": {
     "start": "server.js"
   },
-  "version": "0.0.0-18"
+  "version": "0.0.0-21"
 }
