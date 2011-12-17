@@ -1,0 +1,12 @@
+<html>
+<script src="http://browserid.org/include.js"></script>
+<script>
+function go() {
+  navigator.id.getVerifiedEmail(function(assertion) {
+    location = './2.html?assertion='+assertion;
+  });
+}
+</script>
+<h2>My Favourite Contact</h2>
+<input value="sign in with BrowserId" type="submit" onclick="go();">
+</html>
