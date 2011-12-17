@@ -4,3 +4,6 @@ i think there's a problem with it though, because if i want to phish, i can pres
 
 then we could package apps: contacts.guardcat.org/supercat/index.html, where supercat is the guardcat app. adapting the demo...
 hm, 'category' is no longer a good name if only the guardcat apps fall into categories from a user's point of view.
+
+thinking about this again, guardcat.org should be the app, and contacts.unhosted.org should be the namespace. and 'category' stops making sense as a name for an app's data scope, but on the bright side, we will be able to just use '{app}' instead
+in fact, there is no reason to append '.unhosted.org' if we're never going to browserid to them.
