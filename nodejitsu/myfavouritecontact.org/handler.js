@@ -5,7 +5,7 @@ exports.handler = (function() {
     fs = require('fs'),
     config = require('./config').config;
    
-  function serve(req, res, staticsMap) {
+  function serve(req, res) {
     var uripath = url.parse(req.url).pathname
       .replace(new RegExp('/$', 'g'), '/index.html');
     var host = req.headers.host;

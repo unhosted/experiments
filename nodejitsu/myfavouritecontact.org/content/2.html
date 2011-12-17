@@ -10,7 +10,7 @@ function bodyOnload() {
     if(xhr.readyState == 4) {
       try {
         var response = JSON.parse(xhr.responseText);
-        document.getElementById('1').innerHTML = 'Your user address is '+response.email+'; trying to connect you...';
+        document.getElementById('1').innerHTML = 'Your user address is '+response.email+'; we will use BrowserId-based auth to your remoteStorage, so no OAuth here! :)';
 
       } catch(e) {
         document.getElementById('1').innerHTML = 'Njet robotet :(';
