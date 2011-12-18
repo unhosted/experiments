@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="http://webintents.org/webintents.min.js"></script>
+    <script>
+      function startIntent() {
+        var intent = new Intent("http://webintents.org/pick", "something/other");
+        window.navigator.startActivity(intent, function(data) {
+          document.getElementById("1").innerHTML = data;
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <h2>Relying Party</h2>
+    <input value="pick your thing" type="submit" onclick="startIntent();">
+    and it will show up here:
+    <div id="1"></div>
+  </body>
+</html>

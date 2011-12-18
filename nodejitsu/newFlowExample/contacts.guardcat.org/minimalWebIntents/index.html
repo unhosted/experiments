@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Web Intents minimal demo</title>
+  </head>
+  <body>
+    <h2>Minimal demo of Web Intents</h2>
+    <h3>As a starting point, consider these minimal examples</h3>
+    <ul>
+      <li><a href="minimalHandler.html" target="_blank">handler</a> and</li>
+      <li><a href="minimalRP.html" target="_blank">relying party</a>.</li>
+    </ul>
+    <h3>Pitfalls:</h3>
+    <ul>
+      <li>It doesn't work in Firefox, seemingly (I didn't confirm this though) because Content Security Policy headers are incorrect (they don't seem to let the page execute inline javascript). So use Chrome for testing until this is fixed. If you know what the error is, then please help to fix it.</li>
+      <li>To see what's going on, the first thing you need to do is:
+        <ul>
+          <li>open <a href="http://webintents.org/" target="_blank">webintents.org</a> in a separate tab,</li>
+          <li>open inspector (Chrome's equivalent of Firebug, Apple-alt-i on a Mac),</li>
+          <li>go to the "console" part of Chrome inspector, and</li>
+          <li>at the ">" type "localStorage", to see the contents of localStorage. There is a /list.html page on webintents.org but it is (or seems to be) broken.</li>
+          <li>To see the registered handlers for the 'pick' action, type "localStorage.getItem('http://webintents.org/pick');".</li>
+          <li>To reset everything, type "localStorage.clear();" in the console on the webintents.org tab. Then refresh the page on the handler tab to see it reappear.</li>
+          <li>This is your crucial tool for debugging what's going on. If you use this, then the rest is easy.</li>
+        </ul>
+      </li>
+      <li>Don't forget the 'title' tag in the handler page. If the page doesn't have a title, then it won't be clickable in the selector. Also adding a favicon looks better. You'll also see these details in inspector "localStorage.getItem('http://webintents.org/pick');" by the way.</li>
+    </ul>
+  </body>
+</html>

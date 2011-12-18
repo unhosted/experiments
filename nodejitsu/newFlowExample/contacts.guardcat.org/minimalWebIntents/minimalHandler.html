@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>title-of-this-here-handler</title>
+    <script src="http://webintents.org/webintents.min.js"></script>
+    <intent action="http://webintents.org/pick" type="something/other">
+  </head>
+  <body onload="if(window.intent){document.getElementById('1').style.display='block';}">
+    <h2>Handler</h2>
+    when you use me, i will give choices here:
+    <div id="1" style="display:none">
+      <input type="submit" value="pick me!" onclick="window.intent.postResult('the-thing-you-picked');setTimeout(function() { window.close(); }, 1000);">
+    </div>
+  </body>
+</html>
