@@ -1,13 +1,26 @@
-<html>
-<script src="https://browserid.org/include.js"></script>
-<script>
-function go() {
-  navigator.id.getVerifiedEmail(function(assertion) {
-    location = './2.html?assertion='+assertion;
-  });
-}
-</script>
-<h2>Pick a contact</h2>
-<br>
-<input value="sign in with BrowserId" type="submit" onclick="go();">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://browserid.org/include.js"></script>
+    <script src="http://webintents.org/webintents.min.js"></script>
+    <script>
+    function go() {
+      navigator.id.getVerifiedEmail(function(assertion) {
+        location = './2.html?assertion='+assertion;
+      });
+    }
+    </script>
+  <script src="//webintents.org/webintents.min.js"></script>
+  <intent action="http://webintents.org/pick" 
+    type="contact/vcard" 
+    href="pick.html"
+    disposition="window|inline"
+  />
+  </head>
+  <body>
+    <h2>Pick a contact</h2>
+    <br>
+    <input value="sign in with BrowserId" type="submit" onclick="go();">
+  </body>
 </html>
+

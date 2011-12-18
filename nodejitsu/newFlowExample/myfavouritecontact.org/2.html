@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="http://webintents.org/webintents.min.js"></script>
 <script>
 function bodyOnload() {
   var assertion = decodeURIComponent(location.search.split('=')[1]);
@@ -19,9 +20,17 @@ function bodyOnload() {
   }
   xhr.send(assertion);
 }
+function startIntent() {
+  var intent = new Intent("http://webintents.org/pick", "contact/vcard");  
+  window.navigator.startActivity(intent, function(data) {
+    console.log(data);
+    //location='http://contacts.guardcat.org/index.html';
+  });
+}
 </script>
 </head>
 <body onload="bodyOnload();">
+<iframe src="http://contacts.guardcat.org" width="0" height="0"></iframe>
 <h2>My Favourite Contact</h2>
 <div id="1">
 logging in...
@@ -29,6 +38,6 @@ logging in...
 <br>
 <br>
 <br>
-<input value="pick your favourite contact" type="submit" onclick="location='http://contacts.guardcat.org/index.html'"
+<input value="pick your favourite contact" type="submit" onclick="startIntent();">
 </body>
 </html>
