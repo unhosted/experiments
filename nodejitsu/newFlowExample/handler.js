@@ -43,6 +43,8 @@ exports.handler = (function() {
       contentType='text/javascript';
     } else if(/\.png$/g.test(uripath)) {
       contentType='image/png';
+    } else if(/\.ico$/g.test(uripath)) {
+      contentType='image/png';
     } else {
       contentType='text/plain';
     }
