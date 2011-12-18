@@ -14,12 +14,12 @@
     <h3>Pitfalls:</h3>
     <ul>
       <li>It doesn't work in Firefox, seemingly (I didn't confirm this though) because Content Security Policy headers are incorrect (they don't seem to let the page execute inline javascript). So use Chrome for testing until this is fixed. If you know what the error is, then please help to fix it.</li>
-      <li>To see what's going on, the first thing you need to do is:
+      <li> There is a /list.html page on webintents.org but it seems to be currently broken. So to see what's going on, the first thing you need to do is:
         <ul>
           <li>open <a href="http://webintents.org/" target="_blank">webintents.org</a> in a separate tab,</li>
           <li>open inspector (Chrome's equivalent of Firebug, Apple-alt-i on a Mac),</li>
           <li>go to the "console" part of Chrome inspector, and</li>
-          <li>at the ">" type "localStorage", to see the contents of localStorage. There is a /list.html page on webintents.org but it seems to be currently broken.</li>
+          <li>at the ">" type "localStorage", to see the contents of localStorage.</li>
           <li>To see the registered handlers for the 'pick' action, type "localStorage.getItem('http://webintents.org/pick');".</li>
           <li>To reset everything, type "localStorage.clear();" in the console on the webintents.org tab. Then refresh the page on the handler tab to see it reappear.</li>
           <li>This is your crucial tool for debugging what's going on. If you use this, then the rest is easy.</li>
