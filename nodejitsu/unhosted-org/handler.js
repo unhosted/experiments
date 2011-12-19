@@ -60,6 +60,10 @@ exports.handler = (function() {
       contentType='image/png';
     } else if(/\.svg$/g.test(uripath)) {
       contentType='image/svg+xml';
+    } else if(/host-meta$/g.test(uripath)) {
+      contentType='application/xml+xrd';
+    } else if(/webfinger$/g.test(uripath)) {
+      contentType='application/xml+xrd';
     } else {
       contentType='text/plain';
     }
