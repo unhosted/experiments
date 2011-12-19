@@ -1,8 +1,8 @@
 exports.config = {
   port: 80,
   pathHandler: {
-    'myfavouritecontact.org/verifier': './mfcBrowserid/',
-    'contacts.guardcat.org/verifier': './gcBrowserid/'
+    'myfavouritecontact.org/verifier': './mfcBrowserId/',
+    'contacts.guardcat.org/verifier': './gcBrowserId/'
   },
   host: {
     'contacts.guardcat.org': 'contacts.guardcat.org/',
