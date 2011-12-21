@@ -6,21 +6,67 @@
     <script>
       function signIn() {
         alert('under construction, wear your helmet');
-        window.location = '/apps.html?userAddress='+encodeURIComponent(document.getElementById('userAddress').value);
+        document.getElementById('welcomeScreen').style.display='none';
+        document.getElementById('homeScreen').style.display='block';
       }
       function signUp() {
         alert('under construction, wear your helmet');
         window.location= '/easyFreedom.html';
       }
+      var userAddress;
+
+      function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.location.href);
+        if(results == null) {
+          return "";
+        } else {
+          return decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+      }
+
+      function bodyOnLoad() {
+        userAddress = getParameterByName('userAddress');
+        if(userAddress) {
+          document.getElementById('homeScreen').style.display='block';
+          remoteStorage.configure({
+            userAddress: userAddress
+          });
+        } else {
+          document.getElementById('welcomeScreen').style.display='block';
+        }
+      }
+      function goApp(appName) {
+        if(authAddress) {
+          window.location= authAddress;
+        } else if(userAddress) {
+          window.location='/'+appName+'.html?userAddress='+encodeURIComponent(userAddress);
+        } else {
+          window.location='/'+appName+'.html';
+        }
+      }
     </script>
-  </head>
-  <body>
-    <h2>Libre Docs</h2>
-    <input id="userAddress" placeholder="you@yourremotestorage">
-    <input type="submit" id="signIn" value="Sign In" onclick="signIn();">
-    <br><br><br>
-    <a href="/advancedFreedom.html">Get advanced freedom</a>
-    <input type="submit" id="signUp" value="Get Easy Freedom" onclick="signUp();">
+  <body onload="bodyOnLoad();">
+    <div id="welcomeScreen" style="display:none;">
+      <h2>Libre Docs</h2>
+      <input id="userAddress" placeholder="you@yourremotestorage">
+      <input type="submit" id="signIn" value="Sign In" onclick="signIn();">
+      <br><br><br>
+      <a href="/advancedFreedom.html">Get advanced freedom</a>
+      <input type="submit" id="signUp" value="Get Easy Freedom" onclick="signUp();">
+    </div>
+    <div id="homeScreen" style="display:none;">
+      <h2>Libre Docs</h2>
+      Choose which app to use:
+      <ul>
+        <li> <input type="submit" onclick="goApp('textWriter');" value="Text Writer"></li>
+        <li> WebODF (coming soon) </li>
+        <li> unhosted etherpad (coming soon) </li>
+        <li> UNG's svg-edit (coming soon) </li>
+      </ul>
+    </div>
     <script src="http://unhosted.org/remoteStorage.js">{suppressDialog:true}</script>
   </body>
 </html>
