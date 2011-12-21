@@ -5,7 +5,7 @@ exports.handler = (function() {
     fs = require('fs'),
     config = require('./config').config;
    
-  function serve(req, res) {
+  function serve(req, res, baseDir) {
     var uripath = url.parse(req.url).pathname
       .replace(new RegExp('/$', 'g'), '/index.html');
     var host = req.headers.host;
@@ -26,11 +26,11 @@ exports.handler = (function() {
       console.log('found handler:'+config.handler[host]);
       return require(config.handler[host]+'/handler').handler.serve(req, res, config.handler[host]);
     } else if(config.path && config.path[host + uripath]) {
-      filename = config.path[host + uripath];
+      filename = baseDir + config.path[host + uripath];
     } else if(config.host && config.host[host]) {
-      filename = config.host[host] + uripath;
+      filename = baseDir + config.host[host] + uripath;
     } else {
-      filename = config.default + uripath;
+      filename = baseDir +  config.default + uripath;
     }
     var contentType;
     if(/\.appcache$/g.test(uripath)) {
