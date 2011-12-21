@@ -6,9 +6,7 @@
     <script>
       function signIn() {
         alert('under construction, wear your helmet');
-        remoteStorage.configure({
-          userAddress: document.getElementById('userAddress').value
-        });
+        window.location = '/apps.html?userAddress='+encodeURIComponent(document.getElementById('userAddress').value);
       }
       function signUp() {
         alert('under construction, wear your helmet');
