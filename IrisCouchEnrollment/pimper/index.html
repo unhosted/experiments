@@ -13,7 +13,7 @@
         alert('under construction, wear your helmet');
         window.location= '/easyFreedom.html';
       }
-      var userAddress;
+      var userAddress, lrddAddress, authAddress;
 
       function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -49,7 +49,7 @@
       }
     </script>
   <body onload="bodyOnLoad();">
-    <div id="welcomeScreen" style="display:none;">
+    <div id="welcomeScreen" style="display:block;">
       <h2>Libre Docs</h2>
       <input id="userAddress" placeholder="you@yourremotestorage">
       <input type="submit" id="signIn" value="Sign In" onclick="signIn();">
