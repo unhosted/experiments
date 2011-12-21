@@ -31,8 +31,8 @@ exports.handler = (function() {
       .replace(new RegExp('/$', 'g'), '/index.html');
     var host = req.headers.host;
     if(config.redirect && config.redirect[host]) {
-      res.writeHead(302, {'Location': config.redirect[host]});
-      res.write('302 Location: '+config.redirect[host]+'\n');
+      res.writeHead(302, {'Location': config.redirect[host]+uripath});
+      res.write('302 Location: '+config.redirect[host]+uripath+'\n');
       res.end();
       return;
     }
