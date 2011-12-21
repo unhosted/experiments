@@ -1,0 +1,14 @@
+{
+  "name": "libredocs",
+  "subdomain": "libredocs",
+  "domains": [
+    "libredocs.org",
+    "www.libredocs.org",
+    "libredoc.org",
+    "www.libredoc.org"
+  ],
+  "scripts": {
+    "start": "server.js"
+  },
+  "version": "0.0.0-17"
+}
