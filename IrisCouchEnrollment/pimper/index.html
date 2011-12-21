@@ -2,36 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Iris Couch enrollment</title>
+    <title>Libre Docs</title>
     <script>
-      function showPass() {
-        if(document.getElementById('userPass').type == 'password') {
-          document.getElementById('userPass').type = 'text';
-          document.getElementById('showPass').value = 'Hide password';
-        } else {
-          document.getElementById('userPass').type = 'password';
-          document.getElementById('showPass').value = 'Show password';
-        }
+      function signIn() {
+        remoteStorage.configure({
+          userAddress: document.getElementById('userAddress').value
+        });
       }
-      function send() {
-        document.getElementById('send').disabled = true;
-        if(!document.getElementById('agree').checked) {
-          alert('we can only help you if you understand that you\'re signing up for a service provided by Iris Couch, and agree with their ToS.');
-          document.getElementById('send').disabled = false;
-        } else {
-
-        }
+      function signUp() {
+        location= '/easyFreedom.html';
       }
     </script>
   </head>
   <body>
-    <h2>Iris Couch enrollment</h2>
-    Pick a user name: <input id="userName"><br>
-    Pick a password: <input id="userPass" type="password"><br>
-    You are signing up for IrisCouch remote storage.<br>
-    Your email address: <input id="email"><br>
-    <input type="checkbox" id="agree"> I understand and agree with their <a href="http://www.iriscouch.com/policy#tos">Terms of Service</a>.<br>
-    <input type="submit" id="showPass" value="Show password" onclick="showPass();">
-    <input type="submit" id="send" value="Send" onclick="send();">
+    <h2>Libre Docs</h2>
+    <input id="userAddress" placeholder="you@yourremotestorage">
+    <input type="submit" id="signIn" value="Sign In" onclick="signIn();">
+    <br><br><br>
+    <a href="/advancedFreedom.html">advanced freedom</a>
+    <input type="submit" id="signUp" value="Easy Freedom" onclick="signUp();">
   </body>
 </html>
