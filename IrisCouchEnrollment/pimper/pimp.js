@@ -90,10 +90,12 @@ var pimper = (function() {
 })();
 
 var options;
-if(process && process.argv && process.argv.length >= 5 ) {
+if(window) {
+  //we're in the browser
+} else if(process && process.argv && process.argv.length >= 5 ) {
   options = process.argv.splice(2);
   pimper.pimp(options[0], options[1], options[2]);
-} else {
+} else if(process.argv) {
   console.log('use as: node pimp.js {user}@{domain} {password} {yourremotestorage.net/CouchDB/proxy/}');
   console.log('E.g.: node pimp.js me@michiel.iriscouch.com asdf yourremotestorage.net/CouchDB/proxy/');
 }

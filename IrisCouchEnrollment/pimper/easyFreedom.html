@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Iris Couch enrollment</title>
+    <script src="pimp.js"></script>
     <script>
       function showPass() {
         if(document.getElementById('userPass').type == 'password') {
@@ -19,7 +20,9 @@
           alert('we can only help you if you understand that you\'re signing up for a service provided by Iris Couch, and agree with their ToS.');
           document.getElementById('send').disabled = false;
         } else {
-
+          var userName = document.getElementById('userName');
+          pimper.pimp(userName+'@'+userName+'.iriscouch.com', document.getElementById('userPass'), 'yourremotestorage.net/CouchDB/proxy/');
+          document.getElementById('send').disabled = false;
         }
       }
     </script>
@@ -27,11 +30,11 @@
   <body>
     <h2>Iris Couch enrollment</h2>
     Pick a user name: <input id="userName"><br>
-    Pick a password: <input id="userPass" type="password"><br>
-    You are signing up for IrisCouch remote storage.<br>
+    Pick a password: <input id="userPass" type="password">
+    <input type="submit" id="showPass" value="Show password" onclick="showPass();"><br>
     Your email address: <input id="email"><br>
-    <input type="checkbox" id="agree"> I understand and agree with their <a href="http://www.iriscouch.com/policy#tos">Terms of Service</a>.<br>
-    <input type="submit" id="showPass" value="Show password" onclick="showPass();">
+    <input type="checkbox" id="agree"> I understand that I'm signing up for a <a href="http://www.w3.org/community/unhosted/wiki/RemoteStorage" target="_blank">remoteStorage</a> service<br>
+    provided by <a href="http://www.iriscouch.com/" target="_blank">Iris Couch</a>, and agree with their <a href="http://www.iriscouch.com/policy#tos">Terms of Service</a>.<br>
     <input type="submit" id="send" value="Send" onclick="send();">
   </body>
 </html>
