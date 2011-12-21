@@ -20,7 +20,7 @@
           alert('we can only help you if you understand that you\'re signing up for a service provided by Iris Couch, and agree with their ToS.');
           document.getElementById('send').disabled = false;
         } else {
-          var userName = document.getElementById('userName');
+          var userName = document.getElementById('userName').value;
           pimper.pimp(userName+'@'+userName+'.iriscouch.com', document.getElementById('userPass'), 'yourremotestorage.net/CouchDB/proxy/');
           document.getElementById('send').disabled = false;
         }

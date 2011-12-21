@@ -1,23 +1,41 @@
 var pimper = (function() {
-  var couchAddress, adminUsr, adminPwd;//using module globals here to limit func args
+  var couchAddress, adminUsr, adminPwd, adminProxy;//using module globals here to limit func args
+  var content = {};
   function httpPut(address, value, withCredentials, attachment, contentType) {
-    var options=' -X PUT';
-    if(value) {
-      options += " -d'"+value+"'";
-    }
-    if(attachment) {
-      options += ' --data-binary @'+attachment;
-    }
-    if(contentType) {
-      options += ' -H "Content-Type: '+contentType+'"';
-    }
+    var host;
     if(withCredentials) {
-      host = 'http://'+adminUsr+':'+adminPwd+'@'+address;
+      host = 'http://'+adminUsr+':'+adminPwd+'@'+adminProxy+address;
     } else {
-      host = 'http://'+address;
+      host = 'http://'+adminProxy+address;
     }
-    console.log('echo curl '+options+' '+host); 
-    console.log('curl '+options+' '+host); 
+    if(window) {//in the browser
+      var xhr = new XMLHttpRequest();
+      console.log('PUTting to '+host);
+      xhr.open('PUT', host, false);
+      if(contentType) {
+        xhr.setRequestHeader('Content-Type: '+contentType);
+      }
+      if(value) {
+        xhr.send(value);
+      } else if(attachment) {
+        xhr.send(content[attachment]);
+      } else {
+        send();
+      }
+    } else {
+      var options=' -X PUT';
+      if(value) {
+        options += " -d'"+value+"'";
+      }
+      if(attachment) {
+        options += ' --data-binary @'+attachment;
+      }
+      if(contentType) {
+        options += ' -H "Content-Type: '+contentType+'"';
+      }
+      console.log('echo curl '+options+' '+host); 
+      console.log('curl '+options+' '+host); 
+    }
   }
   function createAdminUser() {
     httpPut(couchAddress+'/_config/admins/'+adminUsr, '\"'+adminPwd+'\"');
@@ -39,6 +57,7 @@ var pimper = (function() {
     }
     couchAddress = userAddressParts[1]+':5984';
     if(proxy) {
+      adminProxy = proxy;
       httpTemplate = 'http://'+proxy+userAddressParts[1]+'/{category}/';
     } else {
       httpTemplate = 'http://'+couchAddress+'/{category}/_design/remoteStorage/_show/cors/';
