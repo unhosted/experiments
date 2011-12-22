@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Libre Docs</title>
     <script>
-      //  LibreDocsStatus can be:
+      //  LibreDocsState can be:
       //enter0 - initial state
       //enter1 - BrowserId sign in in progress
       //enter2 - have user address
@@ -61,11 +61,11 @@
           remoteStorage.configure({
             userAddress: userAddress
           });
-          localStorage.setItem('LibreDocsStatus', 'login1');
+          localStorage.setItem('LibreDocsState', 'login1');
         }
         window.onbeforeunload=function() {
           alert('Good bye from Libre Docs. Closing all tabs.');
-          localStorage.setItem('LibreDocsStatus', 'exit');
+          localStorage.setItem('LibreDocsState', 'exit');
         }
       }
       function goApp(appName) {

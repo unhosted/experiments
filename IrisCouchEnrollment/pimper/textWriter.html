@@ -5,8 +5,11 @@
     <title>A simple text editor using remoteStorage as backend</title>
     <script>
       window.addEventListener('storage', function(e) {
-        if(e.key=='working') {
-          if(e.newValue == 'true') {
+        if(e.key=='LibreDocsState') {
+          console.log('LibreDocsState '+e.newValue+' received');
+          if(e.newValue == 'exit') {
+            window.close();
+          } else if(e.newValue == 'offline') {
             document.getElementById('spinner').style.display='block';
           } else {
             document.getElementById('spinner').style.display='none';
