@@ -3,16 +3,16 @@
   <head>
     <meta charset="utf-8">
     <title>A simple text editor using remoteStorage as backend</title>
-    <script src="http://unhosted.org/remoteStorage.js">{
-      category: 'documents',
-      onChange: function(key, oldValue, newValue) {
-        if(key=='text') {
-          document.getElementById('text').value = newValue;
-        }
-      },
-      suppressDialog: true
-    }</script>
     <script>
+      window.addEventListener('storage', function(e) {
+        if(e.key=='working') {
+          if(e.newValue == 'true') {
+            document.getElementById('spinner').style.display='block';
+          } else {
+            document.getElementById('spinner').style.display='none';
+          }
+        }
+      }, false);
       function displayText() {
         if(localStorage.getItem('text') != null) {
           document.getElementById('text').value=localStorage.getItem('text');
@@ -27,6 +27,7 @@
 
   </head>
   <body onload="displayText();">
+    <img src="spinner.gif" style="display:none" id="spinner">
     <textarea id="text" onkeyup="localStorage.setItem('text', this.value);" autofocus>
 This is a remoteStorage demo.
 

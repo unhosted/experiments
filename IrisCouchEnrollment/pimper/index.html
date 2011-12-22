@@ -4,10 +4,32 @@
     <meta charset="utf-8">
     <title>Libre Docs</title>
     <script>
+      //  LibreDocsStatus can be:
+      //enter0 - initial state
+      //enter1 - BrowserId sign in in progress
+      //enter2 - have user address
+      //register1 - user has the Iris Couch sign up screen open
+      //register2 - creating instance
+      //register3 - creating admin user
+      //register4 - creating cors db
+      //register5 - populating cors db
+      //register6 - priming BrowserId (and from here back to enter2)
+      //enter3 - have lrdd address
+      //enter4 - have remoteStorage details
+      //enter5 - OAuth sign in in progress
+      //enter6 - have token, retrieving shadowIndex
+      //enter7 - have shadowIndex, pulling
+      //ready - nothing to work on 
+      //pushing - pushing stuff
+      //offline - last push timed out or failed; exponential back-off
+      //exit - the user has closed the home screen (master tab)
+
       function signIn() {
         alert('under construction, wear your helmet');
-        document.getElementById('welcomeScreen').style.display='none';
-        document.getElementById('homeScreen').style.display='block';
+        document.getElementById('signInOptions').style.display='none';
+        remoteStorage.configure({
+          userAddress: document.getElementById('userAddress').value
+        });
       }
       function signUp() {
         alert('under construction, wear your helmet');
@@ -28,37 +50,41 @@
       }
 
       function bodyOnLoad() {
+        window.addEventListener('storage', function(e) {
+          console.log('pushing key '+e.key);
+          remoteStorage.syncNow();
+        }, false);
         userAddress = getParameterByName('userAddress');
         if(userAddress) {
-          document.getElementById('homeScreen').style.display='block';
+          document.getElementById('loginOptions').style.display='none';
+          document.getElementById('registerOptions').style.display='none';
           remoteStorage.configure({
             userAddress: userAddress
           });
-        } else {
-          document.getElementById('welcomeScreen').style.display='block';
+          localStorage.setItem('LibreDocsStatus', 'login1');
+        }
+        window.onbeforeunload=function() {
+          alert('Good bye from Libre Docs. Closing all tabs.');
+          localStorage.setItem('LibreDocsStatus', 'exit');
         }
       }
       function goApp(appName) {
         if(authAddress) {
           window.location= authAddress;
         } else if(userAddress) {
-          window.location='/'+appName+'.html?userAddress='+encodeURIComponent(userAddress);
+          window.open('/'+appName+'.html?userAddress='+encodeURIComponent(userAddress));
         } else {
-          window.location='/'+appName+'.html';
+          window.open('/'+appName+'.html');
         }
       }
     </script>
   <body onload="bodyOnLoad();">
-    <div id="welcomeScreen" style="display:block;">
+    <div id="signInOptions">
       <h2>Libre Docs</h2>
       <input id="userAddress" placeholder="you@yourremotestorage">
       <input type="submit" id="signIn" value="Sign In" onclick="signIn();">
-      <br><br><br>
-      <a href="/advancedFreedom.html">Get advanced freedom</a>
-      <input type="submit" id="signUp" value="Get Easy Freedom" onclick="signUp();">
     </div>
-    <div id="homeScreen" style="display:none;">
-      <h2>Libre Docs</h2>
+    <div id="homeScreen">
       Choose which app to use:
       <ul>
         <li> <input type="submit" onclick="goApp('textWriter');" value="Text Writer"></li>
@@ -67,6 +93,10 @@
         <li> UNG's svg-edit (coming soon) </li>
       </ul>
     </div>
-    <script src="http://unhosted.org/remoteStorage.js">{suppressDialog:true}</script>
+    <div id="registerOptions">
+      <a href="/advancedFreedom.html">Get advanced freedom</a>
+      <input type="submit" id="signUp" value="Get Easy Freedom" onclick="signUp();">
+    </div>
+    <script src="http://unhosted.org/remoteStorage.js">{suppressAutoSave: true, suppressDialog:true}</script>
   </body>
 </html>
