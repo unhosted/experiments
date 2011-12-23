@@ -31,7 +31,7 @@ exports.handler = (function() {
   function randStr(length) {
     var buffer = new Buffer(length);
     buffer.randomize();
-    return buffer.toString('base64');
+    return buffer.toString('base64').replace(/\//g, '-');//forward slashed in passwords don't play nice with curl
   }
   function genUser(clientId, conn, cb) {
     console.log('Generating pwd');
