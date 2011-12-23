@@ -1,22 +1,135 @@
+//when we get here, the user's couch has already been pimped
+//so each user gets a control panel with
+//- a pimper (just give the per-user couch url, and it will create an admin user, add into webfinger
+//- web intents registration
+//- cors proxy
+//- oauth dialog
+//- browserid2couch
+
 exports.handler = (function() {
-  var url = require('url'),
+  var http = require('http'),
+    cradle = require('cradle'),
+    fs = require('fs'),
+    Buffer = require('buffer').Buffer,
+    crypto = require('crypto'),
+    url = require('url'),
     querystring = require('querystring'),
     browseridVerify = require('browserid-verifier'),
-    couchConfig = require('./config').config;
+    config = require('./config').config;
 
-  function couchPut(dbName, key, value) {
-    console.log('couchPut("'+dbName+'", "'+key+'", "'+value+'");');
+  Buffer.prototype.randomize = function() {
+    var fd = fs.openSync('/dev/urandom', 'r');
+    fs.readSync(fd, this, 0, this.length, 0);
+    fs.closeSync(fd);
+    return this;
   }
-  function getBearerToken(userName, dbName, cb) {
-    var userPass = 'asdf';
-    var userObj = {
-      name: userName,
-      password_sha1: 'qwer'
+  function str2sha(str) {
+    var shasum = crypto.createHash('sha1');
+    shasum.update(str);
+    return shasum.digest('hex');
+  } 
+  function randStr(length) {
+    var buffer = new Buffer(length);
+    buffer.randomize();
+    return buffer.toString('base64');
+  }
+  function genUser(clientId, conn, cb) {
+    console.log('Generating pwd');
+    var pwd=randStr(40);
+    console.log(pwd);
+    console.log('Generating salt');
+    var salt=randStr(40);
+    console.log(salt);
+    console.log('Generating sha');
+    var sha1 = str2sha(pwd+salt);
+    console.log(sha1);
+    console.log('will now add CouchDB user "'+clientId+'"');
+    conn.database('_users').save('org.couchdb.user:'+clientId, {
+      type: 'user',
+      name: clientId,
+      roles: [],
+      password_sha: sha1,
+      salt: salt
+    }, function (err, res) {
+      console.log('err of adding user:');
+      console.log(err);
+      console.log('res of adding user:');
+      console.log(res); // True
+      cb(pwd);
+    });
+  }
+  function createScope(userName, password, clientId, dataScope, public, cb) {
+    console.log('connecting to host '+userName+'.'+config.couch.parentDomain);
+    var conn = new(cradle.Connection)(userName+'.'+config.couch.parentDomain, config.couch.port, {
+      cache: true, raw: false,
+      auth: {username: userName, password: password}
+    });
+    var dbName, sec;
+    if(public) {
+      dbName = dataScope.replace('.', '_');
+      sec= {admins:{names:[clientId]}};//leaving readers undefined
+    } else {
+      dbName = dataScope.replace('.', '_');
+      sec= {admins:{names:[clientId]}, readers:{names:[clientId]}};
     }
-    couchPut('_users', 'org.couchdb.user::'+userName, userObj);
-    couchPut(dbName, '', '');
-    var token = 'base64';//(userName.':'.userPass);
-    cb(token);
+    var scopeDb = conn.database(dbName);
+    scopeDb.exists(function(err, exists) {
+      console.log('looking for '+dbName+':');
+      console.log(err);
+      console.log(exists);
+      if(err) {
+        console.log('error looking for scopeDb:"'+dbName+'"');
+        console.log(err);
+      } else if(exists) {
+        console.log('database "'+dbName+'" exists already!');
+      } else {
+      	console.log('creating database "'+dbName+'"');
+        scopeDb.create();//looking at https://github.com/cloudhead/cradle this seems to be a synchronous call?
+        console.log('created database "'+dbName+'"');
+      }
+      
+      console.log('adding users to database "'+dbName+'":');
+      console.log(sec);
+      scopeDb.save('_security', sec, function (err, res) {
+        console.log('result of saving security doc:');
+        console.log(sec);
+        console.log('err:');
+        console.log(err);
+        console.log('res:');
+        console.log(res);
+        if(err) {
+          console.log('there was an error');
+        } else {
+          console.log('db and security doc created, will now generate user:');
+          genUser(clientId, conn, cb);
+        }
+      });
+    });
+  }
+
+  function createToken(userName, password, clientId, dataScope, cb) {
+    var public = (dataScope == 'public');
+    createScope(userName, password, clientId, dataScope, public, function(password) {
+      //make basic auth header match bearer token for easy proxying:
+      var bearerToken = (new Buffer(clientId+':'+password)).toString('base64');
+      console.log(bearerToken+' <= '+clientId+':'+password);
+      cb(bearerToken);
+    });
+  }
+
+  function getBearerToken(audience, cb) {
+    var dbName = '';//don't trust the clientId that the RP claims - instead, derive it from redirect_uri:
+    for(var i in audience) {
+      var thisChar = urlObj.query.redirect_uri[i];
+      if((thisChar >= 'a' && thisChar <= 'z') || (thisChar >= 'A' && thisChar <= 'Z') || (thisChar >= '0' && thisChar <= '9')) {
+        dbName += thisChar;
+      } else {
+        dbName += '_';//thisChar;
+      }
+    }
+    console.log('Parsed audience to form dbName:'+dbName);
+    var userName = dbName;
+    createToken(config.couchUsr, config.couchPwd, userName, dbName, cb);
   }
   function serve(req, res, baseDir) {
     console.log('serving browserid2couch');
