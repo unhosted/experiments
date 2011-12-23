@@ -59,8 +59,8 @@ exports.handler = (function() {
     });
   }
   function createScope(userName, password, clientId, dataScope, public, cb) {
-    console.log('connecting to host '+userName+'.'+config.couch.parentDomain);
-    var conn = new(cradle.Connection)(userName+'.'+config.couch.parentDomain, config.couch.port, {
+    console.log('connecting to host '+config.couchUrl);
+    var conn = new(cradle.Connection)(config.couchUrl, config.couchPort, {
       cache: true, raw: false,
       auth: {username: userName, password: password}
     });
@@ -120,7 +120,7 @@ exports.handler = (function() {
   function getBearerToken(audience, cb) {
     var dbName = '';//don't trust the clientId that the RP claims - instead, derive it from redirect_uri:
     for(var i in audience) {
-      var thisChar = urlObj.query.redirect_uri[i];
+      var thisChar = audience[i];
       if((thisChar >= 'a' && thisChar <= 'z') || (thisChar >= 'A' && thisChar <= 'Z') || (thisChar >= '0' && thisChar <= '9')) {
         dbName += thisChar;
       } else {
@@ -151,19 +151,22 @@ exports.handler = (function() {
           res.end();
         } else {
           if(r.email == 'michiel@unhosted.org') {
-            getBearerToken(postData.audience, postData.audience, function(token) {
+            getBearerToken(postData.audience, function(token) {
               console.log('token, allowing origin '+req.headers.origin);
               console.log(req.headers);
+              console.log('handing out token:');
+              console.log(token);
               res.writeHead(200, {'Content-type': 'application/json', 'Access-Control-Allow-Origin': req.headers.origin});
-              res.write(token);
+              res.write('{"token":"'+token+'"}');
+              res.end();
             });
           } else {
             console.log('nope, allowing origin '+req.headers.origin);
             console.log(req.headers);
             res.writeHead(200, {'Content-type': 'application/json', 'Access-Control-Allow-Origin': req.headers.origin});
             res.write('nope');
+            res.end();
           }
-          res.end();
         }
       });
     });
