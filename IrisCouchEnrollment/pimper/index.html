@@ -42,7 +42,9 @@
               try {
                 var response = JSON.parse(xhr.responseText);
                 remoteStorage.configure({
-                  userAddress: response.email
+                  userAddress: response.email,
+                  assertion: assertion,
+                  audience: 'http://libredocs.org'
                 });
               } catch(e) {
                 alert('that did not go quite the way we had hoped');
@@ -128,6 +130,7 @@
     <script src="http://unhosted.org/remoteStorage.js">{
       suppressAutoSave: true,
       suppressDialog:true,
+      requestBrowseridAccess: true,
       onStatus: function(oldStatus, newStatus) {
         showStatus(newStatus);
       }
