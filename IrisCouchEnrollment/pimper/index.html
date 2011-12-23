@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <title>Libre Docs</title>
     <script>
+      //browserid access: first use it for discovery. if then in webfinger you see browserid-access attr, repost the assertion there, and it will give you your token for the audience
+      //for the public and contacts access, we can oauth once we need it
+
       //LibreDocs should connect to:
       // - libredocs_org
       // - public
@@ -31,9 +34,22 @@
 
       function signIn() {
         alert('under construction, wear your helmet');
-        document.getElementById('signInOptions').style.display='none';
-        remoteStorage.configure({
-          userAddress: document.getElementById('userAddress').value
+        navigator.id.get(function(assertion) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "/browserid-verifier", true);
+          xhr.onreadystatechange = function() {
+            if(xhr.readyState == 4) {
+              try {
+                var response = JSON.parse(xhr.responseText);
+                remoteStorage.configure({
+                  userAddress: response.email
+                });
+              } catch(e) {
+                alert('that did not go quite the way we had hoped');
+              }
+            }
+          }
+          xhr.send("assertion="+encodeURIComponent(assertion)+"&audience=http://libredocs.org");
         });
       }
       function signUp() {
@@ -60,7 +76,7 @@
           remoteStorage.syncNow();
         }, false);
         userAddress = getParameterByName('userAddress');
-        if(userAddress) {
+        if(userAddress.length) {
           document.getElementById('loginOptions').style.display='none';
           document.getElementById('registerOptions').style.display='none';
           remoteStorage.configure({
@@ -69,9 +85,11 @@
           localStorage.setItem('LibreDocsState', 'login1');
         }
         window.onbeforeunload=function() {
-          alert('Good bye from Libre Docs. Closing all tabs.');
-          localStorage.setItem('LibreDocsState', 'exit');
+          //this is also called when going to OAuth. maybe do OAuth in separate tab?
+          //alert('Good bye from Libre Docs. Closing all tabs.');
+          //localStorage.setItem('LibreDocsState', 'exit');
         }
+        showStatus(remoteStorage.getStatus());
       }
       function goApp(appName) {
         if(authAddress) {
@@ -82,11 +100,15 @@
           window.open('/'+appName+'.html');
         }
       }
+      function showStatus(status) {
+        if(status.name == 'online') {
+          document.getElementById('signInOptions').style.display='none';
+        }
+      }
     </script>
   <body onload="bodyOnLoad();">
     <div id="signInOptions">
       <h2>Libre Docs</h2>
-      <input id="userAddress" placeholder="you@yourremotestorage">
       <input type="submit" id="signIn" value="Sign In" onclick="signIn();">
     </div>
     <div id="homeScreen">
@@ -102,6 +124,13 @@
       <a href="/advancedFreedom.html">Get advanced freedom</a>
       <input type="submit" id="signUp" value="Get Easy Freedom" onclick="signUp();">
     </div>
-    <script src="http://unhosted.org/remoteStorage.js">{suppressAutoSave: true, suppressDialog:true}</script>
+    <script src="http://browserid.org/include.js"></script>
+    <script src="http://unhosted.org/remoteStorage.js">{
+      suppressAutoSave: true,
+      suppressDialog:true,
+      onStatus: function(oldStatus, newStatus) {
+        showStatus(newStatus);
+      }
+    }</script>
   </body>
 </html>

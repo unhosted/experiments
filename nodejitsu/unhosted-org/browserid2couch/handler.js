@@ -20,7 +20,11 @@ exports.handler = (function() {
           res.end();
         } else {
           res.writeHead(200, {'Content-type': 'application/json'});
-          res.write(JSON.stringify(r));
+          if(r.email == 'michiel@unhosted.org') {
+            res.write('some-bearer-token');
+          } else {
+            res.write('nope');
+          }
           res.end();
         }
       });
