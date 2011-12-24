@@ -93,14 +93,21 @@
         }
         showStatus(remoteStorage.getStatus());
       }
+      function getPublicTokenFor(appName) {
+        //this is not so easy without rewriting remoteStorage.js
+      }
       function goApp(appName) {
-        if(authAddress) {
-          window.location= authAddress;
-        } else if(userAddress) {
-          window.open('/'+appName+'.html?userAddress='+encodeURIComponent(userAddress));
-        } else {
-          window.open('/'+appName+'.html');
-        }
+        //if(appName == "share" && !localStorage.getItem("publicToken")) {
+        //  getPublicTokenFor(appName);
+        //} else {
+          if(authAddress) {
+            window.location= authAddress;
+          } else if(userAddress) {
+            window.open('/'+appName+'.html?userAddress='+encodeURIComponent(userAddress));
+          } else {
+            window.open('/'+appName+'.html');
+          }
+        //}
       }
       function showStatus(status) {
         if(status.name == 'online') {
