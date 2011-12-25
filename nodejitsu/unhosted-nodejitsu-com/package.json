@@ -1,5 +1,5 @@
 {
-  "name": "unhosted.nodejitsu.com",
+  "name": "unhosted-nodejitsu-com",
   "subdomain": "unhosted",
   "scripts": {
     "start": "server.js"
