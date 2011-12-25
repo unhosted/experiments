@@ -4,6 +4,6 @@ exports.config = {
     'libredocs.org': '/pimper'
   },
   pathHandler: {
-    'libredocs.org/browserid-verifier': '/browserid',
+    'libredocs.org/browserid-verifier': './browserid',
   }
 };
