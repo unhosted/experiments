@@ -25,8 +25,28 @@
         }
       }
       function share() {
-        remoteStorage.share('text', function(senderAddress, hash) {
-          location='http://libredocs.org/s.html?senderAddress='+encodeURIComponent(senderAddress)+'&hash='+encodeURIComponent(hash);
+        document.getElementById('loading').style.display='block';
+        document.getElementById('share').style.display='none';
+        document.getElementById('empty').style.display='none';
+        navigator.id.get(function(assertion) {
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', '/browserid-verifier', true);
+          xhr.onreadystatechange = function() {
+            if(xhr.readyState == 4) {
+              try {
+                window.remoteStorage.configure({
+                  userAddress: JSON.parse(xhr.responseText).email
+                }, function() {
+                  window.remoteStorage.share('text', function(senderAddress, hash) {
+                    location='http://libredocs.org/s.html?senderAddress='+encodeURIComponent(senderAddress)+'&hash='+encodeURIComponent(hash);
+                  });
+                });
+              } catch(e) {
+                alert('bad news from the verifier');
+              }
+            }
+          };
+          xhr.send('audience=http://libredocs.org&assertion='+encodeURIComponent(assertion));
         });
       }
     </script>
@@ -45,9 +65,23 @@
       Loading, please wait...
     </div>
   </body>
+<!--
+  <script src="http://unhosted.org/require.js"></script>
+  <script src="http://unhosted.nodejitsu.com/main.js"></script>
+  <script src="http://unhosted.nodejitsu.com/controller.js"></script>
+  <script src="http://unhosted.nodejitsu.com/ajax.js"></script>
+  <script src="http://unhosted.nodejitsu.com/oauth.js"></script>
+  <script src="http://unhosted.nodejitsu.com/session.js"></script>
+  <script src="http://unhosted.nodejitsu.com/sync.js"></script>
+  <script src="http://unhosted.nodejitsu.com/versioning.js"></script>
+  <script src="http://unhosted.nodejitsu.com/webfinger.js"></script>
+  <script src="http://unhosted.nodejitsu.com/button.js"></script>
+-->
+  <script src="http://browserid.org/include.js"></script>
   <script src="http://unhosted.org/remoteStorage.js">{
-    category: 'public',//this should actually not be necessary, .share() should know itself that it needs category 'public'
+    category: 'public',
     suppressDialog: true,
     suppressAutoSave: true
   }</script>
+  <!-- category should actually not be necessary, .share() should know itself that it needs category 'public' -->
 </html>
