@@ -12,36 +12,43 @@
     </script>
   <body onload="bodyOnLoad();">
       <h2>Libre Docs</h2>
-      <table><tr><td> 
-        <table onclick="goApp('write');"><tr><td><img src="/icons/write.svg"></td></tr><tr><td>Write</td></tr></table>
+      <table><tr><td onclick="goApp('write');"><img src="/icons/write.svg"></td>
       </td><td>
       &nbsp;
       &nbsp;
       &nbsp;
       &nbsp;
-      </td><td>
-        <table onclick="goApp('draw');"><tr><td><img src="/icons/draw.svg"></td></tr><tr><td>Draw</td></tr></table>
-      </td><td>
-      &nbsp;
-      &nbsp;
-      &nbsp;
-      &nbsp;
-      </td><td>
-        <table onclick="goApp('sync');"><tr><td><img src="/icons/sync.svg"></td></tr><tr><td>Sync</td></tr></table>
+      </td><td onclick="goApp('draw');"><img src="/icons/draw.svg"></td>
       </td><td>
       &nbsp;
       &nbsp;
       &nbsp;
       &nbsp;
+      </td><td onclick="goApp('sync');"><img src="/icons/sync.svg"></td>
       </td><td>
-        <table onclick="goApp('publish');"><tr><td><img src="/icons/publish.svg"></td></tr><tr><td>Publish</td></tr></table>
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      </td><td onclick="goApp('publish');"><img src="/icons/publish.svg"></td>
       </td><td>
       &nbsp;
       &nbsp;
       &nbsp;
       &nbsp;
-      </td><td>
-        <table onclick="goApp('beFree');"><tr><td><img src="/icons/beFree.svg"></td></tr><tr><td>Be free</td></tr></table>
-      </td></tr></table>
+      </td><td onclick="goApp('beFree');"><img src="/icons/beFree.svg"></td>
+      </tr><tr>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      </tr><tr>
+      <td align="center" onclick="goApp('write');">Write</td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td align="center" onclick="goApp('draw');">Draw</td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+     <td align="center" onclick="goApp('sync');">Sync</td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td align="center" onclick="goApp('publish');">Publish</td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td align="center" onclick="goApp('beFree');">Be free</td>
+      </tr></table>
   </body>
 </html>
