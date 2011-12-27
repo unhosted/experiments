@@ -24,8 +24,8 @@
         }
       }
       function share() {
-        remoteStorage.configure({
-          userAddress: 'michiel@unhosted.org'
+        remoteStorage.share('text', function(senderAddress, hash) {
+          location='http://libredocs.org/s.html?senderAddress='+encodeURIComponent(senderAddress)+'&hash='+encodeURIComponent(hash);
         });
       }
     </script>
@@ -42,15 +42,8 @@
     </div>
   </body>
   <script src="http://unhosted.org/remoteStorage.js">{
-    category: 'public',
+    category: 'public',//this should actually not be necessary, .share() should know itself that it needs category 'public'
     suppressDialog: true,
-    suppressAutoSave: true,
-    onStatus: function(oldStatus, newStatus) {
-      if(newStatus.name == 'online') {
-        remoteStorage.share('text', function(hash) {
-          alert('Shared as: http://libredocs.org/s.html?senderAddress=michiel@unhosted.org&hash='+hash);
-        });
-      }
-    }
+    suppressAutoSave: true
   }</script>
 </html>
