@@ -28,25 +28,12 @@
         document.getElementById('loading').style.display='block';
         document.getElementById('share').style.display='none';
         document.getElementById('empty').style.display='none';
-        navigator.id.get(function(assertion) {
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', '/browserid-verifier', true);
-          xhr.onreadystatechange = function() {
-            if(xhr.readyState == 4) {
-              try {
-                window.remoteStorage.configure({
-                  userAddress: JSON.parse(xhr.responseText).email
-                }, function() {
-                  window.remoteStorage.share('text', function(senderAddress, hash) {
-                    location='http://libredocs.org/s.html?senderAddress='+encodeURIComponent(senderAddress)+'&hash='+encodeURIComponent(hash);
-                  });
-                });
-              } catch(e) {
-                alert('bad news from the verifier');
-              }
-            }
-          };
-          xhr.send('audience=http://libredocs.org&assertion='+encodeURIComponent(assertion));
+        window.remoteStorage.configure({
+          userAddress: localStorage.getItem('LibreDocsUserAddress')
+        }, function() {
+          window.remoteStorage.share('text', function(senderAddress, hash) {
+            location='http://libredocs.org/s.html?senderAddress='+encodeURIComponent(senderAddress)+'&hash='+encodeURIComponent(hash);
+          });
         });
       }
     </script>
