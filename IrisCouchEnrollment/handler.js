@@ -45,6 +45,8 @@ exports.handler = (function() {
       contentType='image/png';
     } else if(/\.ico$/g.test(uripath)) {
       contentType='image/png';
+    } else if(/\.svg$/g.test(uripath)) {
+      contentType='image/svg+xml';
     } else {
       contentType='text/plain';
     }
