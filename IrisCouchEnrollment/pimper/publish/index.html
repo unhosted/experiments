@@ -3,9 +3,25 @@
   <head>
     <meta charset="utf-8">
     <title>Publish</title>
+    <link rel="icon" type="image/svg+xml" href="/icons/noun_project_397.svg"/>
     <script>
       function bodyOnLoad() {
+        show();
+        window.addEventListener('storage', function(e) {
+          if(e.key == 'text') {
+            show();
+          } 
+        }, false);
+      }
+      function show() {
         document.getElementById('1').innerHTML = localStorage.getItem('text');
+        if(!localStorage.getItem('text') || localStorage.getItem('text').length == 0) {
+          document.getElementById('share').style.display='none';
+          document.getElementById('empty').style.display='block';
+        } else {
+          document.getElementById('empty').style.display='none';
+          document.getElementById('share').style.display='block';
+        }
       }
       function share() {
         remoteStorage.configure({
@@ -16,9 +32,14 @@
   </head>
   <body onload="bodyOnLoad();">
     <h2>Libre Docs - Publish</h2>
-    WARNING: For now, only 'Write', and not 'Draw', is supported by this.<br>
-    <input type="submit" value="Share this document" onclick="share();">
-    <textarea id="1"></textarea>
+    <div id="share" style="display:none;">
+      WARNING: For now, only 'Write', and not 'Draw', is supported by this.<br>
+      <input type="submit" value="Share the current document" onclick="share();">
+      <br>Preview:</br><textarea id="1"></textarea>
+    </div>
+    <div id="empty" style="display:none;">
+      Oops! There is nothing to publish yet. Please write something first, using the 'Write' option from the home screen.
+    </div>
   </body>
   <script src="http://unhosted.org/remoteStorage.js">{
     category: 'public',
