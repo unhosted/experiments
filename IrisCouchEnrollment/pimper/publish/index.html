@@ -6,6 +6,7 @@
     <link rel="icon" type="image/svg+xml" href="/icons/noun_project_397.svg"/>
     <script>
       function bodyOnLoad() {
+        document.getElementById('loading').style.display='none';
         show();
         window.addEventListener('storage', function(e) {
           if(e.key == 'text') {
@@ -39,6 +40,9 @@
     </div>
     <div id="empty" style="display:none;">
       Oops! There is nothing to publish yet. Please write something first, using the 'Write' option from the home screen.
+    </div>
+    <div id="loading">
+      Loading, please wait...
     </div>
   </body>
   <script src="http://unhosted.org/remoteStorage.js">{
