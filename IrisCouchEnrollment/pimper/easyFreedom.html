@@ -6,7 +6,21 @@
     <script src="pimp.js"></script>
     <script src="https://browserid.org/include.js"></script>
     <script>
+      function ping(userName, proxy, counter, onSuccess) {
+        pimper.ping(userName, proxy, function(result) {
+          if(result=='ok') {
+            onSuccess();
+          } else if(result='no') {
+            console.log('ping '+counter+'...');
+            ping(userName, proxy, counter+1, onSuccess);
+          } else {
+            alert('Error code '+result);
+            document.getElementById('send').disabled = false;
+          }
+        });
+      }
       function send() {
+        var proxy = 'yourremotestorage.net/CouchDB/proxy/';
         document.getElementById('send').disabled = true;
         if(!document.getElementById('agree').checked) {
           alert('we can only help you if you understand that you\'re signing up for a service provided by Iris Couch, and agree with their ToS.');
@@ -15,9 +29,21 @@
           var firstName = document.getElementById('firstName').value;
           var lastName = document.getElementById('lastName').value;
           var userName = document.getElementById('userName').value;
-          pimper.provision(userName, firstName, lastName);
-          //'yourremotestorage.net/CouchDB/proxy/');
-          document.getElementById('send').disabled = false;
+          pimper.provision(userName, firstName, lastName, function(result) {
+            if(result=='taken') {
+              alert('That username is taken! :( please try a different one');
+              document.getElementById('send').disabled = false;
+            } else if(result=='ok') {
+              ping(userName, proxy, 0, function() {
+                pimper.pimp(userName, proxy, function() {
+                  document.getElementById('send').disabled = false;
+                });
+              });
+            } else {
+              alert('Oops! Error code '+result);
+              document.getElementById('send').disabled = false;
+            }
+          });
         }
       }
     </script>

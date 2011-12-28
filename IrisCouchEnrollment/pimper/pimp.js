@@ -49,7 +49,7 @@ var pimper = (function() {
   function uploadAttachment(dbName, docName, attachmentName, localFileName, contentType) {
     httpPut(couchAddress+'/'+dbName+'/'+docName+'/'+attachmentName, null, true, localFileName, contentType);
   }
-  function pimp(userAddress, password, proxy) {
+  function pimp(userAddress, proxy, cb) {
     var userAddressParts = userAddress.split('@');
     var httpTemplate;
     if(userAddressParts.length != 2) {
@@ -103,19 +103,18 @@ var pimper = (function() {
     uploadAttachment('cors', 'base64', 'base64.js', 'files/base64.js', 'application/javascript');
     uploadAttachment('cors', 'sha1', 'sha1.js', 'files/sha1.js', 'application/javascript');
   }
-  function provision(userName, firstName, lastName) {
+  function provision(userName, firstName, lastName, cb) {
     navigator.id.get(function(assertion) {
       var xhr = new XMLHttpRequest();
       xhr.open('PUT', '/provision', true);
       xhr.onreadystatechange= function() {
         if(xhr.readyState == 4) {
-          try {
-            var response = JSON.parse(xhr.responseText);
-            if(response.ok) {
-              //check if couch exists now
-            }
-          } catch(e) {
-            console.log('wrong response');
+          if(xhr.status == 201) {
+            cb('ok');
+          } else if(xhr.status == 409) {
+            cb('taken');
+          } else {
+            cb(xhr.status);
           }
         }
       };
@@ -129,9 +128,26 @@ var pimper = (function() {
       xhr.send(data);
     });
   }
+  function ping(userName, proxy, cb) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://'+proxy+userName+'.iriscouch.com', true);
+    xhr.onreadystatechange= function() {
+      if(xhr.readyState == 4) {
+        if(xhr.status == 200) {
+          cb('ok');
+        } else if(xhr.status == 404) {
+          cb('no');
+        } else {
+          cb(xhr.status);
+        }
+      }
+    };
+    xhr.send();
+  }
 
   return {
     pimp: pimp,
+    ping: ping,
     provision: provision
   };
 })();

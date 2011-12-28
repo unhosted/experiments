@@ -43,13 +43,15 @@ exports.handler = (function() {
               console.log('STATUS: ' + response.statusCode);
               console.log('HEADERS: ' + JSON.stringify(response.headers));
               response.setEncoding('utf8');
+              var resStr = '';
               response.on('data', function (chunk) {
+                resStr += chunk;
                 console.log('BODY: ' + chunk);
               });
               response.on('end', function() {
                 console.log('END');
                 res.writeHead(response.statusCode, response.headers);
-                res.write('done');
+                res.write(resStr);
                 res.end();
               });
             });
