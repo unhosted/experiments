@@ -5,5 +5,6 @@ exports.config = {
   },
   pathHandler: {
     'libredocs.org/browserid-verifier': './browserid',
+    'libredocs.org/provision': './provision'
   }
 };

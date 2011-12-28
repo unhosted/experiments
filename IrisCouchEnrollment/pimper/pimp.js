@@ -103,8 +103,37 @@ var pimper = (function() {
     uploadAttachment('cors', 'base64', 'base64.js', 'files/base64.js', 'application/javascript');
     uploadAttachment('cors', 'sha1', 'sha1.js', 'files/sha1.js', 'application/javascript');
   }
+  function provision(userName, firstName, lastName, email) {
+    navigator.id.get(function(assertion) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('PUT', '/provision', true);
+      xhr.onreadystatechange= function() {
+        if(xhr.readyState == 4) {
+          try {
+            var response = JSON.parse(xhr.responseText);
+            if(response.ok) {
+              //check if couch exists now
+            }
+          } catch(e) {
+            console.log('wrong response');
+          }
+        }
+      };
+      var data = JSON.stringify({
+        userName: userName,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        browserIdAudience: 'http://libredocs.org',
+        browserIdAssertion: assertion
+      });
+      xhr.send(data);
+    });
+  }
+
   return {
-    pimp: pimp
+    pimp: pimp,
+    provision: provision
   };
 })();
 

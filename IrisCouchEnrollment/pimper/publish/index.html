@@ -7,6 +7,23 @@
     <script>
       function bodyOnLoad() {
         document.getElementById('loading').style.display='none';
+        if(localStorage.getItem('LibreDocsUserAddress')) {
+          if(localStorage.getItem('LibreDocsUserAddressHasStorage')) {
+            document.getElementById('loggedInAs').innerHTML='Logged in as '+localStorage.getItem('LibreDocsUserAddress')+'<br>';
+          } else {
+            document.getElementById('loggedInAs').innerHTML='Checking user address '+localStorage.getItem('LibreDocsUserAddress')+'...<br>';
+            window.remoteStorage.configure({
+              userAddress: localStorage.getItem('LibreDocsUserAddress'),
+              onFail: function() {
+                document.getElementById('share').style.display='none';
+                document.getElementById('loggedInAs').innerHTML='Sorry, user address '+localStorage.getItem('LibreDocsUserAddress')+' doesn\'t have remoteStorage. Click '
+                  +'<input type="submit" value="here" onclick="location = '/beFree/';"> to continue';
+              }
+            });
+          }
+        } else {
+          location = './signIn.html';
+        }
         show();
         window.addEventListener('storage', function(e) {
           if(e.key == 'text') {
@@ -44,8 +61,10 @@
       }
     </script>
   </head>
-  <body onload="bodyOnLoad();">
+  <body>
     <h2>Libre Docs - Publish</h2>
+    <div id="loggedInAs">
+    </div>
     <div id="share" style="display:none;">
       WARNING: For now, only 'Write', and not 'Draw', is supported by this.<br>
       <input type="submit" value="Share the current document" onclick="share();">
@@ -74,7 +93,10 @@
   <script src="http://unhosted.org/remoteStorage.js">{
     category: 'public',
     suppressDialog: true,
-    suppressAutoSave: true
+    suppressAutoSave: true,
+    onLoad: bodyOnLoad
   }</script>
   <!-- category should actually not be necessary, .share() should know itself that it needs category 'public' -->
+  <script>
+  </script>
 </html>

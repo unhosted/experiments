@@ -4,24 +4,18 @@
     <meta charset="utf-8">
     <title>Iris Couch enrollment</title>
     <script src="pimp.js"></script>
+    <script src="https://browserid.org/include.js"></script>
     <script>
-      function showPass() {
-        if(document.getElementById('userPass').type == 'password') {
-          document.getElementById('userPass').type = 'text';
-          document.getElementById('showPass').value = 'Hide password';
-        } else {
-          document.getElementById('userPass').type = 'password';
-          document.getElementById('showPass').value = 'Show password';
-        }
-      }
       function send() {
         document.getElementById('send').disabled = true;
         if(!document.getElementById('agree').checked) {
           alert('we can only help you if you understand that you\'re signing up for a service provided by Iris Couch, and agree with their ToS.');
           document.getElementById('send').disabled = false;
         } else {
+          var firstName = document.getElementById('firstName').value;
+          var lastName = document.getElementById('lastName').value;
           var userName = document.getElementById('userName').value;
-          pimper.pimp(userName+'@'+userName+'.iriscouch.com', document.getElementById('userPass').value, 'yourremotestorage.net/CouchDB/proxy/');
+          pimper.provision(userName+'@'+userName+'.iriscouch.com', document.getElementById('firstName').value, document.getElementById('lastName').value, 'yourremotestorage.net/CouchDB/proxy/');
           document.getElementById('send').disabled = false;
         }
       }
@@ -29,9 +23,9 @@
   </head>
   <body>
     <h2>Iris Couch enrollment</h2>
+    Your first name: <input id="firstName"><br>
+    Your last name: <input id="lastName"><br>
     Pick a user name: <input id="userName"><br>
-    Pick a password: <input id="userPass" type="password">
-    <input type="submit" id="showPass" value="Show password" onclick="showPass();"><br>
     Your email address: <input id="email"><br>
     <input type="checkbox" id="agree"> I understand that I'm signing up for a <a href="http://www.w3.org/community/unhosted/wiki/RemoteStorage" target="_blank">remoteStorage</a> service<br>
     provided by <a href="http://www.iriscouch.com/" target="_blank">Iris Couch</a>, and agree with their <a href="http://www.iriscouch.com/policy#tos">Terms of Service</a>.<br>
