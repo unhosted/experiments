@@ -15,7 +15,8 @@
           var firstName = document.getElementById('firstName').value;
           var lastName = document.getElementById('lastName').value;
           var userName = document.getElementById('userName').value;
-          pimper.provision(userName+'@'+userName+'.iriscouch.com', document.getElementById('firstName').value, document.getElementById('lastName').value, 'yourremotestorage.net/CouchDB/proxy/');
+          pimper.provision(userName, firstName, lastName);
+          //'yourremotestorage.net/CouchDB/proxy/');
           document.getElementById('send').disabled = false;
         }
       }
@@ -23,11 +24,10 @@
   </head>
   <body>
     <h2>Iris Couch enrollment</h2>
-    Your first name: <input id="firstName"><br>
-    Your last name: <input id="lastName"><br>
-    Pick a user name: <input id="userName"><br>
-    Your email address: <input id="email"><br>
-    <input type="checkbox" id="agree"> I understand that I'm signing up for a <a href="http://www.w3.org/community/unhosted/wiki/RemoteStorage" target="_blank">remoteStorage</a> service<br>
+    Your first name: <input id="firstName" value="Michiel"><br>
+    Your last name: <input id="lastName" value="de Jong"><br>
+    Pick a user name: <input id="userName" value="unhostedtest"><br>
+    <input type="checkbox" id="agree" checked> I understand that I'm signing up for a <a href="http://www.w3.org/community/unhosted/wiki/RemoteStorage" target="_blank">remoteStorage</a> service<br>
     provided by <a href="http://www.iriscouch.com/" target="_blank">Iris Couch</a>, and agree with their <a href="http://www.iriscouch.com/policy#tos">Terms of Service</a>.<br>
     <input type="submit" id="send" value="Send" onclick="send();">
   </body>

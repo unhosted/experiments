@@ -48,7 +48,7 @@ exports.handler = (function() {
               });
               response.on('end', function() {
                 console.log('END');
-                res.writeHead(200, {'Content-type': 'application/json'});
+                res.writeHead(response.statusCode, response.headers);
                 res.write('done');
                 res.end();
               });
@@ -56,13 +56,13 @@ exports.handler = (function() {
             console.log('writing to the request');
 
             var data = JSON.stringify({
-              _id: 'Server/unhostedtest3',
+              _id: 'Server/'+incoming.userName,
               partner: 'unhosted',
               creation: {
-                first_name: 'Michiel',
-                last_name: 'de Jong',
-                email: 'dejong.michiel@gmail.com',
-                subdomain: 'unhostedtest3'
+                first_name: incoming.firstName,
+                last_name: incoming.lastName,
+                email: r.email,
+                subdomain: incoming.userName
               }
             });
             console.log(data);

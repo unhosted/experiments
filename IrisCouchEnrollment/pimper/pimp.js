@@ -103,7 +103,7 @@ var pimper = (function() {
     uploadAttachment('cors', 'base64', 'base64.js', 'files/base64.js', 'application/javascript');
     uploadAttachment('cors', 'sha1', 'sha1.js', 'files/sha1.js', 'application/javascript');
   }
-  function provision(userName, firstName, lastName, email) {
+  function provision(userName, firstName, lastName) {
     navigator.id.get(function(assertion) {
       var xhr = new XMLHttpRequest();
       xhr.open('PUT', '/provision', true);
@@ -123,7 +123,6 @@ var pimper = (function() {
         userName: userName,
         firstName: firstName,
         lastName: lastName,
-        email: email,
         browserIdAudience: 'http://libredocs.org',
         browserIdAssertion: assertion
       });
