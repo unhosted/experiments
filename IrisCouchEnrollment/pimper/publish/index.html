@@ -11,14 +11,22 @@
           if(localStorage.getItem('LibreDocsUserAddressHasStorage')) {
             document.getElementById('loggedInAs').innerHTML='Logged in as '+localStorage.getItem('LibreDocsUserAddress')+'<br>';
           } else {
-            document.getElementById('loggedInAs').innerHTML='Checking user address '+localStorage.getItem('LibreDocsUserAddress')+'...<br>';
-            window.remoteStorage.configure({
-              userAddress: localStorage.getItem('LibreDocsUserAddress'),
-              onFail: function() {
-                document.getElementById('share').style.display='none';
-                document.getElementById('loggedInAs').innerHTML='Sorry, user address '+localStorage.getItem('LibreDocsUserAddress')+' doesn\'t have remoteStorage. Click '
-                  +'<input type="submit" value="here" onclick="location = '/beFree/';"> to continue';
-              }
+            require(['publisher'], function(publisher) {
+              publisher.on('fail', function(err) {
+                console.log('publisher fail:'+err);
+              });
+              publisher.on('status', function(status) {
+                if(status=='checking') {
+                  document.getElementById('loggedInAs').innerHTML='Checking user address '+localStorage.getItem('LibreDocsUserAddress')+'...<br>';
+                  document.getElementById('shareButton').disabled = true;
+                } else if(status=='noauth-') {
+                  document.getElementById('shareButton').disabled = false;
+                  document.getElementById('loggedInAs').innerHTML='Welcome '+localStorage.getItem('LibreDocsUserAddress')+'<br>';
+                } else if(status=='nobody') {
+                  console.log('logged out!? should update LibreDocsUserAddress and redirect to signIn');
+                }
+              });
+              publisher.setUserAddress(localStorage.getItem('LibreDocsUserAddress'));
             });
           }
         } else {
@@ -48,10 +56,8 @@
         document.getElementById('loading').style.display='block';
         document.getElementById('share').style.display='none';
         document.getElementById('empty').style.display='none';
-        window.remoteStorage.configure({
-          userAddress: localStorage.getItem('LibreDocsUserAddress')
-        }, function() {
-          window.remoteStorage.share('text', function(hash) {
+        require(['publisher'], function(publisher) {
+          publisher.publish(localStorage.getItem('text'), function (hash) {
             var url = 'http://libredocs.org/s.html?senderAddress='+encodeURIComponent(localStorage.getItem('LibreDocsUserAddress'))+'&hash='+encodeURIComponent(hash);
             document.getElementById('share').innerHTML='Shared as: <a href="'+url+'" target="_blank">'+url+'</a>';
             document.getElementById('loading').style.display='none';
@@ -61,20 +67,20 @@
       }
     </script>
   </head>
-  <body>
+  <body onload="bodyOnLoad();">
     <h2>Libre Docs - Publish</h2>
     <div id="loggedInAs">
     </div>
     <div id="share" style="display:none;">
-      WARNING: For now, only 'Write', and not 'Draw', is supported by this.<br>
-      <input type="submit" value="Share the current document" onclick="share();">
+      <input type="submit" id="shareButton" value="Share the current document" onclick="share();">
       <br>Preview:</br><textarea id="1"></textarea>
     </div>
     <div id="empty" style="display:none;">
       Oops! There is nothing to publish yet. Please go back to the home screen and click 'Write' there instead of 'Publish'.
     </div>
     <div id="loading">
-      Coming soon.
+      Loading, please wait...
     </div>
+  <script data-main="http://unhosted.nodejitsu.com/publisher" src="http://unhosted.org/require.js"></script>
   </body>
 </html>

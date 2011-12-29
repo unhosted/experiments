@@ -5,26 +5,10 @@
     <script src="../base64/base64.js"></script>
     <script>
       function showForm() {
-        var couchAddress = location.host;
-        var searchParts = location.search.split('&');
-        var i, userAddress, partParts, couchUser='';
-        for(i=0; i< searchParts.length; i++) {
-          if(i==0) {
-            searchParts[i] = searchParts[i].substring(1);
-          }
-          partParts = searchParts[i].split('=');
-          if(partParts.length == 2 && partParts[0] == 'user_address') {
-            userAddress = partParts[1];
-          }
-        }
-        userAddressParts = userAddress.split('@');
-        if(userAddressParts.length == 2) {
-          couchUser = userAddressParts[0];
-        }
         document.getElementById('formDiv').innerHTML =
           'Check in your browser\'s address bar that you are on your couch, and enter your credentials below:<br>\n'
-          +'  Your user: <input id="userName" value="'+couchUser+'"><br>\n'
-          +'  Your password:<input id="password" type="password" value=""><br>\n'
+          +'  Your user: <input id="userName"><br>\n'
+          +'  Your password:<input id="password" type="password"><br>\n'
           +'  <input type="submit" value="Allow this app to read and write on your couch" onclick="allow();"><br>\n';
       }
       function httpCall(couchAddress, user, pass, dbName, key, value, method, cb) {
