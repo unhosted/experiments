@@ -37,8 +37,8 @@ var pimper = (function() {
       console.log('curl '+options+' '+host); 
     }
   }
-  function createAdminUser() {
-    httpPut(couchAddress+'/_config/admins/'+adminUsr, '\"'+adminPwd+'\"');
+  function createAdminUser(putHost, adminUsr, adminPwd, proxy) {
+    httpPut(putHost+'/_config/admins/'+adminUsr, '\"'+adminPwd+'\"');
   }
   function createDatabase(dbName) {
     httpPut(couchAddress+'/'+dbName, null, true);
@@ -49,22 +49,16 @@ var pimper = (function() {
   function uploadAttachment(dbName, docName, attachmentName, localFileName, contentType) {
     httpPut(couchAddress+'/'+dbName+'/'+docName+'/'+attachmentName, null, true, localFileName, contentType);
   }
-  function pimp(userAddress, proxy, cb) {
-    var userAddressParts = userAddress.split('@');
+  function pimp(couchAddress, adminUsr, adminPwd, proxy, cb) {
     var httpTemplate;
-    if(userAddressParts.length != 2) {
-      return '"'+userAddress+'" is not a user address';
-    }
-    couchAddress = userAddressParts[1]+':5984';
     if(proxy) {
       adminProxy = proxy;
-      httpTemplate = 'http://'+proxy+userAddressParts[1]+'/{category}/';
+      httpTemplate = 'http://'+proxy+couchAddress+'/{category}/';
     } else {
       httpTemplate = 'http://'+couchAddress+'/{category}/_design/remoteStorage/_show/cors/';
     }
-    adminUsr = userAddressParts[0];
-    adminPwd = password;
-    createAdminUser();
+    var putHost = 'http://'+proxy+couchAddress+':5984';
+    createAdminUser(putHost, adminUsr, adminPwd);
     createDatabase('cors');
     createDocument('cors', '_design/well-known', '{'+
       '\"_id\": \"_design/well-known\",'+
