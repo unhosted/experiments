@@ -57,7 +57,7 @@
         document.getElementById('share').style.display='none';
         document.getElementById('empty').style.display='none';
         require(['publisher'], function(publisher) {
-          publisher.publish(localStorage.getItem('text'), function (hash) {
+          publisher.publish(localStorage.getItem('text'), 'http://libredocs.org/rcvToken.html', function (hash) {
             var url = 'http://libredocs.org/s.html?senderAddress='+encodeURIComponent(localStorage.getItem('LibreDocsUserAddress'))+'&hash='+encodeURIComponent(hash);
             document.getElementById('share').innerHTML='Shared as: <a href="'+url+'" target="_blank">'+url+'</a>';
             document.getElementById('loading').style.display='none';
