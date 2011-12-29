@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Receive a shared text</title>
+    <script src="http://unhosted.org/require.js" data-main="http://unhosted.nodejitsu.com/receiver"></script>
     <script>
       function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -19,8 +20,10 @@
       function bodyOnLoad() {
         var senderAddress = getParameterByName('senderAddress');
         var hash = getParameterByName('hash');
-        remoteStorage.receive(senderAddress, hash, function(text) {
-          document.getElementById('1').innerHTML = text;
+        require(['receiver'], function(receiver) {
+          receiver.receive(senderAddress, hash, function(text) {
+            document.getElementById('1').innerHTML = text;
+          });
         });
       }
     </script>
