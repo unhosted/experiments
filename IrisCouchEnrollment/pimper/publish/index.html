@@ -13,7 +13,26 @@
           } else {
             require(['publisher'], function(publisher) {
               publisher.on('fail', function(err) {
-                console.log('publisher fail:'+err);
+                console.log('publisher fail ['+err.code+']:'+err.msg);
+                if(err.code == publisher.ERR_NO_STORAGE) {
+                  document.getElementById('loggedInAs').innerHTML=
+                    'Welcome '+localStorage.getItem('LibreDocsUserAddress')
+                    +', please choose between <br>'
+                    +'<br><br>'
+                    +'<table><tr><td>'
+                    +'<input type="submit" value="easy freedom" onclick="location=\'/beFree/easy.html\';">'
+                    +'</td><td>'
+                    +' or '
+                    +'</td><td>'
+                    +'<a href="/beFree/advanced.html">advanced freedom</a><br>'
+                    +'</td></tr><table>'
+                    +'<br><br>'
+                    +' or if you have remoteStorage without BrowserId support, enter your user address here: '
+                    +'<input id="userAddress"><input type="submit" value="Go" onclick="'
+                    +'localStorage.setItem(\'LibreDocsUserAddress\', document.getElementById(\'userAddress\').value);location=\'\';"><br>';
+                  document.getElementById('share').style.display='none';
+                  document.getElementById('empty').style.display='none';
+                }
               });
               publisher.on('status', function(status) {
                 if(status=='checking') {
