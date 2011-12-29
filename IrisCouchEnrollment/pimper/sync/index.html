@@ -119,25 +119,10 @@
         }
       }
     </script>
-  <body onload="bodyOnLoad();">
-    <div id="signInOptions">
+  <body>
       <h2>Libre Docs - Sync</h2>
-      WARNING: For now, only 'Write', and not 'Draw', is supported by this.<br>
-      <input type="submit" id="signIn" value="Sign In" onclick="signIn();">
-      to sync.
+    <div>
+      Coming soon.
     </div>
-    <div id="registerOptions">
-      <a href="/advancedFreedom.html">Get advanced freedom</a>
-      <input type="submit" id="signUp" value="Get Easy Freedom" onclick="signUp();">
-    </div>
-    <script src="http://browserid.org/include.js"></script>
-    <script src="http://unhosted.org/remoteStorage.js">{
-      suppressAutoSave: true,
-      suppressDialog:true,
-      requestBrowseridAccess: true,
-      onStatus: function(oldStatus, newStatus) {
-        showStatus(newStatus);
-      }
-    }</script>
   </body>
 </html>
