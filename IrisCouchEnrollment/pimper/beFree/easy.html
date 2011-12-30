@@ -6,6 +6,10 @@
     <script src="pimp.js"></script>
     <script>
       function ping(userName, proxy, counter, onSuccess) {
+        document.getElementById('status').innerHTML = 'Creating '+userName+'@'+userName+'.iriscouch.com for you';
+        for(var i=0; i<=counter; i++) {
+          document.getElementById('status').innerHTML += '.';
+        }
         pimper.ping(userName, proxy, function(result) {
           if(result=='ok') {
             onSuccess();
@@ -25,19 +29,25 @@
           alert('we can only help you if you understand that you\'re signing up for a service provided by Iris Couch, and agree with their ToS.');
           document.getElementById('send').disabled = false;
         } else {
+          document.getElementById('status').innerHTML = 'Verifying your email address...';
           var firstName = document.getElementById('firstName').value;
           var lastName = document.getElementById('lastName').value;
           var userName = document.getElementById('userName').value;
           navigator.id.get(function(assertion) {
+            document.getElementById('status').innerHTML = 'Checking username...';
             pimper.provision(userName, firstName, lastName, assertion, function(result) {
               if(result=='taken') {
                 alert('That username is taken! :( please try a different one');
                 document.getElementById('send').disabled = false;
               } else if(result=='ok') {
                 ping(userName, proxy, 0, function() {
+                  document.getElementById('status').innerHTML += '.';
                   var password = document.getElementById('password').value;
                   pimper.squat(userName+'.iriscouch.com', userName, password, assertion, function() {
+                    document.getElementById('status').innerHTML += '.';
                     pimper.populate(userName+'.iriscouch.com', userName, password, assertion, proxy, function() {
+                      localStorage.removeItem('LibreDocsUserAddress');
+                      document.getElementById('status').innerHTML = 'Done! Now you can use LibreDocs as <a href="/">'+userName+'@'+userName+'.iriscouch.com</a>';
                       document.getElementById('send').disabled = false;
                     });
                   });
@@ -61,6 +71,7 @@
     <input type="checkbox" id="agree"> I understand that I'm signing up for a <a href="http://www.w3.org/community/unhosted/wiki/RemoteStorage" target="_blank">remoteStorage</a> service<br>
     provided by <a href="http://www.iriscouch.com/" target="_blank">Iris Couch</a>, and agree with their <a href="http://www.iriscouch.com/policy#tos">Terms of Service</a>.<br>
     <input type="submit" id="send" value="Send" onclick="send();" disabled="true">
+    <div id="status"></div>
     <script src="base64.js"></script>
     <script src="https://browserid.org/include.js"></script>
     <script>document.getElementById('send').disabled=false;</script>
