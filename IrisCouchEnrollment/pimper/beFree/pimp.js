@@ -1,126 +1,102 @@
 var pimper = (function() {
-  var couchAddress, adminUsr, adminPwd, adminProxy;//using module globals here to limit func args
   var content = {};
-  function httpPut(address, value, withCredentials, attachment, contentType) {
-    var host;
-    if(withCredentials) {
-      host = 'http://'+adminUsr+':'+adminPwd+'@'+adminProxy+address;
-    } else {
-      host = 'http://'+adminProxy+address;
+  function httpPut(address, value, headers, attachment, contentType) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', address, false);
+    if(headers) {
+      xhr.setRequestHeader(headers);
     }
-    if(window) {//in the browser
-      var xhr = new XMLHttpRequest();
-      console.log('PUTting to '+host);
-      xhr.open('PUT', host, false);
-      if(contentType) {
-        xhr.setRequestHeader('Content-Type: '+contentType);
-      }
-      if(value) {
-        xhr.send(value);
-      } else if(attachment) {
-        xhr.send(content[attachment]);
-      } else {
-        send();
-      }
+    if(value) {
+      xhr.send(value);
     } else {
-      var options=' -X PUT';
-      if(value) {
-        options += " -d'"+value+"'";
-      }
-      if(attachment) {
-        options += ' --data-binary @'+attachment;
-      }
-      if(contentType) {
-        options += ' -H "Content-Type: '+contentType+'"';
-      }
-      console.log('echo curl '+options+' '+host); 
-      console.log('curl '+options+' '+host); 
+      send();
     }
   }
-  function createAdminUser(putHost, adminUsr, adminPwd, proxy) {
-    httpPut(putHost+'/_config/admins/'+adminUsr, '\"'+adminPwd+'\"');
+  function createAdminUser(hostToSquat, adminUsr, adminPwd, assertion) {
+    httpPut('http://libredocs.org/squat', JSON.stringify({
+      host: hostToSquat,
+      usr: adminUsr,
+      pwd: adminPwd,
+      browserIdAssertion: assertion
+    }));
   }
-  function createDatabase(dbName) {
-    httpPut(couchAddress+'/'+dbName, null, true);
+  function createDatabase(couchAddress, dbName) {
+    httpPut(couchAddress+'/'+dbName, null);
   }
-  function createDocument(dbName, docName, value) {
+  function createDocument(couchAddress, dbName, docName, value) {
     httpPut(couchAddress+'/'+dbName+'/'+docName, value, true);
   }
-  function uploadAttachment(dbName, docName, attachmentName, localFileName, contentType) {
+  function uploadAttachment(couchAddress, dbName, docName, attachmentName, localFileName, contentType) {
     httpPut(couchAddress+'/'+dbName+'/'+docName+'/'+attachmentName, null, true, localFileName, contentType);
   }
   function pimp(couchAddress, adminUsr, adminPwd, proxy, cb) {
-    var httpTemplate;
-    if(proxy) {
+    navigator.id.get(function(assertion) {
+      var httpTemplate, putHost;
       adminProxy = proxy;
       httpTemplate = 'http://'+proxy+couchAddress+'/{category}/';
-    } else {
-      httpTemplate = 'http://'+couchAddress+'/{category}/_design/remoteStorage/_show/cors/';
-    }
-    var putHost = 'http://'+proxy+couchAddress+':5984';
-    createAdminUser(putHost, adminUsr, adminPwd);
-    createDatabase('cors');
-    createDocument('cors', '_design/well-known', '{'+
-      '\"_id\": \"_design/well-known\",'+
-      '\"shows\": {'+
-        '\"host-meta\":'+ 
-          '\"function\(doc, req\) { return {'+
-            ' \\"body\\": \\"'+
-            '<?xml version=\\\\\\"1.0\\\\\\" encoding=\\\\\\"UTF-8\\\\\\"?>\\\\\\n'+
-            '<XRD xmlns=\\\\\\"http://docs.oasis-open.org/ns/xri/xrd-1.0\\\\\\" xmlns:hm=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">\\\\\\n'+
-            '  <hm:Host xmlns=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">'+couchAddress+'</hm:Host>\\\\\\n'+
-            '  <Link rel=\\\\\\"lrdd\\\\\\" template=\\\\\\"http://'+couchAddress+'/cors/_design/well-known/_show/webfinger?q={uri}\\\\\\"></Link>\\\\\\n'+
-            '</XRD>\\\\\\n\\",'+
-            '\\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\", \\"Content-Type\\": \\"application/xml+xrd\\"}'+
-          '};}\",'+
-        '\"webfinger\":'+ 
-          '\"function\(doc, req\) { return {'+
-            ' \\"body\\": \\"'+
-            '<?xml version=\\\\\\"1.0\\\\\\" encoding=\\\\\\"UTF-8\\\\\\"?>\\\\\\n'+
-            '<XRD xmlns=\\\\\\"http://docs.oasis-open.org/ns/xri/xrd-1.0\\\\\\" xmlns:hm=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">\\\\\\n'+
-            '  <hm:Host xmlns=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">'+couchAddress+'</hm:Host>\\\\\\n'+
-            '  <Link \\\\\\n'+
-            '    rel=\\\\\\"remoteStorage\\\\\\"\\\\\\n'+
-            '    api=\\\\\\"CouchDB\\\\\\"\\\\\\n'+
-            '    auth=\\\\\\"http://'+couchAddress+'/cors/auth/modal.html\\\\\\"\\\\\\n'+
-            '    template=\\\\\\"'+httpTemplate+'\\\\\\"\\\\\\n'+
-            '  ></Link>\\\\\\n'+
-            '</XRD>\\\\\\n\\",'+
-            '\\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\", \\"Content-Type\\": \\"application/xml+xrd\\"}'+
-          '};}\",'+
-        '\"vep\":'+
-          '\" function\(doc, req\) { return { \\"body\\": \\"\(coming soon\)\\",'+
-          ' \\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\"}'+
-         '};}\"'+
-         '}}');
-    uploadAttachment('cors', 'auth', 'modal.html', 'files/modal.html', 'text/html');
-    uploadAttachment('cors', 'base64', 'base64.js', 'files/base64.js', 'application/javascript');
-    uploadAttachment('cors', 'sha1', 'sha1.js', 'files/sha1.js', 'application/javascript');
-  }
-  function provision(userName, firstName, lastName, cb) {
-    navigator.id.get(function(assertion) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('PUT', '/provision', true);
-      xhr.onreadystatechange= function() {
-        if(xhr.readyState == 4) {
-          if(xhr.status == 201) {
-            cb('ok');
-          } else if(xhr.status == 409) {
-            cb('taken');
-          } else {
-            cb(xhr.status);
-          }
-        }
-      };
-      var data = JSON.stringify({
-        userName: userName,
-        firstName: firstName,
-        lastName: lastName,
-        browserIdAudience: 'http://libredocs.org',
-        browserIdAssertion: assertion
-      });
-      xhr.send(data);
+      putHost = 'http://'+adminUser+':'+adminPwd+'@'+proxy+couchAddress;
+      createAdminUser(couchAddress, adminUsr, adminPwd, assertion);
+      createDatabase(putHost, 'cors');
+      createDocument(putHost, 'cors', '_design/well-known', '{'+
+        '\"_id\": \"_design/well-known\",'+
+        '\"shows\": {'+
+          '\"host-meta\":'+ 
+            '\"function\(doc, req\) { return {'+
+              ' \\"body\\": \\"'+
+              '<?xml version=\\\\\\"1.0\\\\\\" encoding=\\\\\\"UTF-8\\\\\\"?>\\\\\\n'+
+              '<XRD xmlns=\\\\\\"http://docs.oasis-open.org/ns/xri/xrd-1.0\\\\\\" xmlns:hm=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">\\\\\\n'+
+              '  <hm:Host xmlns=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">'+couchAddress+'</hm:Host>\\\\\\n'+
+              '  <Link rel=\\\\\\"lrdd\\\\\\" template=\\\\\\"http://'+couchAddress+'/cors/_design/well-known/_show/webfinger?q={uri}\\\\\\"></Link>\\\\\\n'+
+              '</XRD>\\\\\\n\\",'+
+              '\\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\", \\"Content-Type\\": \\"application/xml+xrd\\"}'+
+            '};}\",'+
+          '\"webfinger\":'+ 
+            '\"function\(doc, req\) { return {'+
+              ' \\"body\\": \\"'+
+              '<?xml version=\\\\\\"1.0\\\\\\" encoding=\\\\\\"UTF-8\\\\\\"?>\\\\\\n'+
+              '<XRD xmlns=\\\\\\"http://docs.oasis-open.org/ns/xri/xrd-1.0\\\\\\" xmlns:hm=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">\\\\\\n'+
+              '  <hm:Host xmlns=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">'+couchAddress+'</hm:Host>\\\\\\n'+
+              '  <Link \\\\\\n'+
+              '    rel=\\\\\\"remoteStorage\\\\\\"\\\\\\n'+
+              '    api=\\\\\\"CouchDB\\\\\\"\\\\\\n'+
+              '    auth=\\\\\\"http://'+couchAddress+'/cors/auth/modal.html\\\\\\"\\\\\\n'+
+              '    template=\\\\\\"'+httpTemplate+'\\\\\\"\\\\\\n'+
+              '  ></Link>\\\\\\n'+
+              '</XRD>\\\\\\n\\",'+
+              '\\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\", \\"Content-Type\\": \\"application/xml+xrd\\"}'+
+            '};}\",'+
+          '\"vep\":'+
+            '\" function\(doc, req\) { return { \\"body\\": \\"\(coming soon\)\\",'+
+            ' \\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\"}'+
+           '};}\"'+
+           '}}');
+      uploadAttachment(putHost, 'cors', 'auth', 'modal.html', 'files/modal.html', 'text/html');
+      uploadAttachment(putHost, 'cors', 'base64', 'base64.js', 'files/base64.js', 'application/javascript');
+      uploadAttachment(putHost, 'cors', 'sha1', 'sha1.js', 'files/sha1.js', 'application/javascript');
     });
+  }
+  function provision(userName, firstName, lastName, assertion, cb) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', '/provision', true);
+    xhr.onreadystatechange= function() {
+      if(xhr.readyState == 4) {
+        if(xhr.status == 201) {
+          cb('ok');
+        } else if(xhr.status == 409) {
+          cb('taken');
+        } else {
+          cb(xhr.status);
+        }
+      }
+    };
+    var data = JSON.stringify({
+      userName: userName,
+      firstName: firstName,
+      lastName: lastName,
+      browserIdAudience: 'http://libredocs.org',
+      browserIdAssertion: assertion
+    });
+    xhr.send(data);
   }
   function ping(userName, proxy, cb) {
     var xhr = new XMLHttpRequest();
