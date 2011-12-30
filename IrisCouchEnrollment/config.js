@@ -10,6 +10,8 @@ exports.config = {
   },
   pathHandler: {
     'libredocs.org/browserid-verifier': './browserid',
-    'libredocs.org/provision': './provision'
+    'libredocs.org/provision': './provision',
+    'libredocs.org/squat': './squat',
+    'libredocs.org/createDb': './createDb'
   }
 };
