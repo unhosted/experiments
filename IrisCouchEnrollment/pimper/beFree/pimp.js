@@ -29,51 +29,49 @@ var pimper = (function() {
   function uploadAttachment(couchAddress, dbName, docName, attachmentName, localFileName, contentType) {
     httpPut(couchAddress+'/'+dbName+'/'+docName+'/'+attachmentName, null, true, localFileName, contentType);
   }
-  function pimp(couchAddress, adminUsr, adminPwd, proxy, cb) {
-    navigator.id.get(function(assertion) {
-      var httpTemplate, putHost;
-      adminProxy = proxy;
-      httpTemplate = 'http://'+proxy+couchAddress+'/{category}/';
-      putHost = 'http://'+adminUser+':'+adminPwd+'@'+proxy+couchAddress;
-      createAdminUser(couchAddress, adminUsr, adminPwd, assertion);
-      createDatabase(putHost, 'cors');
-      createDocument(putHost, 'cors', '_design/well-known', '{'+
-        '\"_id\": \"_design/well-known\",'+
-        '\"shows\": {'+
-          '\"host-meta\":'+ 
-            '\"function\(doc, req\) { return {'+
-              ' \\"body\\": \\"'+
-              '<?xml version=\\\\\\"1.0\\\\\\" encoding=\\\\\\"UTF-8\\\\\\"?>\\\\\\n'+
-              '<XRD xmlns=\\\\\\"http://docs.oasis-open.org/ns/xri/xrd-1.0\\\\\\" xmlns:hm=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">\\\\\\n'+
-              '  <hm:Host xmlns=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">'+couchAddress+'</hm:Host>\\\\\\n'+
-              '  <Link rel=\\\\\\"lrdd\\\\\\" template=\\\\\\"http://'+couchAddress+'/cors/_design/well-known/_show/webfinger?q={uri}\\\\\\"></Link>\\\\\\n'+
-              '</XRD>\\\\\\n\\",'+
-              '\\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\", \\"Content-Type\\": \\"application/xml+xrd\\"}'+
-            '};}\",'+
-          '\"webfinger\":'+ 
-            '\"function\(doc, req\) { return {'+
-              ' \\"body\\": \\"'+
-              '<?xml version=\\\\\\"1.0\\\\\\" encoding=\\\\\\"UTF-8\\\\\\"?>\\\\\\n'+
-              '<XRD xmlns=\\\\\\"http://docs.oasis-open.org/ns/xri/xrd-1.0\\\\\\" xmlns:hm=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">\\\\\\n'+
-              '  <hm:Host xmlns=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">'+couchAddress+'</hm:Host>\\\\\\n'+
-              '  <Link \\\\\\n'+
-              '    rel=\\\\\\"remoteStorage\\\\\\"\\\\\\n'+
-              '    api=\\\\\\"CouchDB\\\\\\"\\\\\\n'+
-              '    auth=\\\\\\"http://'+couchAddress+'/cors/auth/modal.html\\\\\\"\\\\\\n'+
-              '    template=\\\\\\"'+httpTemplate+'\\\\\\"\\\\\\n'+
-              '  ></Link>\\\\\\n'+
-              '</XRD>\\\\\\n\\",'+
-              '\\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\", \\"Content-Type\\": \\"application/xml+xrd\\"}'+
-            '};}\",'+
-          '\"vep\":'+
-            '\" function\(doc, req\) { return { \\"body\\": \\"\(coming soon\)\\",'+
-            ' \\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\"}'+
-           '};}\"'+
-           '}}');
-      uploadAttachment(putHost, 'cors', 'auth', 'modal.html', 'files/modal.html', 'text/html');
-      uploadAttachment(putHost, 'cors', 'base64', 'base64.js', 'files/base64.js', 'application/javascript');
-      uploadAttachment(putHost, 'cors', 'sha1', 'sha1.js', 'files/sha1.js', 'application/javascript');
-    });
+  function pimp(couchAddress, adminUsr, adminPwd, assertion, proxy, cb) {
+    var httpTemplate, putHost;
+    adminProxy = proxy;
+    httpTemplate = 'http://'+proxy+couchAddress+'/{category}/';
+    putHost = 'http://'+adminUsr+':'+adminPwd+'@'+proxy+couchAddress;
+    createAdminUser(couchAddress, adminUsr, adminPwd, assertion);
+    createDatabase(putHost, 'cors');
+    createDocument(putHost, 'cors', '_design/well-known', '{'+
+      '\"_id\": \"_design/well-known\",'+
+      '\"shows\": {'+
+        '\"host-meta\":'+ 
+          '\"function\(doc, req\) { return {'+
+            ' \\"body\\": \\"'+
+            '<?xml version=\\\\\\"1.0\\\\\\" encoding=\\\\\\"UTF-8\\\\\\"?>\\\\\\n'+
+            '<XRD xmlns=\\\\\\"http://docs.oasis-open.org/ns/xri/xrd-1.0\\\\\\" xmlns:hm=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">\\\\\\n'+
+            '  <hm:Host xmlns=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">'+couchAddress+'</hm:Host>\\\\\\n'+
+            '  <Link rel=\\\\\\"lrdd\\\\\\" template=\\\\\\"http://'+couchAddress+'/cors/_design/well-known/_show/webfinger?q={uri}\\\\\\"></Link>\\\\\\n'+
+            '</XRD>\\\\\\n\\",'+
+            '\\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\", \\"Content-Type\\": \\"application/xml+xrd\\"}'+
+          '};}\",'+
+        '\"webfinger\":'+ 
+          '\"function\(doc, req\) { return {'+
+            ' \\"body\\": \\"'+
+            '<?xml version=\\\\\\"1.0\\\\\\" encoding=\\\\\\"UTF-8\\\\\\"?>\\\\\\n'+
+            '<XRD xmlns=\\\\\\"http://docs.oasis-open.org/ns/xri/xrd-1.0\\\\\\" xmlns:hm=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">\\\\\\n'+
+            '  <hm:Host xmlns=\\\\\\"http://host-meta.net/xrd/1.0\\\\\\">'+couchAddress+'</hm:Host>\\\\\\n'+
+            '  <Link \\\\\\n'+
+            '    rel=\\\\\\"remoteStorage\\\\\\"\\\\\\n'+
+            '    api=\\\\\\"CouchDB\\\\\\"\\\\\\n'+
+            '    auth=\\\\\\"http://'+couchAddress+'/cors/auth/modal.html\\\\\\"\\\\\\n'+
+            '    template=\\\\\\"'+httpTemplate+'\\\\\\"\\\\\\n'+
+            '  ></Link>\\\\\\n'+
+            '</XRD>\\\\\\n\\",'+
+            '\\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\", \\"Content-Type\\": \\"application/xml+xrd\\"}'+
+          '};}\",'+
+        '\"vep\":'+
+          '\" function\(doc, req\) { return { \\"body\\": \\"\(coming soon\)\\",'+
+          ' \\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\"}'+
+         '};}\"'+
+         '}}');
+    uploadAttachment(putHost, 'cors', 'auth', 'modal.html', 'files/modal.html', 'text/html');
+    uploadAttachment(putHost, 'cors', 'base64', 'base64.js', 'files/base64.js', 'application/javascript');
+    uploadAttachment(putHost, 'cors', 'sha1', 'sha1.js', 'files/sha1.js', 'application/javascript');
   }
   function provision(userName, firstName, lastName, assertion, cb) {
     var xhr = new XMLHttpRequest();
