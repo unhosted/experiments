@@ -29,24 +29,24 @@
           var lastName = document.getElementById('lastName').value;
           var userName = document.getElementById('userName').value;
           navigator.id.get(function(assertion) {
-//            pimper.provision(userName, firstName, lastName, assertion, function(result) {
-//              if(result=='taken') {
-//                alert('That username is taken! :( please try a different one');
-//                document.getElementById('send').disabled = false;
-//              } else if(result=='ok') {
-//                ping(userName, proxy, 0, function() {
+            pimper.provision(userName, firstName, lastName, assertion, function(result) {
+              if(result=='taken') {
+                alert('That username is taken! :( please try a different one');
+                document.getElementById('send').disabled = false;
+              } else if(result=='ok') {
+                ping(userName, proxy, 0, function() {
                   var password = document.getElementById('password').value;
-//                  pimper.squat(userName+'.iriscouch.com', userName, password, assertion, function() {
+                  pimper.squat(userName+'.iriscouch.com', userName, password, assertion, function() {
                     pimper.populate(userName+'.iriscouch.com', userName, password, assertion, proxy, function() {
                       document.getElementById('send').disabled = false;
                     });
-//                  });
-//                });
-//              } else {
-//                alert('Oops! Error code '+result);
-//                document.getElementById('send').disabled = false;
-//              }
-//            });
+                  });
+                });
+              } else {
+                alert('Oops! Error code '+result);
+                document.getElementById('send').disabled = false;
+              }
+            });
           });
         }
       }

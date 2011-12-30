@@ -47,8 +47,6 @@ var pimper = (function() {
       pwd:adminPwd
     };
     createDatabase(couchAddress, 'cors', assertion, authStr);
-    cb();
-    return;
     createDocument(putHost, 'cors', '_design/well-known', authStr, '{'+
       '\"_id\": \"_design/well-known\",'+
       '\"shows\": {'+
