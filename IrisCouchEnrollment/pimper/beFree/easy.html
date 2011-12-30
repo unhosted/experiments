@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <title>Iris Couch enrollment</title>
     <script src="pimp.js"></script>
-    <script src="https://browserid.org/include.js"></script>
     <script>
       function ping(userName, proxy, counter, onSuccess) {
         pimper.ping(userName, proxy, function(result) {
@@ -30,22 +29,24 @@
           var lastName = document.getElementById('lastName').value;
           var userName = document.getElementById('userName').value;
           navigator.id.get(function(assertion) {
-            pimper.provision(userName, firstName, lastName, assertion, function(result) {
-              if(result=='taken') {
-                alert('That username is taken! :( please try a different one');
-                document.getElementById('send').disabled = false;
-              } else if(result=='ok') {
-                ping(userName, proxy, 0, function() {
+//            pimper.provision(userName, firstName, lastName, assertion, function(result) {
+//              if(result=='taken') {
+//                alert('That username is taken! :( please try a different one');
+//                document.getElementById('send').disabled = false;
+//              } else if(result=='ok') {
+//                ping(userName, proxy, 0, function() {
                   var password = document.getElementById('password').value;
-                  pimper.pimp(userName+'.iriscouch.com', userName, password, assertion, proxy, function() {
-                    document.getElementById('send').disabled = false;
-                  });
-                });
-              } else {
-                alert('Oops! Error code '+result);
-                document.getElementById('send').disabled = false;
-              }
-            });
+//                  pimper.squat(userName+'.iriscouch.com', userName, password, assertion, function() {
+                    pimper.populate(userName+'.iriscouch.com', userName, password, assertion, proxy, function() {
+                      document.getElementById('send').disabled = false;
+                    });
+//                  });
+//                });
+//              } else {
+//                alert('Oops! Error code '+result);
+//                document.getElementById('send').disabled = false;
+//              }
+//            });
           });
         }
       }
@@ -55,10 +56,13 @@
     <h2>Iris Couch enrollment</h2>
     Your first name: <input id="firstName" value="Michiel"><br>
     Your last name: <input id="lastName" value="de Jong"><br>
-    Pick a user name: <input id="userName" value="unhostedtest"><br>
-    Pick a password <!-- this will disappear once we get browserid-rp working again on iris couch -->: <input id="password" type="password"><br>
+    Pick a user name: <input id="userName" value="unhostedtest9"><br>
+    Pick a password <!-- this will disappear once we get browserid-rp working again on iris couch -->: <input id="password" type="password" value="qwerty"><br>
     <input type="checkbox" id="agree" checked> I understand that I'm signing up for a <a href="http://www.w3.org/community/unhosted/wiki/RemoteStorage" target="_blank">remoteStorage</a> service<br>
     provided by <a href="http://www.iriscouch.com/" target="_blank">Iris Couch</a>, and agree with their <a href="http://www.iriscouch.com/policy#tos">Terms of Service</a>.<br>
-    <input type="submit" id="send" value="Send" onclick="send();">
+    <input type="submit" id="send" value="Send" onclick="send();" disabled="true">
+    <script src="base64.js"></script>
+    <script src="https://browserid.org/include.js"></script>
+    <script>document.getElementById('send').disabled=false;</script>
   </body>
 </html>

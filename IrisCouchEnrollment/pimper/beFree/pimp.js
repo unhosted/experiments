@@ -1,15 +1,17 @@
 var pimper = (function() {
   var content = {};
-  function httpPut(address, value, headers, attachment, contentType) {
+  function httpPut(address, value, auth, attachment, contentType) {
     var xhr = new XMLHttpRequest();
     xhr.open('PUT', address, false);
-    if(headers) {
-      xhr.setRequestHeader(headers);
+    if(auth) {
+      xhr.withCredentials=true;
+      //xhr.setRequestHeader('Authorization', 'Bearer '+Base64.encode(auth.usr+':'+auth.pwd));//HACK: our proxy expects a bearer token, not a basic token
+      xhr.setRequestHeader('Authorization', 'Basic '+Base64.encode(auth.usr+':'+auth.pwd));
     }
     if(value) {
       xhr.send(value);
     } else {
-      send();
+      xhr.send();
     }
   }
   function createAdminUser(hostToSquat, adminUsr, adminPwd, assertion) {
@@ -20,23 +22,34 @@ var pimper = (function() {
       browserIdAssertion: assertion
     }));
   }
-  function createDatabase(couchAddress, dbName) {
-    httpPut(couchAddress+'/'+dbName, null);
+  function createDatabase(hostToSquat, dbName, assertion, authStr) {
+    httpPut('http://libredocs.org/createDb', JSON.stringify({
+      host: hostToSquat,
+      dbName: dbName,
+      browserIdAssertion: assertion
+    }), authStr);
   }
-  function createDocument(couchAddress, dbName, docName, value) {
-    httpPut(couchAddress+'/'+dbName+'/'+docName, value, true);
+  function createDocument(couchAddress, dbName, docName, authStr, value) {
+    httpPut(couchAddress+'/'+dbName+'/'+docName, value, authStr);
   }
-  function uploadAttachment(couchAddress, dbName, docName, attachmentName, localFileName, contentType) {
-    httpPut(couchAddress+'/'+dbName+'/'+docName+'/'+attachmentName, null, true, localFileName, contentType);
+  function uploadAttachment(couchAddress, dbName, docName, authStr, attachmentName, localFileName, contentType) {
+    httpPut(couchAddress+'/'+dbName+'/'+docName+'/'+attachmentName, null, authStr, localFileName, contentType);
   }
-  function pimp(couchAddress, adminUsr, adminPwd, assertion, proxy, cb) {
-    var httpTemplate, putHost;
-    adminProxy = proxy;
-    httpTemplate = 'http://'+proxy+couchAddress+'/{category}/';
-    putHost = 'http://'+adminUsr+':'+adminPwd+'@'+proxy+couchAddress;
+  function squat(couchAddress, adminUsr, adminPwd, assertion, cb) {
     createAdminUser(couchAddress, adminUsr, adminPwd, assertion);
-    createDatabase(putHost, 'cors');
-    createDocument(putHost, 'cors', '_design/well-known', '{'+
+    cb();
+  }
+  function populate(couchAddress, adminUsr, adminPwd, assertion, proxy, cb) {
+    var httpTemplate = 'http://'+proxy+couchAddress+'/{category}/';
+    var putHost = 'http://'+proxy+couchAddress;
+    var authStr = {
+      usr:adminUsr,
+      pwd:adminPwd
+    };
+    createDatabase(couchAddress, 'cors', assertion, authStr);
+    cb();
+    return;
+    createDocument(putHost, 'cors', '_design/well-known', authStr, '{'+
       '\"_id\": \"_design/well-known\",'+
       '\"shows\": {'+
         '\"host-meta\":'+ 
@@ -69,9 +82,9 @@ var pimper = (function() {
           ' \\"headers\\": {\\"Access-Control-Allow-Origin\\": \\"*\\"}'+
          '};}\"'+
          '}}');
-    uploadAttachment(putHost, 'cors', 'auth', 'modal.html', 'files/modal.html', 'text/html');
-    uploadAttachment(putHost, 'cors', 'base64', 'base64.js', 'files/base64.js', 'application/javascript');
-    uploadAttachment(putHost, 'cors', 'sha1', 'sha1.js', 'files/sha1.js', 'application/javascript');
+    uploadAttachment(putHost, 'cors', 'auth', authStr, 'modal.html', 'files/modal.html', 'text/html');
+    uploadAttachment(putHost, 'cors', 'base64', authStr, 'base64.js', 'files/base64.js', 'application/javascript');
+    uploadAttachment(putHost, 'cors', 'sha1', authStr, 'sha1.js', 'files/sha1.js', 'application/javascript');
   }
   function provision(userName, firstName, lastName, assertion, cb) {
     var xhr = new XMLHttpRequest();
@@ -114,9 +127,10 @@ var pimper = (function() {
   }
 
   return {
-    pimp: pimp,
+    provision: provision,
     ping: ping,
-    provision: provision
+    squat: squat,
+    populate: populate
   };
 })();
 
