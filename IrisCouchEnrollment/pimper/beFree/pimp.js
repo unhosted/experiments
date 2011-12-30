@@ -1,12 +1,14 @@
 var pimper = (function() {
   var content = {};
-  function httpPut(address, value, auth, attachment, contentType) {
+  function httpPut(address, value, auth, contentType) {
     var xhr = new XMLHttpRequest();
     xhr.open('PUT', address, false);
     if(auth) {
       xhr.withCredentials=true;
-      //xhr.setRequestHeader('Authorization', 'Bearer '+Base64.encode(auth.usr+':'+auth.pwd));//HACK: our proxy expects a bearer token, not a basic token
       xhr.setRequestHeader('Authorization', 'Basic '+Base64.encode(auth.usr+':'+auth.pwd));
+    }
+    if(contentType) {
+      xhr.setRequestHeader('Content-Type', contentType);
     }
     if(value) {
       xhr.send(value);
@@ -32,8 +34,11 @@ var pimper = (function() {
   function createDocument(couchAddress, dbName, docName, authStr, value) {
     httpPut(couchAddress+'/'+dbName+'/'+docName, value, authStr);
   }
-  function uploadAttachment(couchAddress, dbName, docName, authStr, attachmentName, localFileName, contentType) {
-    httpPut(couchAddress+'/'+dbName+'/'+docName+'/'+attachmentName, null, authStr, localFileName, contentType);
+  function uploadAttachment(couchAddress, dbName, docName, authStr, attachmentName, fileName, contentType) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', fileName, false);
+    xhr.send();
+    httpPut(couchAddress+'/'+dbName+'/'+docName+'/'+attachmentName, xhr.responseText, authStr, contentType);
   }
   function squat(couchAddress, adminUsr, adminPwd, assertion, cb) {
     createAdminUser(couchAddress, adminUsr, adminPwd, assertion);
@@ -83,6 +88,7 @@ var pimper = (function() {
     uploadAttachment(putHost, 'cors', 'auth', authStr, 'modal.html', 'files/modal.html', 'text/html');
     uploadAttachment(putHost, 'cors', 'base64', authStr, 'base64.js', 'files/base64.js', 'application/javascript');
     uploadAttachment(putHost, 'cors', 'sha1', authStr, 'sha1.js', 'files/sha1.js', 'application/javascript');
+    cb();
   }
   function provision(userName, firstName, lastName, assertion, cb) {
     var xhr = new XMLHttpRequest();
