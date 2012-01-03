@@ -6,7 +6,7 @@ exports.config = {
     'libredoc.org': 'http://libredocs.org'
   },
   host: {
-    'libredocs.org': '/pimper'
+    'libredocs.org': '/static'
   },
   pathHandler: {
     'libredocs.org/browserid-verifier': './browserid',
