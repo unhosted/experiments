@@ -150,8 +150,9 @@ exports.handler = (function() {
           res.write(JSON.stringify(err));
           res.end();
         } else {
-          if(r.email == 'michiel@unhosted.org') {
-            getBearerToken(postData.audience, function(token) {
+          var userAddressParts = r.email.split('@').
+          if(userAddressParts[1] == 'unhosted.org') {
+            getBearerToken(postData.audience, userAddressParts[0], function(token) {
               console.log('token, allowing origin '+req.headers.origin);
               console.log(req.headers);
               console.log('handing out token:');
