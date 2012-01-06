@@ -138,15 +138,17 @@ exports.handler = (function() {
       dataStr += chunk;
     });
     req.on('end', function() {
-      postData = querystring.parse(dataStr);
+      postData = JSON.parse(dataStr);
       //if(!postData.audience) {
       //  postData.audience = 'http://myfavouritesandwich.org';
       //}
+      console.log(postData);
       browseridVerify(postData, function(err, r) {
         if(err) {
           console.log('err, allowing origin '+req.headers.origin);
           console.log(req.headers);
-          res.writeHead(200, {'Content-type': 'application/json', 'Access-Control-Allow-Origin': req.headers.origin});
+          console.log(err);
+          res.writeHead(500, {'Content-type': 'application/json', 'Access-Control-Allow-Origin': req.headers.origin});
           res.write(JSON.stringify(err));
           res.end();
         } else {
