@@ -59,8 +59,8 @@ exports.handler = (function() {
     });
   }
   function createScope(userName, password, ourUser, clientId, dataScope, public, cb) {
-    console.log('connecting to host '+config.ourUser.couchUrl);
-    var conn = new(cradle.Connection)(config.ourUser.couchUrl, config.ourUser.couchPort, {
+    console.log('connecting to host '+config[ourUser].couchUrl);
+    var conn = new(cradle.Connection)(config[ourUser].couchUrl, config[ourUser].couchPort, {
       cache: true, raw: false,
       auth: {username: userName, password: password}
     });
@@ -129,7 +129,7 @@ exports.handler = (function() {
     }
     console.log('Parsed audience to form dbName:'+dbName);
     var userName = dbName;
-    createToken(config.ourUser.couchUsr, config.ourUser.couchPwd, ourUser, userName, dbName, cb);
+    createToken(config[ourUser].couchUsr, config[ourUser].couchPwd, ourUser, userName, dbName, cb);
   }
   function serve(req, res, baseDir) {
     console.log('serving browserid2couch');
