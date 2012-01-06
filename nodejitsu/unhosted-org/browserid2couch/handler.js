@@ -58,9 +58,9 @@ exports.handler = (function() {
       cb(pwd);
     });
   }
-  function createScope(userName, password, clientId, dataScope, public, cb) {
-    console.log('connecting to host '+config.couchUrl);
-    var conn = new(cradle.Connection)(config.couchUrl, config.couchPort, {
+  function createScope(userName, password, ourUser, clientId, dataScope, public, cb) {
+    console.log('connecting to host '+config.ourUser.couchUrl);
+    var conn = new(cradle.Connection)(config.ourUser.couchUrl, config.ourUser.couchPort, {
       cache: true, raw: false,
       auth: {username: userName, password: password}
     });
@@ -107,9 +107,9 @@ exports.handler = (function() {
     });
   }
 
-  function createToken(userName, password, clientId, dataScope, cb) {
+  function createToken(userName, password, ourUser, clientId, dataScope, cb) {
     var public = (dataScope == 'public');
-    createScope(userName, password, clientId, dataScope, public, function(password) {
+    createScope(userName, password, ourUser, clientId, dataScope, public, function(password) {
       //make basic auth header match bearer token for easy proxying:
       var bearerToken = (new Buffer(clientId+':'+password)).toString('base64');
       console.log(bearerToken+' <= '+clientId+':'+password);
@@ -117,7 +117,7 @@ exports.handler = (function() {
     });
   }
 
-  function getBearerToken(audience, cb) {
+  function getBearerToken(audience, ourUser, cb) {
     var dbName = '';//don't trust the clientId that the RP claims - instead, derive it from redirect_uri:
     for(var i in audience) {
       var thisChar = audience[i];
@@ -129,7 +129,7 @@ exports.handler = (function() {
     }
     console.log('Parsed audience to form dbName:'+dbName);
     var userName = dbName;
-    createToken(config.couchUsr, config.couchPwd, userName, dbName, cb);
+    createToken(config.ourUser.couchUsr, config.ourUser.couchPwd, ourUser, userName, dbName, cb);
   }
   function serve(req, res, baseDir) {
     console.log('serving browserid2couch');
