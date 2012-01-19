@@ -41,6 +41,8 @@ exports.handler = (function() {
       contentType='text/css';
     } else if(/\.js$/g.test(uripath)) {
       contentType='text/javascript';
+    } else if(/\.gif$/g.test(uripath)) {
+      contentType='image/gif';
     } else if(/\.png$/g.test(uripath)) {
       contentType='image/png';
     } else {
@@ -58,19 +60,22 @@ exports.handler = (function() {
       } 
    
       fs.readFile(filename, 'binary', function(err, file) {
-        if(err) {
+        console.log(err);
+        if(err.code == 'EISDIR') {
+          res.writeHead(301, {'Location': 'http://'+host+uripath+'/'});
+          res.end('Location: http://'+host+uripath+'/\n');
+        } else if(err) {
           res.writeHead(500, {'Content-Type': 'text/plain'});
-          res.end(err + '\n');
-          return;
+          res.end(typeof(err) + '"' + err + '"\n');
+        } else {
+          res.writeHead(200, {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Content-Type': contentType
+          });
+          res.write(file, 'binary');
+          res.end();
         }
-
-        res.writeHead(200, {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Content-Type': contentType
-        });
-        res.write(file, 'binary');
-        res.end();
       });
     })
   }

@@ -7,14 +7,13 @@ exports.handler = (function() {
    
   function serveFile(res, filename, contentType) {
     fs.readFile(filename, 'binary', function(err, file) {
-      if(err) {
-        if(err.code == 'EISDIR') {
-          serveFile(res, filename+'/index.html', 'text/html');
-        } else {
-          console.log(err);
-          res.writeHead(500, {'Content-Type': 'text/plain'});
-          res.end(err + '\n');
-        }
+      if(err.code == 'EISDIR') {
+        res.writeHead(301, {'Location': 'http://'+host+uripath+'/'});
+        res.end('Location: http://'+host+uripath+'/\n');
+      } else if(err) {
+        console.log(err);
+        res.writeHead(500, {'Content-Type': 'text/plain'});
+        res.end(err + '\n');
       } else {
         res.writeHead(200, {
           'Access-Control-Allow-Origin': '*',
