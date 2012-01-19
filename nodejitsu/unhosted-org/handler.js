@@ -7,7 +7,7 @@ exports.handler = (function() {
    
   function serveFile(res, filename, contentType) {
     fs.readFile(filename, 'binary', function(err, file) {
-      if(err.code == 'EISDIR') {
+      if(err && err.code == 'EISDIR') {
         res.writeHead(301, {'Location': 'http://'+host+uripath+'/'});
         res.end('Location: http://'+host+uripath+'/\n');
       } else if(err) {
