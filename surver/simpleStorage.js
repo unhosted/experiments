@@ -109,10 +109,34 @@ exports.simpleStorage = (function() {
       });
     });
   }
+  function addUser(userId, password, cb) {//opens and closes redis
+    initRedis(function(){
+      redisClient.set('user:'+userId, password, function(err, data) {
+        redisClient.quit();
+        cb();
+      });
+    });
+  }
+  function createToken(userId, password, token, categories, cb) {//opens and closes redis
+    initRedis(function(){
+      redisClient.get('user:'+userId, function(err, data) {
+        if(data == password) {
+          redisClient.set('token:'+userId+':'+token, categories, function(err, data) {
+            redisClient.quit();
+            cb(true);
+          });
+        } else {
+          cb(false);
+        }
+      });
+    });
+  }
 
   return {
     serve: serve,
     addToken: addToken,
-    removeToken: removeToken
+    removeToken: removeToken,
+    addUser: addUser,
+    createToken: createToken
   };
 })();
