@@ -82,10 +82,10 @@
       console.log(urlObj);
       var pathNameParts = urlObj.pathname.split('/');
       if(pathNameParts[1] == '.well-known') {
-        res.writeHead(200);
+        res.writeHead(200, { 'Access-Control-Allow-Origin': '*'});
         res.end(genHostMeta(config.origin));
       } else if(pathNameParts[1] == 'webfinger') {
-        res.writeHead(200);
+        res.writeHead(200, { 'Access-Control-Allow-Origin': '*'});
         res.end(genWebfinger(config.origin, pathNameParts[2]));
       } else if(pathNameParts[1] == '_oauth') {
         serveOAuth(req, res);
