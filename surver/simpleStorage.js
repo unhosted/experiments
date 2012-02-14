@@ -13,9 +13,37 @@ exports.simpleStorage = (function() {
        cb();
     });
   }
+  function checkToken(userId, token, category, method, cb) {
+    if(category=='public' && method=='GET') {
+      console.log('public GET access ok');
+      cb(true);
+    } else {
+      redisClient.get('token:'+userId+':'+token, function(err, categoriesStr) {
+        var categories;
+        try {
+          categories = JSON.parse(categoriesStr);
+        } catch(e) {
+          console.log('5-0');
+          cb(false);
+          return;
+        }
+        console.log('For user "'+userId+'", token "'+token+'", wanting "'+category+'", found categories: '+JSON.stringify(categories));
+        var i;
+        for(i in categories) {
+          console.log('considering '+categories[i]);
+          if(categories[i] == category) {
+            cb(true);
+            return;
+          }
+        }
+        console.log('sorry');
+        cb(false);
+      });
+    }
+  }
   function doReq(reqObj, cb) {//opens and closes redis
     initRedis(function(){
-      checkToken(reqObj.userId, reqObj.token, reqObj.category, function(result) {
+      checkToken(reqObj.userId, reqObj.token, reqObj.category, reqObj.method, function(result) {
         if(result) {
           if(reqObj.method=='GET') {
             redisClient.get('value:'+reqObj.userId+':'+reqObj.category+':'+reqObj.key, function(err, value) {
@@ -46,8 +74,8 @@ exports.simpleStorage = (function() {
   function serve(req, res) {
     var responseHeaders = {
       'Access-Control-Allow-Origin': req.headers.origin,
-      'Access-Control-Allow-Methods': 'POST, PUT, GET',
-      'Access-Control-Allow-Headers': 'Origin, Content-Type'
+      'Access-Control-Allow-Methods': 'GET, PUT, DELETE',
+      'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization'
     };
     if(req.method=='OPTIONS') {
       res.writeHead(200, responseHeaders);
@@ -84,18 +112,10 @@ exports.simpleStorage = (function() {
       }
     }
   }
-  function checkToken(userId, token, category, cb) {//assumes redis is and stays open
-    redisClient.get('token:'+userId+':'+token, function(err, categories) {
-      if(categories == category) {
-        cb(true);
-      } else {
-        cb(false);
-      }
-    });
-  }
   function addToken(userId, token, categories, cb) {//opens and closes redis
     initRedis(function(){
-      redisClient.set('token:'+userId+':'+token, categories, function(err, data) {
+      console.log('created token "'+token+'" for user "'+userId+'", categories: '+JSON.stringify(categories));
+      redisClient.set('token:'+userId+':'+token, JSON.stringify(categories), function(err, data) {
         redisClient.quit();
         cb();
       });
@@ -103,6 +123,7 @@ exports.simpleStorage = (function() {
   }
   function removeToken(userId, token, cb) {//opens and closes redis
     initRedis(function(){
+      console.log('removed token "'+token+'" for user "'+userId+'", categories: '+JSON.stringify(categories));
       redisClient.del('token:'+userId+':'+token, function(err, data) {
         redisClient.quit();
         cb();
@@ -118,10 +139,12 @@ exports.simpleStorage = (function() {
     });
   }
   function createToken(userId, password, token, categories, cb) {//opens and closes redis
+    console.log(userId+' - '+password+' - '+token+' - '+JSON.stringify(categories));
     initRedis(function(){
       redisClient.get('user:'+userId, function(err, data) {
         if(data == password) {
-          redisClient.set('token:'+userId+':'+token, categories, function(err, data) {
+          console.log('creating token "'+token+'" for user "'+userId+'", categories: '+JSON.stringify(categories));
+          redisClient.set('token:'+userId+':'+token, JSON.stringify(categories), function(err, data) {
             redisClient.quit();
             cb(true);
           });

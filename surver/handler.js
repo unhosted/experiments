@@ -42,7 +42,8 @@ exports.handler = (function() {
         var incoming = querystring.parse(dataStr);
         var token = genToken();
         console.log(incoming);
-        simpleStorage.createToken(incoming.userId, incoming.password, token, incoming.categories, function(result) {
+        var categories = incoming.scope.split(',');
+        simpleStorage.createToken(incoming.userId, incoming.password, token, categories, function(result) {
           if(result) {
             console.log('yes: '+token);
             res.writeHead(301, {
@@ -67,6 +68,7 @@ exports.handler = (function() {
           +'UserId: <input name="userId" value="'+pathNameParts[2]+'"><br>\n'
           +'Password: <input name="password"><br>\n'
           +'<input type="hidden" name="redirectUri" value="'+urlObj.query.redirect_uri+'">\n'
+          +'<input type="hidden" name="scope" value="'+urlObj.query.scope+'">\n'
           +'<input type="submit" value="Allow">\n'
           +'</form></body></html>\n');
       } else {
