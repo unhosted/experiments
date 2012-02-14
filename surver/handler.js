@@ -87,14 +87,18 @@ exports.handler = (function() {
     console.log(urlObj);
     var pathNameParts = urlObj.pathname.split('/');
     if(pathNameParts[1] == '.well-known') {
+      console.log('case 1: host-meta');
       res.writeHead(200, {'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/xrd+xml'});
       res.end(genHostMeta(config.origin));
     } else if(pathNameParts[1] == 'webfinger') {
+      console.log('case 2: webfinger');
       res.writeHead(200, {'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/xrd+xml'});
       res.end(genWebfinger(config.origin, pathNameParts[2]));
     } else if(pathNameParts[1] == '_oauth') {
+      console.log('case 3: OAuth');
       serveOAuth(req, res);
     } else {
+      console.log('case 4: storage');
       simpleStorage.serve(req, res);
     }
   }

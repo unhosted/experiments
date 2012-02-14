@@ -46,18 +46,21 @@ exports.simpleStorage = (function() {
       checkToken(reqObj.userId, reqObj.token, reqObj.category, reqObj.method, function(result) {
         if(result) {
           if(reqObj.method=='GET') {
+            console.log('it\'s a GET');
             redisClient.get('value:'+reqObj.userId+':'+reqObj.category+':'+reqObj.key, function(err, value) {
               console.log('redis says:');console.log(err);console.log(value);
               redisClient.quit();
               cb(200, value);
             });
           } else if(reqObj.method=='PUT') {
+            console.log('it\'s a PUT');
             redisClient.set('value:'+reqObj.userId+':'+reqObj.category+':'+reqObj.key, reqObj.value, function(err, data) {
               console.log('redis says:');console.log(err);console.log(data);
               redisClient.quit();
               cb(200);
             });
           } else if(reqObj.method=='DELETE') {
+            console.log('it\'s a DELETE');
             redisClient.del('value:'+reqObj.userId+':'+reqObj.category+':'+reqObj.key, function(err, data) {
               console.log('redis says:');console.log(err);console.log(data);
               redisClient.quit();
@@ -84,7 +87,12 @@ exports.simpleStorage = (function() {
       var reqObj={};
       try {
         var urlObj = url.parse(req.url);
+        console.log(urlObj);
+        console.log('interpreted as:');
         var pathNameParts = urlObj.pathname.split('/');
+        if(!req.headers.authorization || req.headers.authorization.length < 'Bearer '.length) {
+          req.headers.authorization = 'Bearer ';
+        }
         reqObj = {
           method: req.method,
           token: req.headers.authorization.substring('Bearer '.length),
