@@ -1,6 +1,7 @@
 exports.config = {
-  port: 6379,
-  host: 'localhost',
-  pwd: 't was dus toch een leeg ei',
-  origin: 'http://surver.nodejitsu.com'
+  redisPort: 6379,
+  redisHost: 'localhost',
+  redisPwd: 't was dus toch een leeg ei',
+  origin: 'http://surver.nodejitsu.com',
+  port: 80
 };

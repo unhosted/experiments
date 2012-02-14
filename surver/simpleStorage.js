@@ -5,11 +5,11 @@ exports.simpleStorage = (function() {
     redisClient;
   
   function initRedis(cb) {
-    redisClient = redis.createClient(config.port, config.host);
+    redisClient = redis.createClient(config.redisPort, config.redisHost);
     redisClient.on("error", function (err) {
       console.log("error event - " + redisClient.host + ":" + redisClient.port + " - " + err);
     });
-    redisClient.auth(config.pwd, function() {
+    redisClient.auth(config.redisPwd, function() {
        cb();
     });
   }
