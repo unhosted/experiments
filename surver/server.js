@@ -2,7 +2,8 @@
   var simpleStorage = require('./simpleStorage').simpleStorage,
     http = require('http'),
     url = require('url'),
-    querystring = require('querystring');
+    querystring = require('querystring'),
+    config = require('./config').config;
   function genToken() {
     return 'yo-ho';
   }
@@ -82,10 +83,10 @@
       var pathNameParts = urlObj.pathname.split('/');
       if(pathNameParts[1] == '.well-known') {
         res.writeHead(200);
-        res.end(genHostMeta('http://localhost:8000'));
+        res.end(genHostMeta(config.origin));
       } else if(pathNameParts[1] == 'webfinger') {
         res.writeHead(200);
-        res.end(genWebfinger('http://localhost:8000', pathNameParts[2]));
+        res.end(genWebfinger(config.origin, pathNameParts[2]));
       } else if(pathNameParts[1] == '_oauth') {
         serveOAuth(req, res);
       } else {
