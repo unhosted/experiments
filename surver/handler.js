@@ -79,8 +79,8 @@ exports.handler = (function() {
       }
     }
   }
-  simpleStorage.addUser('acct:test@surver.nodejitsu.com', 'asdf', function() {
-    console.log('user test@surver.nodejitsu.com created, password asdf');
+  simpleStorage.addUser('acct:test@surf.unhosted.org', 'asdf', function() {
+    console.log('user test@surf.unhosted.org created, password asdf');
   });
   function serve(req, res) {
     var urlObj = url.parse(req.url);
