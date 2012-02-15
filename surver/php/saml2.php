@@ -1,4 +1,15 @@
 <?php
+require('./predis/lib/Predis/Autoloader.php');
+require('config.php');
+Predis\Autoloader::register();
+$redis = new Predis\Client(array(
+  'scheme' => 'tcp',
+  'host' => $config['redisHost'],
+  'port' => $config['redisPort'],
+  'password' => $config['redisPwd']
+  )
+);
+
 require('xmlseclibs.php');
 $documentStr = base64_decode($_POST['SAMLResponse']);
 $document = new DOMDocument();
@@ -88,14 +99,14 @@ $x509certificate = "-----BEGIN CERTIFICATE-----\n"
 function genToken() {
   return 't is zo ook wel goed';
 }
-function storeInRedis(
+
 if(is_valid($document, $x509certificate)) {
   $token = genToken();
-  storeInRedis('token:test@surf.unhosted.org:'+$token, 'documents', function() {
-    header('Location: https://myfavouritesandwich.org/rcvToken.html#access_token='.$token);
-  });
+  $redis->set('token:test@surf.unhosted.org:'+$token, 'documents');
+  header('Location: https://myfavouritesandwich.org/rcvToken.html#access_token='.urlencode($token));
 } else {
   echo '<!DOCTYPE html><head><meta charset="utf-8"><title>No go</title></head><body>'
     .'Sorry, no access.'
     .'</body></html>';
 }
+
