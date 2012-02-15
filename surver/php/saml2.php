@@ -1,7 +1,7 @@
 <?php
 require('xmlseclibs.php');
 $document = base64_decode($_POST['SAMLResponse']);
-var_dump($document);
+echo htmlentities($document);
     function validateNumAssertions($document){
       $rootNode = $document; //->documentElement->ownerDocument;
       $assertionNodes = $rootNode->getElementsByTagName('Assertion');
