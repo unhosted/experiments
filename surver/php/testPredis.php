@@ -6,7 +6,8 @@ Predis\Autoloader::register();
 $redis = new Predis\Client(array(
   'scheme' => 'tcp',
   'host' => $config['redisHost'],
-  'port' => $config['redisPort']
+  'port' => $config['redisPort'],
+  'password' => $config['redisPwd']
   )
 );
 $redis->set('from', 'predizzz');

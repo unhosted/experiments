@@ -1,4 +1,11 @@
-<?php
+<!DOCTYPE html>
+  <head>
+  <meta charset="utf-8">
+  <title>No go</title>
+  </head>
+  <body>
+    <input type="submit" value="Allow" onclick="window.location= '<?php
+
   $request = "<samlp:AuthnRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\"\n"
       ."                    xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\"\n"
       ."                    ID=\"_8458820a428d12d12d7dded7418ee10928a4dd9b8\"\n"
@@ -16,6 +23,8 @@
   $deflated_request = gzdeflate($request);
   $base64_request = base64_encode($deflated_request);
   $encoded_request = urlencode($base64_request);
+  echo "http://frkosp.wind.surfnet.nl/sspidp/saml2/idp/SSOService.php?SAMLRequest=".$encoded_request;
 
-  header("Location: http://frkosp.wind.surfnet.nl/sspidp/saml2/idp/SSOService.php?SAMLRequest=".$encoded_request);
-
+?>';">
+  </body>
+</html>

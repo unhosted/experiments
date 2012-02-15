@@ -4,7 +4,6 @@ $documentStr = base64_decode($_POST['SAMLResponse']);
 $document = new DOMDocument();
 $document->loadXML($documentStr);
 
-echo htmlentities($documentStr);
 $x509certificate = "-----BEGIN CERTIFICATE-----\n"
   ."MIIDTzCCAjegAwIBAgIJAOsqdXuE6utjMA0GCSqGSIb3DQEBBQUAMD4xCzAJBgNVB\n"
   ."AYTAk5MMRAwDgYDVQQKDAdTVVJGbmV0MR0wGwYDVQQDDBREZW1vIElEUCBDZXJ0aW\n"
@@ -25,10 +24,6 @@ $x509certificate = "-----BEGIN CERTIFICATE-----\n"
   ."1wpuGpqbpH3iWiBV5AG1nj1CejGglKKmjiV4fMLvE6EnxIH+5Hk4n6VsCpyUXHtJc\n"
   ."qvnWQLMa4oaCShGiv+gukjwVRkOc4k=\n"
   ."-----END CERTIFICATE-----\n";
-
-echo '<h2>trying to open cert:</h2>';
-openssl_x509_read($x509certificate);
-echo '<h2>continuing:</h2>';
 
     function validateNumAssertions($document){
       $rootNode = $document; //->documentElement->ownerDocument;
@@ -90,4 +85,17 @@ echo '<h2>continuing:</h2>';
       $result = $objXMLSecDSig->verify($objKey);
       return $result;
     }
-echo is_valid($document, $x509certificate);
+function genToken() {
+  return 't is zo ook wel goed';
+}
+function storeInRedis(
+if(is_valid($document, $x509certificate)) {
+  $token = genToken();
+  storeInRedis('token:test@surf.unhosted.org:'+$token, 'documents', function() {
+    header('Location: https://myfavouritesandwich.org/rcvToken.html#access_token='.$token);
+  });
+} else {
+  echo '<!DOCTYPE html><head><meta charset="utf-8"><title>No go</title></head><body>'
+    .'Sorry, no access.'
+    .'</body></html>';
+}
