@@ -22,7 +22,7 @@ exports.saml = (function() {
     console.log(deflatedRequest.toString());
     var base64Request = deflatedRequest.toString('base64');
     console.log(base64Request);
-    return 'http://frkosp.wind.surfnet.nl/fkooman/whatever?'
+    return 'https://frkosp.wind.surfnet.nl/sspidp/saml2/idp/SSOService.php?'
       +querystring.stringify({
         SAMLRequest: base64Request
       });
