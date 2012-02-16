@@ -1,9 +1,14 @@
+<?php
+  setcookie('scope', $_GET['scope']);
+  setcookie('redirectUri', $_GET['redirect_uri']);
+?>
 <!DOCTYPE html>
   <head>
   <meta charset="utf-8">
   <title>No go</title>
   </head>
   <body>
+    <p>Do you want to allow <?php echo $_GET['redirect_uri']; ?> to access your <?php echo $_GET['scope']; ?> categories?</p>
     <input type="submit" value="Allow" onclick="window.location= '<?php
 
   $request = "<samlp:AuthnRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\"\n"
