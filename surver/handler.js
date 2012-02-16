@@ -99,7 +99,7 @@ exports.handler = (function() {
       }
       if(!config.authUrl) {
         config.authUrl = config.origin+'/_oauth/'+userId;
-      } else {
+      } else if(config.authUrl.indexOf('?') == -1) {
         config.authUrl += '?user_id='+userId;
       }
       if(!config.template) {
