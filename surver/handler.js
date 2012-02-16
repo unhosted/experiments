@@ -19,15 +19,15 @@ exports.handler = (function() {
       +'  </Link>\n'
       +'</XRD>\n';
   }
-  function genWebfinger(baseUrl, userId) {
+  function genWebfinger(api, authUrl, template) {
     return '<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n'
       +'<XRD xmlns=\'http://docs.oasis-open.org/ns/xri/xrd-1.0\'\n'
       +'     xmlns:hm=\'http://host-meta.net/xrd/1.0\'>\n'
       +'     <hm:Host></hm:Host>\n'
       +'  <Link rel=\'remoteStorage\'\n'
-      +'        api=\'simple\'\n'
-      +'        auth=\''+baseUrl+'/_oauth/'+userId+'\'\n'
-      +'        template=\''+baseUrl+'/'+userId+'/{category}/\'>\n'
+      +'        api=\''+api+'\'\n'
+      +'        auth=\''+authUrl+'\'\n'
+      +'        template=\''+template+'\'>\n'
       +'    <Title>Resource Descriptor</Title>\n'
       +'  </Link>\n'
       +'</XRD>\n';
@@ -92,8 +92,21 @@ exports.handler = (function() {
       res.end(genHostMeta(config.origin));
     } else if(pathNameParts[1] == 'webfinger') {
       console.log('case 2: webfinger');
+      var userId = pathNameParts[2].substring('acct:'.length);
+      var authUrl;
+      if(!config.api) {
+        config.api = 'simple';
+      }
+      if(!config.authUrl) {
+        config.authUrl = config.origin+'/_oauth/'+userId;
+      } else {
+        config.authUrl += '?user_id='+userId;
+      }
+      if(!config.template) {
+        config.template = config.origin+'/'+userId+'/{category}/';
+      }
       res.writeHead(200, {'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/xrd+xml'});
-      res.end(genWebfinger(config.origin, pathNameParts[2]));
+      res.end(genWebfinger(config.api, config.authUrl, config.template));
     } else if(pathNameParts[1] == '_oauth') {
       console.log('case 3: OAuth');
       serveOAuth(req, res);

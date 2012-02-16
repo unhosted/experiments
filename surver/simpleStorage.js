@@ -18,6 +18,7 @@ exports.simpleStorage = (function() {
       console.log('public GET access ok');
       cb(true);
     } else {
+      console.log('looking for "'+category+'" in key "token:'+userId+':'+token+'"');
       redisClient.get('token:'+userId+':'+token, function(err, categoriesStr) {
         var categories;
         try {

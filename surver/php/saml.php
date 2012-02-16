@@ -1,4 +1,5 @@
 <?php
+  setcookie('userId', $_GET['user_id']);
   setcookie('scope', $_GET['scope']);
   setcookie('redirectUri', $_GET['redirect_uri']);
 ?>

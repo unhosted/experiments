@@ -97,13 +97,16 @@ $x509certificate = "-----BEGIN CERTIFICATE-----\n"
       return $result;
     }
 function genToken() {
-  return 't is zo ook wel goed';
+  return mt_rand().mt_rand().mt_rand().mt_rand().mt_rand();
 }
 
 if(is_valid($document, $x509certificate)) {
   $token = genToken();
-  $redis->set('token:test@surf.unhosted.org:'+$token, $_COOKIE['scope']);
-  header('Location: '.$_COOKIE['redirectUri'].'#access_token='.urlencode($token));
+  $categories = json_encode(explode(',', $_COOKIE['scope'])); 
+  $redis->set('token:'.$_COOKIE['userId'].':'.$token, $categories);
+  echo 'redis->set(token:'.$_COOKIE['userId'].':'.$token.', '.$categories;
+  echo 'Location: '.$_COOKIE['redirectUri'].'#access_token='.urlencode($token);
+  //header('Location: '.$_COOKIE['redirectUri'].'#access_token='.urlencode($token));
 } else {
   echo '<!DOCTYPE html><head><meta charset="utf-8"><title>No go</title></head><body>'
     .'Sorry, no access.'
