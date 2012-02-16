@@ -96,11 +96,23 @@ $x509certificate = "-----BEGIN CERTIFICATE-----\n"
       $result = $objXMLSecDSig->verify($objKey);
       return $result;
     }
+    function get_nameid($xml) {
+      $xpath = new DOMXPath($xml);
+      $xpath->registerNamespace("samlp","urn:oasis:names:tc:SAML:2.0:protocol");
+      $xpath->registerNamespace("saml","urn:oasis:names:tc:SAML:2.0:assertion");
+      $query = "/samlp:Response/saml:Assertion/saml:Subject/saml:NameID";
+      //$query = "/samlp:Response/saml:AttributeStatement/saml:Attribute";
+      $entries = $xpath->query($query);
+      return $entries->item(0)->nodeValue;
+    }
 function genToken() {
   return mt_rand().mt_rand().mt_rand().mt_rand().mt_rand();
 }
 
 if(is_valid($document, $x509certificate)) {
+  echo htmlentities($documentStr);
+  echo get_nameid($document);
+  die();
   $token = genToken();
   $categories = json_encode(explode(',', $_COOKIE['scope'])); 
   $redis->set('token:'.$_COOKIE['userId'].':'.$token, $categories);
