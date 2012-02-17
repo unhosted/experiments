@@ -1,17 +1,27 @@
 <?php
-  setcookie('userId', $_GET['user_id']);
-  setcookie('scope', $_GET['scope']);
-  setcookie('redirectUri', $_GET['redirect_uri']);
+  if($_GET['user_id'] == 'alice@surf.unhosted.org') {
+    $useSaml=true;
+    setcookie('userId', $_GET['user_id']);
+    setcookie('scope', $_GET['scope']);
+    setcookie('redirectUri', $_GET['redirect_uri']);
+  } else {
+    $useSaml=false;
+  }
 ?>
 <!DOCTYPE html>
   <head>
-  <meta charset="utf-8">
-  <title>No go</title>
+    <meta charset="utf-8">
+    <title>No go</title>
+    <script>
+      function signinWithBrowserID() {
+       alert('this is where you get signed in with BrowserID');
+      }
+    </script>
   </head>
   <body>
     <p>Do you want to allow <?php echo $_GET['redirect_uri']; ?> to access your <?php echo $_GET['scope']; ?> categories?</p>
-    <input type="submit" value="Allow" onclick="window.location= '<?php
-
+    <input type="submit" value="Allow" onclick="<?php
+if($useSaml) {
   $request = "<samlp:AuthnRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\"\n"
       ."                    xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\"\n"
       ."                    ID=\"_8458820a428d12d12d7dded7418ee10928a4dd9b8\"\n"
@@ -29,8 +39,10 @@
   $deflated_request = gzdeflate($request);
   $base64_request = base64_encode($deflated_request);
   $encoded_request = urlencode($base64_request);
-  echo "http://frkosp.wind.surfnet.nl/sspidp/saml2/idp/SSOService.php?SAMLRequest=".$encoded_request;
-
-?>';">
+  echo 'window.location = \'http://frkosp.wind.surfnet.nl/sspidp/saml2/idp/SSOService.php?SAMLRequest='.$encoded_request.'\';';
+} else {
+  echo 'signinWithBrowserID();';
+}
+?>">
   </body>
 </html>

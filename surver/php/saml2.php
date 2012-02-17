@@ -100,8 +100,8 @@ $x509certificate = "-----BEGIN CERTIFICATE-----\n"
       $xpath = new DOMXPath($xml);
       $xpath->registerNamespace("samlp","urn:oasis:names:tc:SAML:2.0:protocol");
       $xpath->registerNamespace("saml","urn:oasis:names:tc:SAML:2.0:assertion");
-      $query = "/samlp:Response/saml:Assertion/saml:Subject/saml:NameID";
-      //$query = "/samlp:Response/saml:AttributeStatement/saml:Attribute";
+      //$query = "/samlp:Response/saml:Assertion/saml:Subject/saml:NameID";
+      $query = "/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute";
       $entries = $xpath->query($query);
       return $entries->item(0)->nodeValue;
     }
@@ -110,18 +110,22 @@ function genToken() {
 }
 
 if(is_valid($document, $x509certificate)) {
-  echo htmlentities($documentStr);
-  echo get_nameid($document);
-  die();
-  $token = genToken();
-  $categories = json_encode(explode(',', $_COOKIE['scope'])); 
-  $redis->set('token:'.$_COOKIE['userId'].':'.$token, $categories);
-  //echo 'redis->set(token:'.$_COOKIE['userId'].':'.$token.', '.$categories;
-  //echo 'Location: '.$_COOKIE['redirectUri'].'#access_token='.urlencode($token);
-  header('Location: '.$_COOKIE['redirectUri'].'#access_token='.urlencode($token));
+  //echo htmlentities($documentStr);
+  $authedUser = get_nameid($document);
+  $desiredUser = $_COOKIE['userId'];
+  if($authedUser != $desiredUser) {
+    echo "Sorry, you want to log in to '$desiredUser' but it looks like you are '$authedUser'. Please go away.";
+    die();
+  } else {
+    $token = genToken();
+    $categories = json_encode(explode(',', $_COOKIE['scope'])); 
+    $redis->set('token:'.$_COOKIE['userId'].':'.$token, $categories);
+    //echo 'redis->set(token:'.$_COOKIE['userId'].':'.$token.', '.$categories;
+    //echo 'Location: '.$_COOKIE['redirectUri'].'#access_token='.urlencode($token);
+    header('Location: '.$_COOKIE['redirectUri'].'#access_token='.urlencode($token));
+  }
 } else {
   echo '<!DOCTYPE html><head><meta charset="utf-8"><title>No go</title></head><body>'
     .'Sorry, no access.'
     .'</body></html>';
 }
-
