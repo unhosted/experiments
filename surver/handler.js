@@ -91,10 +91,13 @@ exports.handler = (function() {
       var incoming = querystring.parse(dataStr);
       if(verifyAssertion(incoming.assertion, incoming.userId)) {
         var token = genToken();
-        simpleStorage.addToken(incoming.userId, token, JSON.parse(incoming.categories), function() {
+        console.log(incoming.userId);
+        console.log(token);
+        console.log(JSON.parse(incoming.scope));
+        simpleStorage.addToken(incoming.userId, token, JSON.parse(incoming.scope), function() {
           res.writeHead(301, {
-            Location: incoming.redirectUri+'#access_token='+token;
-          }
+            Location: incoming.redirectUri+'#access_token='+token
+          });
           res.end();
         });
       }
