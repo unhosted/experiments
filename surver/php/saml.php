@@ -12,13 +12,38 @@
   <head>
     <meta charset="utf-8">
     <title>No go</title>
+    <script src="http://browserid.org/include.js"></script>
     <script>
+      function gup(name) {
+        name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
+        var regexS = '[\\?&]'+name+'=([^&#]*)';
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.location.href);
+        if(results == null) {
+          return '';
+        } else {
+         return decodeURIComponent(results[1]);
+        }
+      }
+
       function signinWithBrowserID() {
-       alert('this is where you get signed in with BrowserID');
+        navigator.id.get(function(assertion) {
+          document.getElementById('assertion').value=assertion;
+          document.getElementById('scope').value=JSON.stringify(gup('scope').split(','));
+          document.getElementById('redirectUri').value=gup('redirect_uri');
+          document.getElementById('browseridForm').submit();
+        }, {
+          requiredEmail: gup('user_id')
+        });
       }
     </script>
   </head>
   <body>
+    <form id="browseridForm" action="http://surf.unhosted.org/_browserid" method="POST">
+      <input type="hidden" id="assertion" name="assertion">
+      <input type="hidden" id="scope" name="scope">
+      <input type="hidden" id="redirectUri" name="redirectUri">
+    </form>
     <p>Do you want to allow <?php echo $_GET['redirect_uri']; ?> to access your <?php echo $_GET['scope']; ?> categories?</p>
     <input type="submit" value="Allow" onclick="<?php
 if($useSaml) {

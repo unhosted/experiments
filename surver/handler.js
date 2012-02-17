@@ -79,6 +79,27 @@ exports.handler = (function() {
       }
     }
   }
+  function verifyAssertion(assertion, email) {
+    return true;
+  }
+  function serveBrowserID(req, res) {
+    var dataStr='';
+    req.on('data', function(chunk) {
+      dataStr+= chunk;
+    });
+    req.on('end', function(chunk) {
+      var incoming = querystring.parse(dataStr);
+      if(verifyAssertion(incoming.assertion, incoming.userId)) {
+        var token = genToken();
+        simpleStorage.addToken(incoming.userId, token, JSON.parse(incoming.categories), function() {
+          res.writeHead(301, {
+            Location: incoming.redirectUri+'#access_token='+token;
+          }
+          res.end();
+        });
+      }
+    });
+  }
   simpleStorage.addUser('acct:test@surf.unhosted.org', 'asdf', function() {
     console.log('user test@surf.unhosted.org created, password asdf');
   });
@@ -107,6 +128,8 @@ exports.handler = (function() {
       }
       res.writeHead(200, {'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/xrd+xml'});
       res.end(genWebfinger(config.api, config.authUrl, config.template));
+    } else if(pathNameParts[1] == '_browserid') {
+      serveBrowserID(req, res);
     } else if(pathNameParts[1] == '_oauth') {
       console.log('case 3: OAuth');
       serveOAuth(req, res);
