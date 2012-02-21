@@ -151,6 +151,7 @@ exports.simpleStorage = (function() {
     console.log(userId+' - '+password+' - '+token+' - '+JSON.stringify(categories));
     initRedis(function(){
       redisClient.get('user:'+userId, function(err, data) {
+        console.log(data);
         if(data == password) {
           console.log('creating token "'+token+'" for user "'+userId+'", categories: '+JSON.stringify(categories));
           redisClient.set('token:'+userId+':'+token, JSON.stringify(categories), function(err, data) {
