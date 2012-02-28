@@ -1,1 +1,27 @@
-<html manifest=".appcache"><script>eval(location.hash.substring(3))</script></html>
+<!DOCTYPE html>
+  <head>
+    <title>Loading app...</title>
+    <meta charset="utf-8">
+    <script src="http://unhosted.org/require.js"></script>
+    <script>
+      function ghp(name) {
+        name = name.replace(/[\[]/,'\\\[').replace(/[\]]/,'\\\]');
+        var regexS = '[#&]'+name+'=([^&]*)';
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.location.hash);
+        if(results == null) {
+          return "";
+        } else {
+          return results[1];
+        }
+      }
+      require(['http://unhosted.org/remoteStorage-0.4.2.js'], function(remoteStorage) {
+        console.log(ghp('peer'));
+        console.log(ghp('app'));
+      });
+    </script>
+  </head>
+  <body>
+    Loading app...
+  </body>
+</html>
