@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="/unhosted/require.js"></script>
+    <script>
+      function splitOnFirst(str, chr) {
+        var i = str.indexOf(chr);
+        if(i== -1) {
+          return [str, ''];
+        } else {
+          return [str.substring(0, i), str.substring(i+chr.length)];
+        }
+      }
+      function showAppslist() {
+        try {
+          var apps = JSON.parse(localStorage['apps$list']) || [];
+          document.getElementById('appList').innerHTML = '';
+          for(var i=0; i < apps.length; i++) {
+            var li = document.createElement('li');
+            var partsA = splitOnFirst(apps[i].toString(), ':');
+            if(partsA[1]) {
+              var partsB = splitOnFirst(partsA[1], '/');
+              if(partsB[1]) {
+                var partsC = splitOnFirst(partsB[1], '$app:');
+                if(partsC[1]) {
+                  li.innerHTML='<a href="http://'+partsC[1]+'.apptorrent.net/#peer='+encodeURIComponent(partsB[0])+'&app='+encodeURIComponent(partsC)+'">'+apps[i]+'</a>';
+                } else {
+                  li.innerHTML=apps[i];
+                }
+                document.getElementById('appList').appendChild(li);
+              } else {
+                li.innerHTML=apps[i];
+              }
+            } else {
+              li.innerHTML=apps[i];
+            }
+          }
+        } catch(e) {
+        }
+      }
+      function addApp() {
+        var apps;
+        try {
+          apps = JSON.parse(localStorage['apps$list']) || [];
+        } catch(e) {
+          apps=[];
+        }
+        apps.push(document.getElementById('uri').value);
+        localStorage['apps$list'] = JSON.stringify(apps);
+        showAppslist();
+      }
+    </script>
+  </head>
+  <body onload="showAppslist();">
+    Apps:
+    <ul id="appList">
+    </ul>
+    <input id="uri" value="remoteStorage:michiel@unhosted.org/public$app:DEADBEEFDEADBEEFDEADBEEFDEADBEEF">
+    <input type="submit" value="add app" onclick="addApp();">
+  </body>
+</html>
