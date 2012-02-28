@@ -2,6 +2,7 @@
   <head>
     <title>Loading app...</title>
     <meta charset="utf-8">
+    <script src="/player.js"></script>
     <script src="http://unhosted.org/require.js"></script>
     <script>
       function ghp(name) {
@@ -15,11 +16,25 @@
           return results[1];
         }
       }
-      require(['http://unhosted.org/remoteStorage-0.4.2.js'], function(remoteStorage) {
-        console.log(ghp('peer'));
-        console.log(ghp('app'));
+      require(['http://unhosted.org/remoteStorage-0.4.3.js'], function(remoteStorage) {
+        remoteStorage.getStorageInfo(ghp('peer'), function(err, storageInfo) {
+          remoteStorage.createClient(storageInfo, 'public').get('app:'+ghp('app'), function (err, data) {
+            if(err) {
+              alert('err');
+            } else {
+              app = JSON.parse(data);
+              app = {
+                css: [],
+                js: [],
+                html: 'hi world'
+              };
+              new Player().play(app);
+            }
+          });
+        });
       });
     </script>
+    <style> /* the css goes here once the bootloader runs */ </style>
   </head>
   <body>
     Loading app...
