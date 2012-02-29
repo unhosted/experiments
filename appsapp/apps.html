@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="/unhosted/sha1.js"></script>
+    <script src="/unhosted/syncer.js"></script>
+    <script>
+      var apps;
+      function displayList() {
+        try {
+          if(!apps) {
+            apps = JSON.parse(localStorage['public$appList']);
+          }
+          if(!apps) {
+            apps = {};
+          }
+          document.getElementById('apps').innerHTML = '';
+          for(var i in apps) {
+            var li = document.createElement('li');
+            li.innerHTML=i+'<input type="submit" value="edit" onclick="editApp(\''+i+'\');"><input type="submit" value="-" onclick="removeApp(\''+i+'\');">';
+            document.getElementById('apps').appendChild(li);
+          }
+        }catch(e){
+        }
+      }
+      function removeApp(userAddress) {
+        if(!apps) {
+          apps = JSON.parse(localStorage['public$appList']);
+        }
+        delete apps[userAddress];
+        localStorage['public$appList'] = JSON.stringify(apps);
+        displayList();
+      }
+      syncer.onReadyStateChange(function(signedin, online, ready) {
+        console.log((signedin?'signedin; ':'')+(online?'online; ':'')+(ready?'ready; ':''));
+      });
+      function addApp() {
+        if(!apps) {
+          apps = JSON.parse(localStorage['public$appList']);
+        }
+        if(!apps) {
+          apps = {};
+        }
+        var hash = saveApp();
+        apps[hash] = true;
+        localStorage['public$appList'] = JSON.stringify(apps);
+        displayList();
+      }
+      function connect() {
+        syncer.connect(document.getElementById('userAddress').value, ['apps'], syncer.startSync);
+      };
+      function saveApp() {
+        var objStr = JSON.stringify({
+          css: document.getElementById('css').value,
+          js: document.getElementById('js').value,
+          html: document.getElementById('html').value
+        });
+        var hash = SHA1(objStr);
+        localStorage['public$app:'+hash] = objStr;
+        return hash;
+      }
+    </script>
+  </head>
+  <body onload="displayList();">
+    <div>
+      Account:
+      <input id="userAddress" placeholder="user address">
+      <input type="submit" value="connect" onclick="connect();">
+      <div id="status"></div>
+    </div>
+    <div>
+      Your Apps:
+      <ul id="apps">
+      </ul>
+      <input type="submit" onclick="addApp();" value="+">
+      <div>
+        Source code:
+        <input id="html" placeholder="html">
+        <input id="js" placeholder="js">
+        <input id="css" placeholder="css">
+      </div>
+    </div>
+  </body>
+</html>
