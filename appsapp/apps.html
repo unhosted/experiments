@@ -44,7 +44,7 @@
       function addApp() {
         var objStr = JSON.stringify({
           css: document.getElementById('css').value,
-          js: document.getElementById('js').value,
+          js: {'main.js': document.getElementById('js').value},
           html: document.getElementById('html').value,
           author: syncer.getUserAddress()
         });
@@ -72,7 +72,7 @@
       function editApp(hash) {
         var obj = JSON.parse(localStorage['public$app:'+hash]);
         document.getElementById('css').value = obj.css;
-        document.getElementById('js').value = obj.js;
+        document.getElementById('js').value = obj.js['main.js'];
         document.getElementById('html').value = obj.html;
         if(obj.author==syncer.getUserAddress()) {
           document.getElementById('author').innerHTML = 'You are the author: '+obj.author;

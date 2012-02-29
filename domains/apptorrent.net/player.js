@@ -22,7 +22,7 @@ function Player() {
          var script= document.createElement('script')
          script.type= 'text/javascript'
          script.id= fileName
-         script.innerHTML = localToSync(appTorrent.js[fileName])
+         script.innerHTML = appTorrent.js[fileName]
          document.getElementsByTagName('head')[0].appendChild(script)
       }
 
