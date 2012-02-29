@@ -24,11 +24,6 @@
               alert('err');
             } else {
               app = JSON.parse(data);
-              app = {
-                css: [],
-                js: [],
-                html: 'hi world'
-              };
               new Player().play(app);
             }
           });
