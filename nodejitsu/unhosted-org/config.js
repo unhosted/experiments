@@ -24,5 +24,6 @@ exports.config = {
   host: {
     'unhosted.org': 'website/',
     'charing-t.unhosted.org': 'website/'
-  }
+  },
+  default: '../../domains/apptorrent.net/'
 };
