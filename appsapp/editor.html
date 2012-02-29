@@ -11,7 +11,7 @@
           console.log((signedin?'signedin; ':'')+(online?'online; ':'')+(ready?'ready; ':''));
         });
         document.getElementById('loadApp').onclick = function() {
-          remoteStorage.connect(document.getElementById('userAddress'), ['public'], function(clients) {
+          remoteStorage.connect(document.getElementById('userAddress').value, ['public'], function(clients) {
             var hash=document.getElementById('hash').value;
             clients['public'].get('app:'+hash, function(err, data) {
               if(err) {
@@ -36,7 +36,9 @@
               html: document.getElementById('html').value
             });
             var hash = SHA1(objStr);
-            clients['public'].put('app:'+hash, objStr, function() {});
+            clients['public'].put('app:'+hash, objStr, function() {
+              document.getElementById('hash').value = hash;
+            });
           });
         }
       });
