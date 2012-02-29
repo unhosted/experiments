@@ -3,7 +3,7 @@ exports.config = {
   redirect: {
     'www.unhost.it': 'http://unhosted.org',
     'www.federoni.org': 'http://unhosted.org',
-    'www.appsapp.org': 'http://unhosted.org',
+    'www.appsapp.org': 'http://appsapp.org',
     'www.syncstorage.org': 'http://unhosted.org',
     'www.apptorrent.mobi': 'http://unhosted.org',
     'www.apptorrent.org': 'http://unhosted.org',
@@ -12,7 +12,6 @@ exports.config = {
     
     'unhost.it': 'http://unhosted.org',
     'federoni.org': 'http://unhosted.org',
-    'appsapp.org': 'http://unhosted.org',
     'syncstorage.org': 'http://unhosted.org',
     'apptorrent.mobi': 'http://unhosted.org',
     'apptorrent.org': 'http://unhosted.org',
