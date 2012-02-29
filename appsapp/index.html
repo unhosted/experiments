@@ -6,6 +6,7 @@
     <script src="/sha1.js"></script>
     <script src="/unhosted/require.js"></script>
     <script>
+      var clients;
       function splitOnFirst(str, chr) {
         var i = str.indexOf(chr);
         if(i== -1) {
@@ -14,10 +15,9 @@
           return [str.substring(0, i), str.substring(i+chr.length)];
         }
       }
-      function showAppslist() {
+      function displaylist(listId, elts) {
         try {
-          var apps = JSON.parse(localStorage['apps$list']) || [];
-          document.getElementById('appList').innerHTML = '';
+          document.getElementById(listId).innerHTML = '';
           for(var i=0; i < apps.length; i++) {
             var li = document.createElement('li');
             var partsA = splitOnFirst(apps[i].toString(), ':');
@@ -30,7 +30,7 @@
                 } else {
                   li.innerHTML=apps[i];
                 }
-                document.getElementById('appList').appendChild(li);
+                document.getElementById(listId).appendChild(li);
               } else {
                 li.innerHTML=apps[i];
               }
@@ -57,7 +57,7 @@
           console.log((signedin?'signedin; ':'')+(online?'online; ':'')+(ready?'ready; ':''));
         });
         document.getElementById('loadApp').onclick = function() {
-          remoteStorage.connect(document.getElementById('userAddress').value, ['public'], function(clients) {
+          if(clients) {
             var hash=document.getElementById('hash').value;
             clients['public'].get('app:'+hash, function(err, data) {
               if(err) {
@@ -72,10 +72,32 @@
                 }
               }
             });
-          });
+          } else {
+            alert('please connect first');
+          }
         }
+        document.getElementById('connect').onclick = function() {
+          remoteStorage.connect(document.getElementById('userAddress').value, ['public', 'contacts', 'apps'], function(setClients) {
+            clients = setClients;
+            clients['public'].get('appList', function(err, data) {
+              if((!err) && data) {
+                displayList('publicAppList', JSON.parse(data));
+              }
+            });
+            clients['apps'].get('appList', function(err, data) {
+              if((!err) && data) {
+                displayList('privateAppList', JSON.parse(data));
+              }
+            });
+            clients['contacts'].get('list', function(err, data) {
+              if((!err) && data) {
+                displayList('contacts', JSON.parse(data));
+              }
+            });
+          });
+        };
         document.getElementById('saveApp').onclick = function() {
-          remoteStorage.connect(document.getElementById('userAddress').value, ['public'], function(clients) {
+          if(clients) {
             var objStr = JSON.stringify({
               css: document.getElementById('css').value,
               js: document.getElementById('js').value,
@@ -83,26 +105,43 @@
             });
             var hash = SHA1(objStr);
             clients['public'].put('app:'+hash, objStr, function() {
-              document.getElementById('hash').value = hash;
+              add('hash').value = hash;
             });
-          });
+          } else {
+            alert('please connect first');
+          }
         }
       });
     </script>
   </head>
-  <body onload="showAppslist();">
+  <body>
+    <div>
+      Account:
+      <input id="userAddress" placeholder="user address">
+      <input type="submit" value="connect" id="connect">
+      <div id="status"></div>
+    </div>
     <div>
       Apps:
-      <ul id="appList">
+      <ul id="publicAppList">
       </ul>
-      <input id="uri" value="remoteStorage:michiel@unhosted.org/public$app:DEADBEEFDEADBEEFDEADBEEFDEADBEEF">
-      <input type="submit" value="add app" onclick="addApp();">
-      <input type="submit" value="empty" onclick="localStorage.clear();showAppslist();">
+    </div>
+    <div>
+    <div>
+      Your Contacts:
+      <ul id="contacts">
+      </ul>
+      <input id="newContact"><input type="submit" id="addContact" value="+">
+    </div>
+    <div>
+    <div>
+      Your Private Apps:
+      <ul id="privateAppList">
+      </ul>
     </div>
     <div>
       <div>
         Editor controls:
-        <input id="userAddress" placeholder="user address">
         <input type="submit" value="save app" id="saveApp">
         <input id="hash" placeholder="hash">
         <input type="submit" value="load app" id="loadApp">
