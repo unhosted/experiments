@@ -8,7 +8,7 @@
     <script src="/unhosted/require.js"></script>
     <script>
       var apps;
-      function displayList() {
+      function displayAppList() {
         try {
           if(!apps) {
             apps = JSON.parse(localStorage['public$appList']);
@@ -34,7 +34,7 @@
         }
         delete apps[hash];
         localStorage['public$appList'] = JSON.stringify(apps);
-        displayList();
+        displayAppList();
       }
       syncer.onReadyStateChange(function(signedin, online, ready) {
         document.getElementById('login').style.display=(signedin?'none':'block');
@@ -61,7 +61,7 @@
         apps[hash] = true;
         localStorage['public$appList'] = JSON.stringify(apps);
         localStorage['public$app:'+hash] = objStr;
-        displayList();
+        displayAppList();
       }
       function connect() {
         syncer.connect(document.getElementById('userAddress').value, ['public', 'contacts'], syncer.startSync);
@@ -89,10 +89,15 @@
         window.open('http://'+hash+'.apptorrent.net/#peer='+encodeURIComponent(syncer.getUserAddress()));
       }
       function fetch() {
+        var contacts = JSON.parse(localStorage['contacts$list']);
+        for(var i in contacts) {
+          fetchApps(i);
+        }
+      }
+      function fetchApps(peer) {
         require(['/unhosted/remoteStorage-0.4.4.js'], function(remoteStorage) {
-          var contacts = JSON.parse(localStorage['contacts$list']);
-          for(var i in contacts) {
-            var thisClient = remoteStorage.createClient(i, 'public');
+          remoteStorage.getStorageInfo(peer, function(err, storageInfo) {
+            var thisClient = remoteStorage.createClient(storageInfo, 'public');
             thisClient.get('appList', function(err, data) {
               if(err) {
               } else {
@@ -107,7 +112,7 @@
                 }
               }
             });
-          }
+          });
         });
       }
       function followAuthor(author) {
@@ -116,31 +121,80 @@
         localStorage['contacts$list']=JSON.stringify(contacts);
         fetch();
       }
+      var contacts;
+      function displayContactsList() {
+        try {
+          if(!contacts) {
+            contacts = JSON.parse(localStorage['contacts$list']);
+          }
+          if(!contacts) {
+            contacts = {};
+          }
+          document.getElementById('contacts').innerHTML = '';
+          for(var i in contacts) {
+            var li = document.createElement('li');
+            li.innerHTML=i+'<input type="submit" value="-" onclick="removeContact(\''+i+'\');">';
+            document.getElementById('contacts').appendChild(li);
+          }
+        }catch(e){
+        }
+      }
+      function removeContact(userAddress) {
+        if(!contacts) {
+          contacts = JSON.parse(localStorage['contacts$list']);
+        }
+        delete contacts[userAddress];
+        localStorage['contacts$list'] = JSON.stringify(contacts);
+        displayContactsList();
+      }
+      function addContact() {
+        if(!contacts) {
+          contacts = JSON.parse(localStorage['contacts$list']);
+        }
+        if(!contacts) {
+          contacts = {};
+        }
+        contacts[document.getElementById('newContact').value] = true;
+        localStorage['contacts$list'] = JSON.stringify(contacts);
+        displayContactsList();
+      }
     </script>
   </head>
-  <body onload="syncer.onLoad();displayList();">
+  <body onload="syncer.onLoad();displayAppList();displayContactsList();">
     <div id="login">
       Account:
       <input id="userAddress" placeholder="user address">
       <input type="submit" value="connect" onclick="connect();">
     </div>
     <div id="loggedIn" style="display:none;">
-      <div id="status">status</div>
-      <input type="submit" value="disconnect" onclick="disconnect();">
-      Your Apps:
-      <input type="submit" value="fetch" onclick="fetch();">
-      <ul id="apps">
-      </ul>
-      <div id="author"></div>
       <div>
-        Source code:
-        <input type="submit" onclick="addApp();" value="Save">
-        <h2>HTML:</h2>
-        <textarea id="html" style="width:50em;"></textarea>
-        <h2>JS:</h2>
-        <textarea id="js" style="width:50em;"></textarea>
-        <h2>CSS:</h2>
-        <textarea id="css" style="width:50em;"></textarea>
+        <div id="status">status</div>
+        <input type="submit" value="disconnect" onclick="disconnect();">
+      </div>
+      <div>
+        Your Contacts:
+        <ul id="contacts">
+        </ul>
+        <input id="newContact"><input type="submit" onclick="addContact();" value="+">
+      </div>
+      <div>
+        Your Apps:
+        <input type="submit" value="fetch" onclick="fetch();">
+        <ul id="apps">
+        </ul>
+      </div>
+      <div>
+        <div id="author"></div>
+        <div>
+          Source code:
+          <input type="submit" onclick="addApp();" value="Save">
+          <h2>HTML:</h2>
+          <textarea id="html" style="width:50em;"></textarea>
+          <h2>JS:</h2>
+          <textarea id="js" style="width:50em;"></textarea>
+          <h2>CSS:</h2>
+          <textarea id="css" style="width:50em;"></textarea>
+        </div>
       </div>
     </div>
   </body>
