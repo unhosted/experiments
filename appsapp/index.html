@@ -3,6 +3,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title></title>
+    <script src="/sha1.js"></script>
     <script src="/unhosted/require.js"></script>
     <script>
       function splitOnFirst(str, chr) {
@@ -51,14 +52,67 @@
         localStorage['apps$list'] = JSON.stringify(apps);
         showAppslist();
       }
+      require(['/unhosted/remoteStorage-0.5.1.js'], function(remoteStorage) {
+        remoteStorage.onReadyStateChange(function(signedin, online, ready) {
+          console.log((signedin?'signedin; ':'')+(online?'online; ':'')+(ready?'ready; ':''));
+        });
+        document.getElementById('loadApp').onclick = function() {
+          remoteStorage.connect(document.getElementById('userAddress').value, ['public'], function(clients) {
+            var hash=document.getElementById('hash').value;
+            clients['public'].get('app:'+hash, function(err, data) {
+              if(err) {
+              } else {
+                if(hash == SHA1(data)) {
+                  var obj = JSON.parse(data);
+                  document.getElementById('css').value = obj.css;
+                  document.getElementById('js').value = obj.js;
+                  document.getElementById('html').value = obj.html;
+                } else {
+                  alert('data error');
+                }
+              }
+            });
+          });
+        }
+        document.getElementById('saveApp').onclick = function() {
+          remoteStorage.connect(document.getElementById('userAddress').value, ['public'], function(clients) {
+            var objStr = JSON.stringify({
+              css: document.getElementById('css').value,
+              js: document.getElementById('js').value,
+              html: document.getElementById('html').value
+            });
+            var hash = SHA1(objStr);
+            clients['public'].put('app:'+hash, objStr, function() {
+              document.getElementById('hash').value = hash;
+            });
+          });
+        }
+      });
     </script>
   </head>
   <body onload="showAppslist();">
-    Apps:
-    <ul id="appList">
-    </ul>
-    <input id="uri" value="remoteStorage:michiel@unhosted.org/public$app:DEADBEEFDEADBEEFDEADBEEFDEADBEEF">
-    <input type="submit" value="add app" onclick="addApp();">
-    <input type="submit" value="empty" onclick="localStorage.clear();showAppslist();">
+    <div>
+      Apps:
+      <ul id="appList">
+      </ul>
+      <input id="uri" value="remoteStorage:michiel@unhosted.org/public$app:DEADBEEFDEADBEEFDEADBEEFDEADBEEF">
+      <input type="submit" value="add app" onclick="addApp();">
+      <input type="submit" value="empty" onclick="localStorage.clear();showAppslist();">
+    </div>
+    <div>
+      <div>
+        Editor controls:
+        <input id="userAddress" placeholder="user address">
+        <input type="submit" value="save app" id="saveApp">
+        <input id="hash" placeholder="hash">
+        <input type="submit" value="load app" id="loadApp">
+      </div>
+      <div>
+        Source code:
+        <input id="html" placeholder="html">
+        <input id="js" placeholder="js">
+        <input id="css" placeholder="css">
+      </div>
+    </div>
   </body>
 </html>
