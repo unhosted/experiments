@@ -17,8 +17,9 @@
         }
       }
       require(['http://unhosted.org/remoteStorage-0.4.3.js'], function(remoteStorage) {
+        var hash = location.host.split('.')[0];
         remoteStorage.getStorageInfo(ghp('peer'), function(err, storageInfo) {
-          remoteStorage.createClient(storageInfo, 'public').get('app:'+ghp('app'), function (err, data) {
+          remoteStorage.createClient(storageInfo, 'public').get('app:'+hash, function (err, data) {
             if(err) {
               alert('err');
             } else {
