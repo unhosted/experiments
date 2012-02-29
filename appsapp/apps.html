@@ -5,6 +5,7 @@
     <title></title>
     <script src="/unhosted/sha1.js"></script>
     <script src="/unhosted/syncer.js"></script>
+    <script src="/unhosted/require.js"></script>
     <script>
       var apps;
       function displayList() {
@@ -27,64 +28,110 @@
         }catch(e){
         }
       }
-      function removeApp(userAddress) {
+      function removeApp(hash) {
         if(!apps) {
           apps = JSON.parse(localStorage['public$appList']);
         }
-        delete apps[userAddress];
+        delete apps[hash];
         localStorage['public$appList'] = JSON.stringify(apps);
         displayList();
       }
       syncer.onReadyStateChange(function(signedin, online, ready) {
+        document.getElementById('login').style.display=(signedin?'none':'block');
+        document.getElementById('loggedIn').style.display=(signedin?'block':'none');
         console.log((signedin?'signedin; ':'')+(online?'online; ':'')+(ready?'ready; ':''));
       });
       function addApp() {
+        var objStr = JSON.stringify({
+          css: document.getElementById('css').value,
+          js: document.getElementById('js').value,
+          html: document.getElementById('html').value,
+          author: syncer.getUserAddress();
+        });
+        var hash = SHA1(objStr);
+        storeApp(hash, objStr);
+      }
+      function storeApp(hash, objStr) {
         if(!apps) {
           apps = JSON.parse(localStorage['public$appList']);
         }
         if(!apps) {
           apps = {};
         }
-        var hash = saveApp();
         apps[hash] = true;
         localStorage['public$appList'] = JSON.stringify(apps);
+        localStorage['public$app:'+hash] = objStr;
         displayList();
       }
       function connect() {
-        syncer.connect(document.getElementById('userAddress').value, ['apps'], syncer.startSync);
+        syncer.connect(document.getElementById('userAddress').value, ['public', 'contacts'], syncer.startSync);
       };
-      function saveApp() {
-        var objStr = JSON.stringify({
-          css: document.getElementById('css').value,
-          js: document.getElementById('js').value,
-          html: document.getElementById('html').value
-        });
-        var hash = SHA1(objStr);
-        localStorage['public$app:'+hash] = objStr;
-        return hash;
+      function disconnect() {
+        syncer.disconnect();
       }
       function editApp(hash) {
         var obj = JSON.parse(localStorage['public$app:'+hash]);
         document.getElementById('css').value = obj.css;
         document.getElementById('js').value = obj.js;
         document.getElementById('html').value = obj.html;
+        if(obj.author==syncer.getUserAddress()) {
+          document.getElementById('author').innerHTML = 'You are the author: '+obj.author;
+        } else {
+          var contacts = JSON.parse(localStorage['contacts$list']);
+          if(contacts[obj.author]) {
+            document.getElementById('author').innerHTML = 'From your buddy: '+obj.author;
+          } else {
+            document.getElementById('author').innerHTML = 'From: '+obj.author+' <input type="submit" value="Follow" onclick="followAuthor(\''+obj.author+'\');">';
+          }
+        }
       }
       function launchApp(hash) {
-        window.open('http://'+hash+'.apptorrent.net/#peer='+encodeURIComponent(document.getElementById('userAddress').value));
+        window.open('http://'+hash+'.apptorrent.net/#peer='+encodeURIComponent(syncer.getUserAddress()));
+      }
+      function fetch() {
+        require(['/unhosted/remoteStorage-0.4.4.js'], function(remoteStorage) {
+          var contacts = JSON.parse(localStorage['contacts$list']);
+          for(var i in contacts) {
+            var thisClient = remoteStorage.createClient(i, 'public');
+            thisClient.get('appList', function(err, data) {
+              if(err) {
+              } else {
+                var thisList = JSON.parse(data);
+                for(var j in thisList) {
+                  thisClient.get('app:'+j, function(err2, data2) {
+                    if(err2) {
+                    } else {
+                      storeApp(j, data2);
+                    }
+                  });
+                }
+              }
+            });
+          }
+        });
+      }
+      function followAuthor(author) {
+        var contacts = JSON.parse(localStorage['contacts$list']);
+        contacts[author]=true;
+        localStorage['contacts$list']=JSON.stringify(contacts);
+        fetch();
       }
     </script>
   </head>
-  <body onload="displayList();">
-    <div>
+  <body onload="syncer.onLoad();displayList();">
+    <div id="login">
       Account:
       <input id="userAddress" placeholder="user address">
       <input type="submit" value="connect" onclick="connect();">
-      <div id="status"></div>
     </div>
-    <div>
+    <div id="loggedIn" style="display:none;">
+      <div id="status"></div>
+      <input type="submit" value="disconnect" onclick="disconnect();">
       Your Apps:
+      <input type="submit" value="fetch" onclick="fetch();">
       <ul id="apps">
       </ul>
+      <div id="author"></div>
       <div>
         Source code:
         <input type="submit" onclick="addApp();" value="Save">
