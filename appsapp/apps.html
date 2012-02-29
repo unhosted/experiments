@@ -18,7 +18,10 @@
           document.getElementById('apps').innerHTML = '';
           for(var i in apps) {
             var li = document.createElement('li');
-            li.innerHTML=i+'<input type="submit" value="edit" onclick="editApp(\''+i+'\');"><input type="submit" value="-" onclick="removeApp(\''+i+'\');">';
+            li.innerHTML=i
+              +'<input type="submit" value="launch" onclick="launchApp(\''+i+'\');">'
+              +'<input type="submit" value="edit" onclick="editApp(\''+i+'\');">'
+              +'<input type="submit" value="-" onclick="removeApp(\''+i+'\');">';
             document.getElementById('apps').appendChild(li);
           }
         }catch(e){
@@ -60,6 +63,15 @@
         localStorage['public$app:'+hash] = objStr;
         return hash;
       }
+      function editApp(hash) {
+        var obj = JSON.parse(localStorage['public$app:'+hash]);
+        document.getElementById('css').value = obj.css;
+        document.getElementById('js').value = obj.js;
+        document.getElementById('html').value = obj.html;
+      }
+      function launchApp(hash) {
+        window.open('http://'+hash+'.apptorrent.net/#peer='+encodeURIComponent(document.getElementById('userAddress').value));
+      }
     </script>
   </head>
   <body onload="displayList();">
@@ -73,12 +85,15 @@
       Your Apps:
       <ul id="apps">
       </ul>
-      <input type="submit" onclick="addApp();" value="+">
       <div>
         Source code:
-        <input id="html" placeholder="html">
-        <input id="js" placeholder="js">
-        <input id="css" placeholder="css">
+        <input type="submit" onclick="addApp();" value="Save">
+        <h2>HTML:</h2>
+        <textarea id="html" style="width:50em;"></textarea>
+        <h2>JS:</h2>
+        <textarea id="js" style="width:50em;"></textarea>
+        <h2>CSS:</h2>
+        <textarea id="css" style="width:50em;"></textarea>
       </div>
     </div>
   </body>
