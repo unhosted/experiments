@@ -1,0 +1,12 @@
+{
+  "name": "appsapp",
+  "subdomain": "appsapp",
+  "domains": [
+    "appsapp.org",
+    "www.appsapp.org"
+  ],
+  "scripts": {
+    "start": "server.js"
+  },
+  "version": "0.0.0-26"
+}
