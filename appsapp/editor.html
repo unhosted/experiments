@@ -29,7 +29,7 @@
           });
         }
         document.getElementById('saveApp').onclick = function() {
-          remoteStorage.connect(document.getElementById('userAddress'), ['public'], function(clients) {
+          remoteStorage.connect(document.getElementById('userAddress').value, ['public'], function(clients) {
             var objStr = JSON.stringify({
               css: document.getElementById('css').value,
               js: document.getElementById('js').value,
