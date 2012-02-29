@@ -36,40 +36,44 @@ var Syncer = function() {
       for(var i in setCategories) {
         clients[setCategories[i]] = remoteStorage.createClient(setStorageInfo, setCategories[i], setToken);
       }
-      sync(cb);
+      for(var category in clients) {
+        sync(category);
+      }
+      cb();//not really finished here yet actually
     });
   }
-  function sync(cb) {
-    for(var category in clients) {
-      clients[category].get(indexKey, function(err, data) {
-        if((!err) && data) {
-          var remoteIndex = JSON.parse(data);
-          var localIndex = getLocalIndex(category);
-          JSON.parse(localStorage[clients[category]+'$'+indexKey]);
-          var key;
-          for(key in remoteIndex) {
-            if(!localIndex[key] || localIndex[key] < remoteIndex[key]) {
-              clients[category].get(key, function(err, data) {
-                updateLocalIndex(category, key);
-                localStorage[category+'$'+key] = data;
-              });
-            }
+  function sync(category) {
+    clients[category].get(indexKey, function(err, data) {
+      if(err == 404) {
+        err = null;
+        data = JSON.stringify({});
+      }
+      if((!err) && data) {
+        var remoteIndex = JSON.parse(data);
+        var localIndex = getLocalIndex(category);
+        JSON.parse(localStorage[clients[category]+'$'+indexKey]);
+        var key;
+        for(key in remoteIndex) {
+          if(!localIndex[key] || localIndex[key] < remoteIndex[key]) {
+            clients[category].get(key, function(err, data) {
+              updateLocalIndex(category, key);
+              localStorage[category+'$'+key] = data;
+            });
           }
-          var putIndex = false;
-          for(key in localIndex) {
-            if(!remoteIndex[key] || remoteIndex[key] < localIndex[key]) {
-              putIndex = true;
-              clients[category].put(key, localStorage[category+'$'+key], function(err, data) {
-              });
-            }
-          }
-          //todo: deal with upload failures
-          clients[category].put(indexKey, JSON.stringify(localIndex), function(err, data) {
-          });
         }
-      });
-    }
-    cb();//not really finished here yet actually
+        var putIndex = false;
+        for(key in localIndex) {
+          if(!remoteIndex[key] || remoteIndex[key] < localIndex[key]) {
+            putIndex = true;
+            clients[category].put(key, localStorage[category+'$'+key], function(err, data) {
+            });
+          }
+        }
+        //todo: deal with upload failures
+        clients[category].put(indexKey, JSON.stringify(localIndex), function(err, data) {
+        });
+      }
+    });
   }
   function push(e, cb) {
     if(!e.key) {//this happens on localStorage.clear()
@@ -89,7 +93,6 @@ var Syncer = function() {
     }
   }
   return {
-    sync: sync, 
     init: init,
     push: push
   };
