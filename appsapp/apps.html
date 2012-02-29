@@ -39,14 +39,14 @@
       syncer.onReadyStateChange(function(signedin, online, ready) {
         document.getElementById('login').style.display=(signedin?'none':'block');
         document.getElementById('loggedIn').style.display=(signedin?'block':'none');
-        console.log((signedin?'signedin; ':'')+(online?'online; ':'')+(ready?'ready; ':''));
+        document.getElementById('status').innerHTML = syncer.getUserAddress()+(signedin?'; signedin':'')+(online?'; online':'')+(ready?'; ready':'');
       });
       function addApp() {
         var objStr = JSON.stringify({
           css: document.getElementById('css').value,
           js: document.getElementById('js').value,
           html: document.getElementById('html').value,
-          author: syncer.getUserAddress();
+          author: syncer.getUserAddress()
         });
         var hash = SHA1(objStr);
         storeApp(hash, objStr);
@@ -125,7 +125,7 @@
       <input type="submit" value="connect" onclick="connect();">
     </div>
     <div id="loggedIn" style="display:none;">
-      <div id="status"></div>
+      <div id="status">status</div>
       <input type="submit" value="disconnect" onclick="disconnect();">
       Your Apps:
       <input type="submit" value="fetch" onclick="fetch();">

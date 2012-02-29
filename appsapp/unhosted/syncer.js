@@ -41,7 +41,7 @@ var syncer = (function() {
       syncFrame.src= location.protocol+'//'+location.host+libPath+'/syncFrame.html'
         +'?api='+encodeURIComponent(storageInfo.api)
         +'&template='+encodeURIComponent(storageInfo.template)
-        +'&categories='+encodeURIComponent(categories)
+        +'&categories='+encodeURIComponent(JSON.stringify(categories))
         +'&token='+encodeURIComponent(bearerToken);
       document.body.appendChild(syncFrame);
       window.addEventListener('message', function(event) {
@@ -76,6 +76,6 @@ var syncer = (function() {
     disconnect         : disconnect,
     onReadyStateChange : onReadyStateChange,
     onLoad             : onLoad,
-    getUserAddress,    : getUserAddress
+    getUserAddress     : getUserAddress
   };
 })();
