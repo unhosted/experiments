@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title></title>
-    <script src="/unhosted/require.js"></script>
+    <script src="/unhosted/syncer.js"></script>
     <script>
       var contacts;
       function displayList() {
@@ -31,39 +31,37 @@
         localStorage['contacts$list'] = JSON.stringify(contacts);
         displayList();
       }
-      require(['/unhosted/remoteStorage-0.5.1.js'], function(remoteStorage) {
-        remoteStorage.onReadyStateChange(function(signedin, online, ready) {
-          console.log((signedin?'signedin; ':'')+(online?'online; ':'')+(ready?'ready; ':''));
-        });
-        document.getElementById('addContact').onclick = function() {
-          if(!contacts) {
-            contacts = JSON.parse(localStorage['contacts$list']);
-          }
-          if(!contacts) {
-            contacts = {};
-          }
-          contacts[document.getElementById('newContact').value] = true;
-          localStorage['contacts$list'] = JSON.stringify(contacts);
-          displayList();
-        }
-        document.getElementById('connect').onclick = function() {
-          remoteStorage.connect(document.getElementById('userAddress').value, ['contacts'], remoteStorage.startSync);
-        };
+      syncer.onReadyStateChange(function(signedin, online, ready) {
+        console.log((signedin?'signedin; ':'')+(online?'online; ':'')+(ready?'ready; ':''));
       });
+      function addContact() {
+        if(!contacts) {
+          contacts = JSON.parse(localStorage['contacts$list']);
+        }
+        if(!contacts) {
+          contacts = {};
+        }
+        contacts[document.getElementById('newContact').value] = true;
+        localStorage['contacts$list'] = JSON.stringify(contacts);
+        displayList();
+      }
+      function connect() {
+        syncer.connect(document.getElementById('userAddress').value, ['contacts'], syncer.startSync);
+      };
     </script>
   </head>
   <body onload="displayList();">
     <div>
       Account:
       <input id="userAddress" placeholder="user address">
-      <input type="submit" value="connect" id="connect">
+      <input type="submit" value="connect" onclick="connect();">
       <div id="status"></div>
     </div>
     <div>
       Your Contacts:
       <ul id="contacts">
       </ul>
-      <input id="newContact"><input type="submit" id="addContact" value="+">
+      <input id="newContact"><input type="submit" onclick="addContact();" value="+">
     </div>
   </body>
 </html>

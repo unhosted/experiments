@@ -42,6 +42,10 @@ var Syncer = function() {
   function sync(cb) {
     for(var category in clients) {
       clients[category].get(indexKey, function(err, data) {
+        if(err == 404) {
+          err = null;
+          data = JSON.stringify({});
+        }
         if((!err) && data) {
           var remoteIndex = JSON.parse(data);
           var localIndex = getLocalIndex(category);
