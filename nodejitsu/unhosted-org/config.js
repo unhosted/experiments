@@ -7,7 +7,7 @@ exports.config = {
     'www.syncstorage.org': 'http://unhosted.org',
     'www.apptorrent.mobi': 'http://unhosted.org',
     'www.apptorrent.org': 'http://unhosted.org',
-    'www.apptorrent.net': 'http://unhosted.org',
+    'www.apptorrent.net': 'http://apptorrent.net',
     'www.milosurdie.info': 'http://unhosted.org',
     
     'unhost.it': 'http://unhosted.org',
@@ -15,7 +15,6 @@ exports.config = {
     'syncstorage.org': 'http://unhosted.org',
     'apptorrent.mobi': 'http://unhosted.org',
     'apptorrent.org': 'http://unhosted.org',
-    'apptorrent.net': 'http://unhosted.org',
     'milosurdie.info': 'http://unhosted.org',
     
     'myfavouritesandwich.org': 'https://myfavouritesandwich.org',
