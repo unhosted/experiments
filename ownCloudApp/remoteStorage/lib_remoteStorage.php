@@ -31,6 +31,7 @@ class OC_remoteStorage {
 		$user=OC_User::getUser();
 		$query=OC_DB::prepare("DELETE FROM *PREFIX*authtoken WHERE token=? AND user=?");
 		$result=$query->execute(array($token,$user));
+		return 'unknown';//how can we see if any rows were affected?
 	}
 	private static function addToken($token, $appUrl, $categories){
 		$user=OC_User::getUser();

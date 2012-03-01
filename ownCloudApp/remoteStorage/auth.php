@@ -39,16 +39,6 @@ ini_set('default_charset', 'UTF-8');
 #ini_set('error_reporting', '');
 @ob_clean();
 
-//allow use as remote storage for other websites
-if(isset($_SERVER['HTTP_ORIGIN'])) {
-	header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
-	header('Access-Control-Max-Age: 3600');
-	header('Access-Control-Allow-Methods: OPTIONS, GET, PUT, DELETE, PROPFIND');
-	  header('Access-Control-Allow-Headers: Authorization, Content-Type');
-} else {
-	header('Access-Control-Allow-Origin: *');
-}
-
 $path = substr($_SERVER["REQUEST_URI"], strlen($_SERVER["SCRIPT_NAME"]));
 $pathParts =  explode('/', $path);
 // for webdav:
