@@ -13,6 +13,7 @@
           <link rel="stylesheet" href="http://mich.oc/apps/files_sharing/css/sharing.css" type="text/css" media="screen" />
           <link rel="stylesheet" href="http://mich.oc/3rdparty/css/chosen/chosen.css" type="text/css" media="screen" />
           <link rel="stylesheet" href="http://mich.oc/apps/files_imageviewer/css/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+          <link rel="stylesheet" href="auth.css" type="text/css" media="screen" />
       </head>
   <body id="body-login">
     <div id="login">
@@ -21,8 +22,8 @@
           <img src="http://mich.oc/core/img/owncloud-logo-medium-white.png" alt="ownCloud" />
         </div>
       </header>
-      <section id='main' style="width:100%">
-        <div style='margin-left:0px auto;margin-right:0px auto;width=50%;' class='authorization' id='oauth'>
+      <section id='main'>
+        <div id='oauth'>
           <h2>
             App Authorization
           </h2>
@@ -38,16 +39,9 @@
             </li>
           </ul>
           <form accept-charset="UTF-8" method="post">
-            <div style="margin:0;padding:0;display:inline">
-              <input name="utf8" type="hidden" value="&#x2713;" />
-              <input name="authenticity_token" type="hidden" value="skN1+POgRQW3k3/wX1U8qt82Jqte0Dta4EHkcSqwbfg=" />
-            </div>
-            <input id="redirect_uri" name="redirect_uri" type="hidden" value="http://myfavouritesandwich.org/rcvToken.html" />
-            <input id="scope" name="scope" type="hidden" value="public,documents" />
-            <input id="user_id" name="user_id" type="hidden" value="michiel" />
             <div class='actions'>
-              <input class="button install" name="commit" type="submit" value="Allow" />
-              <a href="http://myfavouritesandwich.org/rcvToken.html?error=user_denied" class="button danger">Deny</a>
+              <input id="allow-button" type="submit" value="Allow" />
+              <input id="deny-button" type="submit" value="Deny" />
             </div>
           </form>
 
