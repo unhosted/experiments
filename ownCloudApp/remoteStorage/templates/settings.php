@@ -12,7 +12,7 @@
     <ul>
 		<?php
 			foreach(OC_remoteStorage::getAllTokens() as $token => $details) {
-				echo '<li>'.$details['appUrl'].': '.$details['categories'].' <input type="submit" value="revoke" onclick="'
+				echo '<li onmouseover="document.getElementById(\'revoke_'.$token.'\').style.display=\'inline\';"  onmouseout="document.getElementById(\'revoke_'.$token.'\').style.display=\'none\';" ><img style="width:16px" src="http://'.$details['appUrl'].'/favicon.ico"> '.$details['appUrl'].': '.$details['categories'].' <input id="revoke_'.$token.'" style="display:none" type="submit" value="revoke" onclick="'
 					.'revokeToken(\''.$token.'\');this.parentNode.style.display=\'none\';"></li>'."\n";
 			}
 		?></ul>

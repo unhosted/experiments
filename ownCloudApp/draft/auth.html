@@ -4,10 +4,21 @@
     <title>ownCloud</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="shortcut icon" href="http://mich.oc/core/img/favicon.png" /><link rel="apple-touch-icon-precomposed" href="http://50.57.143.205/core/img/favicon-touch.png" />
-          <link rel="stylesheet" href="http://50.57.143.205/core/css/styles.css" type="text/css" media="screen" />
           <link rel="stylesheet" href="auth.css" type="text/css" media="screen" />
-      </head>
-  <body id="body-login">
+  <script>
+    function init() {
+      document.getElementById('allow-auth').style.display='none';
+      document.getElementById('oauth').onmouseover = function() {
+        document.getElementById('allow-auth').style.display='block';
+      };
+      document.getElementById('oauth').onmouseout = function() {
+        document.getElementById('allow-auth').style.display='none';
+      };
+    }
+  </script>
+
+  </head>
+  <body onload="init();" id="body-login">
     <div id="login">
       <header>
         <div id="header">
