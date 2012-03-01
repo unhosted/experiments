@@ -56,7 +56,8 @@ if(count($pathParts) == 2 && $pathParts[0] == '') {
 		if($k=='user_address'){
 			$userAddress=$v;
 		} else if($k=='redirect_uri'){
-			$appUrl=$v;
+			$appUrlParts=explode('/', $v);
+      $appUrl = $appUrlParts[2];//bit dodgy i guess
 		} else if($k=='scope'){
 			$categories=$v;
 		}

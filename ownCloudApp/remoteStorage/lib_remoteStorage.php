@@ -20,7 +20,7 @@ class OC_remoteStorage {
 		$ret = array();
 		while($row=$result->fetchRow()){
 			$ret[$row['token']] = array(
-				'appUrl' => $row['appurl'],
+				'appUrl' => $row['appUrl'],
 				'categories' => $row['category'],
 			);
 		}
