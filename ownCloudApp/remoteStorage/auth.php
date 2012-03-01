@@ -44,7 +44,7 @@ if(isset($_SERVER['HTTP_ORIGIN'])) {
 	header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
 	header('Access-Control-Max-Age: 3600');
 	header('Access-Control-Allow-Methods: OPTIONS, GET, PUT, DELETE, PROPFIND');
-  	header('Access-Control-Allow-Headers: Authorization, Content-Type');
+	  header('Access-Control-Allow-Headers: Authorization, Content-Type');
 } else {
 	header('Access-Control-Allow-Origin: *');
 }
@@ -52,10 +52,10 @@ if(isset($_SERVER['HTTP_ORIGIN'])) {
 $path = substr($_SERVER["REQUEST_URI"], strlen($_SERVER["SCRIPT_NAME"]));
 $pathParts =  explode('/', $path);
 // for webdav:
-// 0/     1       /   2    /   3  /   4     /    5     /   6     / 7
+// 0/	 1	   /   2	/   3  /   4	 /	5	 /   6	 / 7
 //  /$ownCloudUser/remoteStorage/webdav/$userHost/$userName/$dataScope/$key
 // for oauth:
-// 0/      1      /  2     /  3  / 4
+// 0/	  1	  /  2	 /  3  / 4
 //  /$ownCloudUser/remoteStorage/oauth/auth
 
 if(count($pathParts) == 2 && $pathParts[0] == '') {
@@ -78,7 +78,41 @@ if(count($pathParts) == 2 && $pathParts[0] == '') {
 			$token=OC_remoteStorage::createCategories($appUrl, $categories);
 			header('Location: '.$_GET['redirect_uri'].'#access_token='.$token.'&token_type=bearer');
 		} else {
-			echo '<form method="POST"><input name="allow" type="submit" value="Allow this web app to store stuff on your owncloud."></form>';
+?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ownCloud</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon" href="/core/img/favicon.png" /><link rel="apple-touch-icon-precomposed" href="/core/img/favicon-touch.png" />
+          <link rel="stylesheet" href="/core/css/styles.css" type="text/css" media="screen" />
+          <link rel="stylesheet" href="/core/css/multiselect.css" type="text/css" media="screen" />
+          <link rel="stylesheet" href="/core/css/jquery-ui-1.8.16.custom.css" type="text/css" media="screen" />
+          <link rel="stylesheet" href="/core/css/jquery-tipsy.css" type="text/css" media="screen" />
+          <link rel="stylesheet" href="/apps/files_texteditor/css/style.css" type="text/css" media="screen" />
+          <link rel="stylesheet" href="/apps/files_pdfviewer/css/viewer.css" type="text/css" media="screen" />
+          <link rel="stylesheet" href="/apps/files_sharing/css/sharing.css" type="text/css" media="screen" />
+          <link rel="stylesheet" href="/3rdparty/css/chosen/chosen.css" type="text/css" media="screen" />
+          <link rel="stylesheet" href="/apps/files_imageviewer/css/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+      </head>
+  <body id="body-login">
+    <div id="login">
+      <header><div id="header">
+        <img src="/core/img/owncloud-logo-medium-white.png" alt="ownCloud" />
+      </div></header>
+      <div>
+         <form method="POST">
+           This web app wants to read<br>and store stuff in the 
+             <?php echo '\''.htmlentities($_GET['scope']).'\''; ?> 
+             category of your ownCloud.
+           <input name="allow" type="submit" value="Allow">
+           <input name="deny" type="submit" value="Deny">
+         </form>
+      </div>
+    <footer><p class="info"><a href="http://owncloud.org/">ownCloud</a> &ndash; web services under your control</p></footer>
+  </body>
+</html>
+<?php
 		}
 	} else {
 		if((isset($_SERVER['HTTPS'])) && ($_SERVER['HTTPS'])) {
@@ -88,12 +122,11 @@ if(count($pathParts) == 2 && $pathParts[0] == '') {
 		}
 		$url .= $_SERVER['SERVER_NAME'];
 		$url .= substr($_SERVER['SCRIPT_NAME'], 0, -strlen('apps/remoteStorage/compat.php'));
-		die('You are '.($currUser?'logged in as '.$currUser.' instead of '.$ownCloudUser:'not logged in').'. Please '
-			.'<input type="submit" onclick="'
-			."window.open('$url','Close me!','height=600,width=300');"
-			.'" value="log in">'
-			.', close the pop-up, and '
-			.'<form method="POST"><input name="allow" type="submit" value="Click here"></form>');
+		if($currUser) {
+			die('You are logged in as '.$currUser.' instead of '.$ownCloudUser);
+		} else {
+			header('Location: /?redirect_url='.urlencode('/apps/remoteStorage/auth.php'.$_SERVER['PATH_INFO'].'?'.$_SERVER['QUERY_STRING']));
+		}
 	}
 } else {
 	//die('please use auth.php/username?params. '.var_export($pathParts, true));
