@@ -8,7 +8,7 @@
 * @copyright 2010 Frank Karlitschek karlitschek@kde.org
 * 
 * Adapted:
-* @author Michiel de Jong, 2011
+* @author Michiel de Jong, 2012
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -94,21 +94,42 @@ if(count($pathParts) == 2 && $pathParts[0] == '') {
           <link rel="stylesheet" href="/apps/files_sharing/css/sharing.css" type="text/css" media="screen" />
           <link rel="stylesheet" href="/3rdparty/css/chosen/chosen.css" type="text/css" media="screen" />
           <link rel="stylesheet" href="/apps/files_imageviewer/css/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+          <link rel="stylesheet" href="../auth.css" type="text/css" media="screen" />
       </head>
   <body id="body-login">
     <div id="login">
-      <header><div id="header">
-        <img src="/core/img/owncloud-logo-medium-white.png" alt="ownCloud" />
-      </div></header>
-      <div>
-         <form method="POST">
-           This web app wants to read<br>and store stuff in the 
-             <?php echo '\''.htmlentities($_GET['scope']).'\''; ?> 
-             category of your ownCloud.
-           <input name="allow" type="submit" value="Allow">
-           <input name="deny" type="submit" value="Deny">
-         </form>
-      </div>
+      <header>
+        <div id="header">
+          <img src="/core/img/owncloud-logo-medium-white.png" alt="ownCloud" />
+        </div>
+      </header>
+      <section id='main'>
+        <div id='oauth'>
+          <h2>
+            App Authorization
+          </h2>
+          <h3>
+            This app would like to be able to do the following:
+          </h3>
+          <ul class='scopes'>
+            <?php
+              $scopes = explode(',', $_GET['scope']);
+              foreach($scopes as $scope) {
+                echo '<li>Read/write to category &quot;'.htmlentities($scope).'&quot; on your remoteStorage</li>';
+              }
+            ?>
+          </ul>
+          <form accept-charset="UTF-8" method="post">
+            <div class='actions'>
+              <input id="allow-button" name="allow" type="submit" value="Allow" />
+              <input id="deny-button" name="deny" type="submit" value="Deny" />
+            </div>
+          </form>
+
+        </div>
+
+      </section>
+    </div>
     <footer><p class="info"><a href="http://owncloud.org/">ownCloud</a> &ndash; web services under your control</p></footer>
   </body>
 </html>
@@ -132,3 +153,4 @@ if(count($pathParts) == 2 && $pathParts[0] == '') {
 	//die('please use auth.php/username?params. '.var_export($pathParts, true));
 	die('please use auth.php/username?params.');
 }
+
