@@ -82,17 +82,10 @@ if(count($pathParts) == 2 && $pathParts[0] == '') {
 		</header>
 		<section id="main">
 		<div id="oauth">
-			<h2><?php $appUrlParts = explode('/', $_GET['redirect_uri']); echo $appUrlParts[2]; ?> requests</h2>
-      Read/write access to 
-			<ul class="scopes">
-			<?php
-				$scopes = explode(',', $_GET['scope']);
-				foreach($scopes as $scope) {
-				echo '<li>&raquo;'.htmlentities($scope).'&laquo;</li>';
-				}
-			?>
-			</ul>
-      <p style="margin:1em 0">of your <img src="../remoteStorage.png"> remoteStorage.</p>
+      <h2><img src="../remoteStorage-big.png" alt="remoteStorage" /></h2>
+      <p><strong><?php $appUrlParts = explode('/', $_GET['redirect_uri']); echo $appUrlParts[2]; ?></strong>
+      requests read &amp; write access to your <em><?php echo $_GET['scope']; ?></em>.
+			</p>
 			<form accept-charset="UTF-8" method="post">
 				<input id="allow-auth" name="allow" type="submit" value="Allow" />
 				<input id="deny-auth" name="deny" type="submit" value="Deny" />
