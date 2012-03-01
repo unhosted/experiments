@@ -1,47 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ownCloud</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="shortcut icon" href="http://mich.oc/core/img/favicon.png" /><link rel="apple-touch-icon-precomposed" href="http://50.57.143.205/core/img/favicon-touch.png" />
-          <link rel="stylesheet" href="auth.css" type="text/css" media="screen" />
-  <script>
-    function init() {
-      document.getElementById('allow-auth').style.display='none';
-      document.getElementById('oauth').onmouseover = function() {
-        document.getElementById('allow-auth').style.display='block';
-      };
-      document.getElementById('oauth').onmouseout = function() {
-        document.getElementById('allow-auth').style.display='none';
-      };
-    }
-  </script>
-
-  </head>
-  <body onload="init();" id="body-login">
-    <div id="login">
-      <header>
-        <div id="header">
-          <img src="http://50.57.143.205/core/img/owncloud-logo-medium-white.png" alt="ownCloud" />
-        </div>
-      </header>
-      <section id="main">
-        <div id="oauth">
-          <h2>This app requests</h2><!-- instead of "This app" it should display the actual name of the app -->
-          <ul class="scopes">
-            <li>Read/write access to &raquo;public&laquo; of your remoteStorage</li>
-            <li>Read/write access to &raquo;documents&laquo; of your remoteStorage</li>
-          </ul>
-          <form accept-charset="UTF-8" method="post">
-              <input id="allow-auth" type="submit" value="Allow" />
-              <input id="deny-auth" type="submit" value="Deny" />
-          </form>
-
-        </div>
-
-      </section>
+  <title>ownCloud</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="shortcut icon" href="http://50.57.143.205/apps/remoteStorage/auth.php/../../../core/img/favicon.png" /><link rel="apple-touch-icon-precomposed" href="http://50.57.143.205/apps/remoteStorage/auth.php/../../../core/img/favicon-touch.png" />
+      <link rel="stylesheet" href="http://50.57.143.205/apps/remoteStorage/auth.php/../../../core/css/styles.css" type="text/css" media="screen" />
+      <link rel="stylesheet" href="http://50.57.143.205/apps/remoteStorage/auth.php/../auth.css" type="text/css" media="screen" />
+    </head>
+  <body id="body-login">
+  <div id="login">
+    <header>
+    <div id="header">
+      <img src="http://50.57.143.205/apps/remoteStorage/auth.php/../../../core/img/owncloud-logo-medium-white.png" alt="ownCloud" />
     </div>
-    <footer><p class="info"><a href="http://owncloud.org/">ownCloud</a> &ndash; web services under your control</p></footer>
+    </header>
+    <section id="main">
+    <div id="oauth">
+      <h2>myfavouritesandwich.org requests</h2>
+      Read/write access to 
+      <ul class="scopes">
+      <li>&raquo;sandwiches&laquo;</li>     </ul>
+      <p style="margin:1em 0">of your <img src="http://50.57.143.205/apps/remoteStorage/auth.php/../remoteStorage.png"> remoteStorage.</p>
+      <form accept-charset="UTF-8" method="post">
+        <input id="allow-auth" name="allow" type="submit" value="Allow" />
+        <input id="deny-auth" name="deny" type="submit" value="Deny" />
+      </form>
+    </div>
+    </section>
+  </div>
+  <footer><p class="info"><a href="http://owncloud.org/">ownCloud</a> &ndash; web services under your control</p></footer>
   </body>
 </html>
-
