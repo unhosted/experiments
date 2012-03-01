@@ -6,7 +6,7 @@
 		<?php
 			foreach(OC_remoteStorage::getAllTokens() as $token => $details) {
 				echo '<li>'.$details['appUrl'].': '.$details['categories'].' <input type="submit" value="revoke" onclick="'
-					.'$.post(\'/apps/remoteStorage/ajax/revokeToken.php\', \''.$token.'\');"></li>';
+					.'$.post(\'/apps/remoteStorage/ajax/revokeToken.php\', \''.$token.'\');"></li>'."\n";
 			}
 		?></ul>
 	</fieldset>
