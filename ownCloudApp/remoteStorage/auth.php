@@ -69,28 +69,30 @@ if(count($pathParts) == 2 && $pathParts[0] == '') {
 	<head>
 	<title>ownCloud</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link rel="shortcut icon" href="/core/img/favicon.png" /><link rel="apple-touch-icon-precomposed" href="/core/img/favicon-touch.png" />
-			<link rel="stylesheet" href="/core/css/styles.css" type="text/css" media="screen" />
+	<link rel="shortcut icon" href="../../../core/img/favicon.png" /><link rel="apple-touch-icon-precomposed" href="../../../core/img/favicon-touch.png" />
+			<link rel="stylesheet" href="../../../core/css/styles.css" type="text/css" media="screen" />
 			<link rel="stylesheet" href="../auth.css" type="text/css" media="screen" />
 		</head>
 	<body id="body-login">
 	<div id="login">
 		<header>
 		<div id="header">
-			<img src="/core/img/owncloud-logo-medium-white.png" alt="ownCloud" />
+			<img src="../../../core/img/owncloud-logo-medium-white.png" alt="ownCloud" />
 		</div>
 		</header>
 		<section id="main">
 		<div id="oauth">
 			<h2><?php $appUrlParts = explode('/', $_GET['redirect_uri']); echo $appUrlParts[2]; ?> requests</h2>
+      Read/write access to 
 			<ul class="scopes">
 			<?php
 				$scopes = explode(',', $_GET['scope']);
 				foreach($scopes as $scope) {
-				echo '<li>Read/write access to &raquo;'.htmlentities($scope).'&laquo; of your remoteStorage</li>';
+				echo '<li>&raquo;'.htmlentities($scope).'&laquo;</li>';
 				}
 			?>
 			</ul>
+      <p style="margin:1em 0">of your <img src="../remoteStorage.png"> remoteStorage.</p>
 			<form accept-charset="UTF-8" method="post">
 				<input id="allow-auth" name="allow" type="submit" value="Allow" />
 				<input id="deny-auth" name="deny" type="submit" value="Deny" />
