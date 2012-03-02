@@ -83,8 +83,24 @@ if(count($pathParts) == 2 && $pathParts[0] == '') {
 		<section id="main">
 		<div id="oauth">
       <h2><img src="../remoteStorage-big.png" alt="remoteStorage" /></h2>
-      <p><strong><?php $appUrlParts = explode('/', $_GET['redirect_uri']); echo $appUrlParts[2]; ?></strong>
-      requests read &amp; write access to your <em><?php echo $_GET['scope']; ?></em>.
+      <p><strong><?php $appUrlParts = explode('/', $_GET['redirect_uri']); echo htmlentities($appUrlParts[2]); ?></strong>
+      requests read &amp; write access to your 
+      <?php
+        $categories = explode(',', htmlentities($_GET['scope']));
+        if(!count($categories)) {
+          echo htmlentities($_GET['scope']);
+        } else {
+          echo '<em>'.$categories[0].'</em>';
+          if(count($categories)==2) {
+            echo ' and <em>'.$categories[1].'</em>';
+          } else if(count($categories)>2) {
+            for($i=1; $i<count($categories)-1; $i++) {
+              echo ', <em>'.$categories[$i].'</em>';
+            }
+            echo ', and <em>'.$categories[$i].'</em>';
+          }
+        }
+      ?>.
 			</p>
 			<form accept-charset="UTF-8" method="post">
 				<input id="allow-auth" name="allow" type="submit" value="Allow" />
