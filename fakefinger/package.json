@@ -1,0 +1,11 @@
+{
+  "name": "fakefinger",
+  "subdomain": "fakefinger",
+  "domains": [
+    "users.unnhosted.org"
+  ],
+  "scripts": {
+    "start": "server.js"
+  },
+  "version": "0.0.0"
+}
