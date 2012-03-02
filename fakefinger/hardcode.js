@@ -9,17 +9,25 @@ exports.hardcode = (function() {
     }
   };
   var domains={
-    'gmail.com': 'surfnet'};
+    'leidenuniv.nl': 'surfnet'};
   return function(userAddress) {
     var parts = userAddress.split('@');
     if(parts.length==2) {
-      if(domains[parts[1]] && servers[domains[parts[1]]]) {
-        var blueprint = servers[domains[parts[1]]];
-        return {
-          api: blueprint.api,
-          auth: blueprint.authPrefix+userAddress+blueprint.authSuffix,
-          template: blueprint.templatePrefix+userAddress+blueprint.templateSuffix
-        };
+      var domain = parts[1];
+      while(domain.indexOf('.')!=-1) {
+        console.log('trying '+domain);
+        if(domains[domain] && servers[domains[domain]]) {
+          var blueprint = servers[domains[domain]];
+          console.log('hardcoded!');
+          return {
+            api: blueprint.api,
+            auth: blueprint.authPrefix+userAddress+blueprint.authSuffix,
+            template: blueprint.templatePrefix+userAddress+blueprint.templateSuffix
+          };
+        } else {
+          domain=domain.substring(domain.indexOf('.')+1);
+          console.log('changed domain to '+domain);
+        }
       }
     }
     return null;
