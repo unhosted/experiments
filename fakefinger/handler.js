@@ -2,7 +2,6 @@ exports.handler = (function() {
   var url = require('url'),
     https = require('https'),
     querystring = require('querystring'),
-    //browseridVerify = require('browserid-verifier'),
     fs = require('fs'),
     userDb = require('./config').config,
     redis = require('redis'),
@@ -16,7 +15,6 @@ exports.handler = (function() {
     });
     redisClient.auth(userDb.pwd, function() {
        console.log('redis auth done');
-       //redisClient.stream.on('connect', cb);
        if(cb) cb();
     });
   }
@@ -30,10 +28,14 @@ exports.handler = (function() {
       console.log(data);
       if(data) {
         res.writeHead(200);
-        res.end('yes');
+        try {
+          res.end(JSON.stringify(JSON.parse(data).storageInfo));
+        } catch (e) {
+          res.end('undefined');
+        }
       } else {
         res.writeHead(404);
-        res.end('no');
+        res.end('null');
       }
     });
     console.log('outside redisClient.get');
