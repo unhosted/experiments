@@ -9,7 +9,25 @@ exports.hardcode = (function() {
     }
   };
   var domains={
-    'leidenuniv.nl': 'surfnet'};
+    'leidenuniv.nl': 'surfnet',
+    'leiden.edu': 'surfnet',
+    'uva.nl': 'surfnet',
+    'vu.nl': 'surfnet',
+    'eur.nl': 'surfnet',
+    'maastrichtuniversity.nl': 'surfnet',
+    'ru.nl': 'surfnet',
+    'rug.nl': 'surfnet',
+    'uu.nl': 'surfnet',
+    'tudelft.nl': 'surfnet',
+    'utwente.nl': 'surfnet',
+    'tue.nl': 'surfnet',
+    'tilburguniversity.edu': 'surfnet',
+    'wur.nl': 'surfnet',
+    'wageningenuniversity.nl': 'surfnet',
+    'ou.nl': 'surfnet',
+    'lumc.nl': 'surfnet',
+    'amc.nl': 'surfnet'
+  };
   return function(userAddress) {
     var parts = userAddress.split('@');
     if(parts.length==2) {
