@@ -4,6 +4,7 @@ exports.handler = (function() {
     querystring = require('querystring'),
     fs = require('fs'),
     userDb = require('./config').config,
+    hardcode = require('./hardcode').hardcode,
     redis = require('redis'),
     redisClient;
   
@@ -19,27 +20,35 @@ exports.handler = (function() {
     });
   }
   function serveGet(req, res, postData) {
-    console.log('serveGet');
-    console.log(postData);
-    initRedis();
-    redisClient.get(postData, function(err, data) {
-      console.log('this came from redis:');
-      console.log(err);
-      console.log(data);
-      if(data) {
-        res.writeHead(200);
-        try {
-          res.end(JSON.stringify(JSON.parse(data).storageInfo));
-        } catch (e) {
-          res.end('undefined');
+    var hardcoded = hardcode(postData);
+    if(hardcoded) {
+      console.log('hardcoded');
+      console.log(hardcoded);
+      res.writeHead(200);
+      res.end(JSON.stringify(hardcoded));
+    } else {
+      console.log('serveGet');
+      console.log(postData);
+      initRedis();
+      redisClient.get(postData, function(err, data) {
+        console.log('this came from redis:');
+        console.log(err);
+        console.log(data);
+        if(data) {
+          res.writeHead(200);
+          try {
+            res.end(JSON.stringify(JSON.parse(data).storageInfo));
+          } catch (e) {
+            res.end('undefined');
+          }
+        } else {
+          res.writeHead(404);
+          res.end('null');
         }
-      } else {
-        res.writeHead(404);
-        res.end('null');
-      }
-    });
-    console.log('outside redisClient.get');
-    redisClient.quit();
+      });
+      console.log('outside redisClient.get');
+      redisClient.quit();
+    }
   }
 
   function serve(req, res, baseDir) {
