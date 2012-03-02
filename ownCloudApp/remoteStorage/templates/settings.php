@@ -5,7 +5,6 @@
 				.OC_User::getUser().'@'.$_SERVER['SERVER_NAME']
 				.' (<a href="http://unhosted.org/">more info</a>)';
 		?>
-		<p><em>Apps that currently have access to your ownCloud:</em></p>
 		<script>
 			function revokeToken(token) {
 				var xhr = new XMLHttpRequest();
@@ -13,16 +12,22 @@
 				xhr.send(token);
 			}
 		</script>
-		<ul>
 		<?php
-			foreach(OC_remoteStorage::getAllTokens() as $token => $details) {
-				echo '<li onmouseover="'
-					.'document.getElementById(\'revoke_'.$token.'\').style.display=\'inline\';"'
-					.'onmouseout="document.getElementById(\'revoke_'.$token.'\').style.display=\'none\';"'
-					.'> <strong>'.$details['appUrl'].'</strong>: '.$details['categories']
-					.' <a href="#" title="Revoke" class="action" style="display:none" id="revoke_'.$token.'" onclick="'
-					.'revokeToken(\''.$token.'\');this.parentNode.style.display=\'none\';"'
-					.'><img src="/core/img/actions/delete.svg"></a></li>'."\n";
-			}
-		?></ul>
+		  $tokens = OC_remoteStorage::getAllTokens();
+      if(count($tokens)) {
+        echo '<p><em>Apps that currently have access to your ownCloud:</em></p><ul>';
+        foreach(OC_remoteStorage::getAllTokens() as $token => $details) {
+          echo '<li onmouseover="'
+            .'document.getElementById(\'revoke_'.$token.'\').style.display=\'inline\';"'
+            .'onmouseout="document.getElementById(\'revoke_'.$token.'\').style.display=\'none\';"'
+            .'> <strong>'.$details['appUrl'].'</strong>: '.$details['categories']
+            .' <a href="#" title="Revoke" class="action" style="display:none" id="revoke_'.$token.'" onclick="'
+            .'revokeToken(\''.$token.'\');this.parentNode.style.display=\'none\';"'
+            .'><img src="/core/img/actions/delete.svg"></a></li>'."\n";
+        }
+        echo '</ul>';
+      } else {
+        echo 'Apps that have access to your ownCloud will be listed here.';
+      }
+		?>
 	</fieldset>
