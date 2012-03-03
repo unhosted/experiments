@@ -6,6 +6,7 @@ exports.handler = (function() {
     userDb = require('./config').config,
     hardcode = require('./hardcode').hardcode,
     redis = require('redis'),
+    url = require('url'),
     redisClient;
   
   function initRedis(cb) {
@@ -19,12 +20,18 @@ exports.handler = (function() {
        if(cb) cb();
     });
   }
-  function serveGet(req, res, postData) {
+  function serveLookup(req, res, postData) {
+    if(postData.substring(0, 5)=='acct:') {
+      postData = postData.substring(5);
+    }
+    console.log('looking up '+postData);
     var hardcoded = hardcode(postData);
     if(hardcoded) {
       console.log('hardcoded');
       console.log(hardcoded);
-      res.writeHead(200);
+      res.writeHead(200, {
+        'Access-Control-Allow-Origin': '*'
+      });
       res.end(JSON.stringify(hardcoded));
     } else {
       console.log('serveGet');
@@ -35,14 +42,18 @@ exports.handler = (function() {
         console.log(err);
         console.log(data);
         if(data) {
-          res.writeHead(200);
+          res.writeHead(200, {
+            'Access-Control-Allow-Origin': '*'
+          });
           try {
             res.end(JSON.stringify(JSON.parse(data).storageInfo));
           } catch (e) {
             res.end('undefined');
           }
         } else {
-          res.writeHead(404);
+          res.writeHead(404, {
+            'Access-Control-Allow-Origin': '*'
+          });
           res.end('null');
         }
       });
@@ -50,7 +61,10 @@ exports.handler = (function() {
       redisClient.quit();
     }
   }
-
+  function serveApp(req, res) {
+    res.writeHead(200);
+    res.end('app');
+  }
   function serve(req, res, baseDir) {
     console.log('serve');
     var dataStr = '';
@@ -58,7 +72,17 @@ exports.handler = (function() {
       dataStr += chunk;
     });
     req.on('end', function() {
-      serveGet(req, res, dataStr);
+      // / GET: user interface
+      // /couch/domain/: couch proxy, only to couch port
+      // /dropbox/username/: dropbox proxy, requires BrowserID OAuth:wQ
+      // / POST: get info
+      var urlObj = url.parse(req.url, true);
+      console.log(urlObj);
+      if(urlObj.pathname=='/lookup') {
+        serveLookup(req, res, urlObj.query['q']);
+      } else {
+        serveApp(req, res, dataStr);
+      }
     });
   }
 
