@@ -147,20 +147,55 @@
           });
         });
       }
+      function gup(name) {
+        name = name.replace(/[\[]/,'\\\[').replace(/[\]]/,'\\\]');
+        var regexS = '[\\?&]'+name+'=([^&#]*)';
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.location.href);
+        if(results == null) {
+          return "";
+        } else {
+          return results[1];
+        }
+      }
+      function authorize(host, usr, pwd, scope, redirectUri) {
+        console.log(host);
+        console.log(usr);
+        console.log(pwd);
+        console.log(scope);
+        console.log(redirectUri);
+      }
+      function allow() {
+        var userAddress= gup('user_address');
+        navigator.id.get(function(assertion) {
+          if(assertion) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/getPwd', true);
+            xhr.onreadystatechange = function() {
+              if(xhr.readyState==4) {
+                if(xhr.status == 200) {
+                  var credentials
+                  try {
+                    credentials = JSON.parse(xhr.responseText);
+                  } catch(e) {
+                    alert('sorry');
+                  }
+                  authorize(credentials.host, credentials.usr, credentials.pwd, gup('scope'), gup('redirect_uri'));
+                }
+              }
+            };
+            xhr.send(assertion);
+          } else {
+            alert('no assertion');
+          }
+        }, {
+          requiredEmail: userAddress
+        });
+      }
     </script>
-   <script src="js/browseridInclude.js" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" href="css/browseridOAuth.css">
   </head>
-  <body onload="showForm();">
-    <div id="browserid">
-      <div class="login">
-        <img src="img/browseridSigninBlue.png">
-      </div>
-      <div class="picture"></div>
-    </div>
-    <div id="formDiv">
-    </div>
+  <body>
+    <input type="submit" value="allow" onclick="allow();">
   </body>
-  <script src="js/jquery.js" type="text/javascript"></script>
-  <script src="js/browseridMain.js" type="text/javascript"></script>
+  <script src="//browserid.org/include.js" type="text/javascript"></script>
 </html>
