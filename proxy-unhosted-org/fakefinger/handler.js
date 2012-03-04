@@ -58,6 +58,10 @@ exports.handler = (function() {
             if(storageInfo.auth.indexOf('cors/auth/modal.html') != -1) {
               storageInfo.auth = 'http://proxy.unhosted.org/OAuth.html?user_address='+encodeURIComponent(postData);
             }
+            if(storageInfo.template.indexOf('proxy.libredocs.org') != -1) {
+              storageInfo.template = 'http://proxy.unhosted.org/CouchDB?'
+                  +storageInfo.template.substring('http://proxy.libredocs.org/'.length);
+            }
             res.end(JSON.stringify(storageInfo));
           } catch (e) {
             res.end('undefined');
