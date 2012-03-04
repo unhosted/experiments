@@ -3,6 +3,7 @@ var categoryCreator = (function() {
     console.log('couchPut("'+couchAddress+'", "'+user+'", "'+pass+'", "'+dbName+'", "'+key+'", '+JSON.stringify(value)+', cb);');
     var xhr = new XMLHttpRequest();
     xhr.open(method, couchAddress+'/'+dbName+'/'+key, true);
+    xhr.setRequestHeader('Authorization', 'Basic '+Base64.encode(user+':'+pass));
     xhr.onreadystatechange = function() {
       if(xhr.readyState == 4) {
         cb(xhr.status, xhr.responseText);
@@ -87,7 +88,7 @@ var categoryCreator = (function() {
   function createNextCategory(couchAddress, couchUsr, couchPwd, categories, i, clientId, pwd, cb) {
     if(i==categories.length) {
       console.log('done creating '+i+' categories');
-      cb();
+      cb(Base64.encode(clientId+':'+pwd));
     } else {
       console.log('creating category '+i+': "'+categories[i]);
       createDatabase(couchAddress, couchUsr, couchPwd, categories[i], clientId, (categories[i] == 'public'), function() {
