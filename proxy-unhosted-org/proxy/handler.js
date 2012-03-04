@@ -1,12 +1,7 @@
 
 exports.handler = (function() {
   var http = require('http'),
-    fs = require('fs'),
-    Buffer = require('buffer').Buffer,
-    crypto = require('crypto'),
-    url = require('url'),
-    querystring = require('querystring'),
-    config = require('./config').config;
+    url = require('url');
 
       ////////////////
      // CORS proxy //
