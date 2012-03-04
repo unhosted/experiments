@@ -70,7 +70,7 @@ exports.handler = (function() {
       }
       client.rm('foo.txt', request, function(status, reply) {
         res.writeHead(status);
-        res.end(reply);
+        res.end(JSON.stringify(reply));
       });
     }
   }
