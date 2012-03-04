@@ -1,114 +1,86 @@
 exports.handler = (function() {
-  var url = require('url'),
-    https = require('https'),
-    querystring = require('querystring'),
-    fs = require('fs'),
-    userDb = require('./config').config,
-    hardcode = require('./hardcode').hardcode,
-    redis = require('redis'),
+  var http = require('http'),
     url = require('url'),
-    redisClient;
-  
-  function initRedis(cb) {
-    console.log('initing redis');
-    redisClient = redis.createClient(userDb.port, userDb.host);
-    redisClient.on("error", function (err) {
-      console.log("error event - " + redisClient.host + ":" + redisClient.port + " - " + err);
-    });
-    redisClient.auth(userDb.pwd, function() {
-       console.log('redis auth done');
-       if(cb) cb();
-    });
-  }
-  function serveLookup(req, res, postData) {
-    if((typeof(postData) != 'string') || (postData.length < 5)) {
-      res.writeHead(200, {
-        'Access-Control-Allow-Origin': '*'
-      });
-      res.end(JSON.stringify({error:'please provide a ?q=.. query'}));
+    path = require('path'),
+    fs = require('fs'),
+    config = require('./config').config;
+   
+  function serve(req, res, baseDir) {
+    var uripath = url.parse(req.url).pathname
+      .replace(new RegExp('/$', 'g'), '/index.html');
+    var host = req.headers.host;
+    if(config.redirect && config.redirect[host]) {
+      res.writeHead(302, {'Location': config.redirect[host]});
+      res.write('302 Location: '+config.redirect[host]+'\n');
+      res.end();
       return;
     }
-    if(postData.substring(0, 5)=='acct:') {
-      postData = postData.substring(5);
-    }
-    console.log('looking up '+postData);
-    var hardcoded = hardcode(postData);
-    if(hardcoded) {
-      console.log('hardcoded');
-      console.log(hardcoded);
-      res.writeHead(200, {
-        'Access-Control-Allow-Origin': '*'
-      });
-      res.end(JSON.stringify(hardcoded));
+    console.log(host);
+    console.log(req.url);
+    console.log(uripath);
+    var filename;
+    if(config.pathHandler && config.pathHandler[host + uripath]) {
+      console.log('found handler:'+config.pathHandler[host + uripath]);
+      return require(config.pathHandler[host + uripath]+'/handler').handler.serve(req, res, config.pathHandler[host + uripath]);
+    } else if (config.handler && config.handler[host]) {
+      console.log('found handler:'+config.handler[host]);
+      return require(config.handler[host]+'/handler').handler.serve(req, res, config.handler[host]);
+    } else if(config.path && config.path[host + uripath]) {
+      filename = baseDir + config.path[host + uripath];
+    } else if(config.host && config.host[host]) {
+      filename = baseDir + config.host[host] + uripath;
     } else {
-      console.log('serveGet');
-      console.log(postData);
-      initRedis();
-      redisClient.get(postData, function(err, data) {
-        console.log('this came from redis:');
-        console.log(err);
-        console.log(data);
-        if(data) {
-          res.writeHead(200, {
-            'Access-Control-Allow-Origin': '*'
-          });
-          try {
-            res.end(JSON.stringify(JSON.parse(data).storageInfo));
-          } catch (e) {
-            res.end('undefined');
-          }
+      filename = baseDir +  config.default + uripath;
+    }
+    var contentType;
+    if(/\.appcache$/g.test(uripath)) {
+      contentType='text/cache-manifest';
+    } else if(/\.html$/g.test(uripath)) {
+      contentType='text/html';
+    } else if(/\.css$/g.test(uripath)) {
+      contentType='text/css';
+    } else if(/\.js$/g.test(uripath)) {
+      contentType='text/javascript';
+    } else if(/\.png$/g.test(uripath)) {
+      contentType='image/png';
+    } else if(/\.gif$/g.test(uripath)) {
+      contentType='image/gif';
+    } else if(/\.ico$/g.test(uripath)) {
+      contentType='image/png';
+    } else if(/\.svg$/g.test(uripath)) {
+      contentType='image/svg+xml';
+    } else {
+      contentType='text/plain';
+    }
+    console.log(filename);
+    console.log(contentType);
+
+    path.exists(filename, function(exists) { 
+      if(!exists) { 
+        res.writeHead(404, {'Content-Type': 'text/plain'});
+        res.write('404 Not Found\n'+filename);
+        res.end();
+        return;
+      } 
+   
+      fs.readFile(filename, 'binary', function(err, file) {
+        if(err && err.code == 'EISDIR') {
+          res.writeHead(301, {'Location': 'http://'+host+uripath+'/'});
+          res.end('Location: http://'+host+uripath+'/\n');
+        } else if(err) {
+          res.writeHead(500, {'Content-Type': 'text/plain'});
+          res.end(err + '\n');
         } else {
-          res.writeHead(404, {
-            'Access-Control-Allow-Origin': '*'
+          res.writeHead(200, {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Content-Type': contentType
           });
-          res.end('null');
+          res.write(file, 'binary');
+          res.end();
         }
       });
-      console.log('outside redisClient.get');
-      redisClient.quit();
-    }
-  }
-  function serveFile(res, filename, contentType) {
-    fs.readFile(filename, 'binary', function(err, file) {
-      if(err && err.code == 'EISDIR') {
-        res.writeHead(301, {'Location': 'http://'+host+uripath+'/'});
-        res.end('Location: http://'+host+uripath+'/\n');
-      } else if(err) {
-        console.log(err);
-        res.writeHead(500, {'Content-Type': 'text/plain'});
-        res.end(err + '\n');
-      } else {
-        res.writeHead(200, {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Content-Type': contentType
-        });
-        res.write(file, 'binary');
-        res.end();
-      }
-    });
-  }
-  function serve(req, res, baseDir) {
-    console.log('serve');
-    var dataStr = '';
-    req.on('data', function(chunk) {
-      dataStr += chunk;
-    });
-    req.on('end', function() {
-      // / GET: user interface
-      // /couch/domain/: couch proxy, only to couch port
-      // /dropbox/username/: dropbox proxy, requires BrowserID OAuth:wQ
-      // / POST: get info
-      var urlObj = url.parse(req.url, true);
-      console.log(urlObj);
-      if(urlObj.pathname=='/lookup') {
-        serveLookup(req, res, urlObj.query['q']);
-      } else if(urlObj.pathname=='/iris-pwd-service') {
-        serveIrisPwdService(req, res, dataStr, urlObj.query['subdomain']);
-      } else {
-        serveFile(res, '/Users/mich/Code/experiments/proxy-unhosted-org/static/file-'+urlObj.pathname.substring(1), 'text/html');
-      }
-    });
+    })
   }
 
   return {
