@@ -17,22 +17,15 @@
         }
       }
       function authorize(host, usr, pwd, scope, redirectUri) {
-        console.log(host);
-        console.log(usr);
-        console.log(pwd);
-        console.log(scope);
-        console.log(redirectUri);
-        var categories = scope.split(',');
+        var categories=scope.split(',');
         categoryCreator(host, usr, pwd, categories, 'myfavouritesandwich.org', function(token) {
-          alert('http://localhost/rcvToken.html#access_token='+token);
+          window.location=redirectUri+'#access_token='+encodeURIComponent(token);
         });
       }
-      var debug;
       function allow() {
         var userAddress= gup('user_address');
         navigator.id.get(function(assertion) {
           if(assertion) {
-            debug=assertion;
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/getPwd', true);
             xhr.onreadystatechange = function() {
@@ -44,7 +37,6 @@
                   } catch(e) {
                     alert('sorry');
                   }
-                  debug=credentials;
                   authorize(credentials.host, credentials.usr, credentials.pwd, gup('scope'), gup('redirect_uri'));
                 } else {
                   alert('sorry');
@@ -59,15 +51,10 @@
           requiredEmail: userAddress
         });
       }
-      function retry() {
-        var credentials=debug;
-        authorize(credentials.host, credentials.usr, credentials.pwd, gup('scope'), gup('redirect_uri'));
-      }
     </script>
   </head>
   <body>
     <input type="submit" value="allow" onclick="allow();">
-    <input type="submit" value="retry" onclick="retry();">
   </body>
   <script src="//browserid.org/include.js" type="text/javascript"></script>
 </html>
