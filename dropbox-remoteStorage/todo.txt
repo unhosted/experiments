@@ -1,0 +1,8 @@
+- first: connect to dropbox page.
+- find out how to redirect back there.
+- the access token/secret pair should go into redis.
+- say "your remoteStorage user address is: [email from dropbox account] <change>
+- have an OAuth page that stores a category token in redis.
+- have a revoke page that lets you revoke category tokens from apps.
+- have a rest server that checks bearerToken->accessToken against redis and executes the request, exposing 'simple' (including 'public') based on liquor-cabinet.
+
