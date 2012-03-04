@@ -97,7 +97,7 @@ var categoryCreator = (function() {
   }
   return function(couchHost, couchUsr, couchPwd, categories, clientId, cb) {
     var pwd = randStr(40);
-    var proxy = 'http://proxy.unhosted.org/CouchDB/';
+    var proxy = 'http://proxy.unhosted.org/CouchDB?';
     createUser(proxy+couchHost, couchUsr, couchPwd, clientId, pwd, function() {
       console.log('user created, now creating categories:');
       createNextCategory(proxy+couchHost, couchUsr, couchPwd, categories, 0, clientId, pwd, cb);

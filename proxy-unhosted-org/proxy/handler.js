@@ -1,7 +1,6 @@
 
 exports.handler = (function() {
   var http = require('http'),
-    cradle = require('cradle'),
     fs = require('fs'),
     Buffer = require('buffer').Buffer,
     crypto = require('crypto'),
@@ -107,9 +106,10 @@ exports.handler = (function() {
   function serveProxy(req, res) {
     console.log('serveProxy');
     var urlObj = url.parse(req.url, true);
-    var pathParts = urlObj.pathname.split('/');
-    var backHost = pathParts[1];
-    var backPath = '/'+pathParts.splice(2).join('/');
+    var pathParts = urlObj.search.split('/');
+    console.log(pathParts);
+    var backHost = pathParts[0].substring(1);
+    var backPath = '/'+pathParts.splice(1).join('/');
     var backPort = 5984;
     console.log('backend: "'+backHost+'", "'+backPath+'", '+backPort);
     var dataStr = '';

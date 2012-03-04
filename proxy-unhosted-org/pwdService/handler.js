@@ -64,7 +64,7 @@ exports.handler = (function() {
             if(obj) {
               var credentials = {
                 host: obj.couchHost,
-                usr: 'org.couchdb.user:'+userAddress,
+                usr: userAddress,
                 pwd: obj.adminPwd
               }
               res.writeHead(200);

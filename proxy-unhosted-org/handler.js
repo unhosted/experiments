@@ -26,7 +26,7 @@ exports.handler = (function() {
       console.log('found path for '+host+uripath+'...');
       filename = baseDir + config.path[host + uripath];
     } else if(config.host && config.host[host]) {
-      console.log('found host for '+host+'...');
+      console.log('found host for '+host+' (uripath was '+uripath+')...');
       filename = baseDir + config.host[host] + uripath;
     } else {
       console.log('found nothing, using default: "'+config.default+'"...');
