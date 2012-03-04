@@ -165,10 +165,12 @@
         console.log(scope);
         console.log(redirectUri);
       }
+      var debug;
       function allow() {
         var userAddress= gup('user_address');
         navigator.id.get(function(assertion) {
           if(assertion) {
+            debug=assertion;
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/getPwd', true);
             xhr.onreadystatechange = function() {
@@ -192,10 +194,29 @@
           requiredEmail: userAddress
         });
       }
+      function retry() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/getPwd', true);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState==4) {
+            if(xhr.status == 200) {
+              var credentials
+              try {
+                credentials = JSON.parse(xhr.responseText);
+              } catch(e) {
+                alert('sorry');
+              }
+              authorize(credentials.host, credentials.usr, credentials.pwd, gup('scope'), gup('redirect_uri'));
+            }
+          }
+        };
+        xhr.send(debug);
+      }
     </script>
   </head>
   <body>
     <input type="submit" value="allow" onclick="allow();">
+    <input type="submit" value="retry" onclick="retry();">
   </body>
   <script src="//browserid.org/include.js" type="text/javascript"></script>
 </html>
