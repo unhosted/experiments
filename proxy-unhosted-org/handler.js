@@ -21,6 +21,13 @@ exports.handler = (function() {
     });
   }
   function serveLookup(req, res, postData) {
+    if((typeof(postData) != 'string') || (postData.length < 5)) {
+      res.writeHead(200, {
+        'Access-Control-Allow-Origin': '*'
+      });
+      res.end(JSON.stringify({error:'please provide a ?q=.. query'}));
+      return;
+    }
     if(postData.substring(0, 5)=='acct:') {
       postData = postData.substring(5);
     }
@@ -61,9 +68,25 @@ exports.handler = (function() {
       redisClient.quit();
     }
   }
-  function serveApp(req, res) {
-    res.writeHead(200);
-    res.end('app');
+  function serveFile(res, filename, contentType) {
+    fs.readFile(filename, 'binary', function(err, file) {
+      if(err && err.code == 'EISDIR') {
+        res.writeHead(301, {'Location': 'http://'+host+uripath+'/'});
+        res.end('Location: http://'+host+uripath+'/\n');
+      } else if(err) {
+        console.log(err);
+        res.writeHead(500, {'Content-Type': 'text/plain'});
+        res.end(err + '\n');
+      } else {
+        res.writeHead(200, {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Content-Type': contentType
+        });
+        res.write(file, 'binary');
+        res.end();
+      }
+    });
   }
   function serve(req, res, baseDir) {
     console.log('serve');
@@ -80,8 +103,10 @@ exports.handler = (function() {
       console.log(urlObj);
       if(urlObj.pathname=='/lookup') {
         serveLookup(req, res, urlObj.query['q']);
+      } else if(urlObj.pathname=='/iris-pwd-service') {
+        serveIrisPwdService(req, res, dataStr, urlObj.query['subdomain']);
       } else {
-        serveApp(req, res, dataStr);
+        serveFile(res, '/Users/mich/Code/experiments/proxy-unhosted-org/static/file-'+urlObj.pathname.substring(1), 'text/html');
       }
     });
   }
