@@ -55,7 +55,7 @@ exports.handler = (function() {
           try {
             var storageInfo=JSON.parse(data).storageInfo;
             //upgrade hack:
-            if(storageInfo.auth.indexOf('cors/auth/modal.html') {
+            if(storageInfo.auth.indexOf('cors/auth/modal.html') != -1) {
               storageInfo.auth = 'http://proxy.unhosted.org/OAuth.html?user_address='+encodeURIComponent(postData);
             }
             res.end(JSON.stringify(storageInfo));
