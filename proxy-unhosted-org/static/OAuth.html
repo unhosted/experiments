@@ -3,12 +3,7 @@
   <head>
     <script src="js/sha1.js"></script>
     <script src="js/base64.js"></script>
-    <script>
-      function showForm() {
-        document.getElementById('formDiv').innerHTML =
-          '<p>Once you logged in with BrowserId, you can:</p>\n'
-          +'  <input type="submit" value="Allow this app to read and write on your couch" onclick="allow();">\n';
-      }
+    <script src="js/categoryCreator.js"></script>
       function httpCall(couchAddress, user, pass, dbName, key, value, method, cb) {
         console.log('couchPut("'+couchAddress+'", "'+user+'", "'+pass+'", "'+dbName+'", "'+key+'", '+JSON.stringify(value)+', cb);');
         var xhr = new XMLHttpRequest();
