@@ -13,7 +13,7 @@
         if(results == null) {
           return "";
         } else {
-          return results[1];
+          return decodeURIComponent(results[1]);
         }
       }
       function authorize(host, usr, pwd, scope, redirectUri) {
