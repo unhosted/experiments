@@ -1,5 +1,7 @@
 exports.handler = (function() {
-  var https = require('https');
+  var https = require('https'),
+    userDb = require('../userDb').userDb,
+    redis = require('redis');
   function browseridVerify(audience, assertion, cb) {
     var queryStr = 'audience='+encodeURIComponent(audience)+'&assertion='+encodeURIComponent(assertion);
     console.log(queryStr);
@@ -28,6 +30,26 @@ exports.handler = (function() {
     request.end();
   }
   function fetchObj(userAddress, cb) {
+    var redisClient = redis.createClient(userDb.port, userDb.host);
+    redisClient.on("error", function (err) {
+      console.log("error event - " + redisClient.host + ":" + redisClient.port + " - " + err);
+    });
+    redisClient.auth(userDb.pwd, function() {
+      console.log('redis auth done');
+      redisClient.get(userAddress, function(err, data) {
+        if(err) {
+          cb(null);
+        } else {
+          try {
+            cb(JSON.parse(data));
+          } catch(e) {
+            cb(null);
+          }
+        }
+      });
+    });
+  }
+  function serveLookup(req, res, postData) {
 
   }
   function serve(req, res, baseDir) {

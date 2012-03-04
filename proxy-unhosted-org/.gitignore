@@ -15,13 +15,7 @@ CVS/*
 RCS/*
 
 # config files
-createDb/config.js
-provision/config.js
-squat/config.js
-users/config.js
-userExists/config.js
-useraddress/config.js
-setConfig/config.js
+userDb.js
 
 # node modules
 node_modules
