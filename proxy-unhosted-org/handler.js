@@ -15,21 +15,21 @@ exports.handler = (function() {
       res.end();
       return;
     }
-    console.log(host);
-    console.log(req.url);
-    console.log(uripath);
     var filename;
     if(config.pathHandler && config.pathHandler[host + uripath]) {
-      console.log('found handler:'+config.pathHandler[host + uripath]);
+      console.log('found pathHandler for '+host+uripath+':'+config.pathHandler[host + uripath]);
       return require(config.pathHandler[host + uripath]+'/handler').handler.serve(req, res, config.pathHandler[host + uripath]);
     } else if (config.handler && config.handler[host]) {
-      console.log('found handler:'+config.handler[host]);
+      console.log('found handler for '+host+':'+config.handler[host]);
       return require(config.handler[host]+'/handler').handler.serve(req, res, config.handler[host]);
     } else if(config.path && config.path[host + uripath]) {
+      console.log('found path for '+host+uripath+'...');
       filename = baseDir + config.path[host + uripath];
     } else if(config.host && config.host[host]) {
+      console.log('found host for '+host+'...');
       filename = baseDir + config.host[host] + uripath;
     } else {
+      console.log('found nothing, using default: "'+config.default+'"...');
       filename = baseDir +  config.default + uripath;
     }
     var contentType;
@@ -52,11 +52,10 @@ exports.handler = (function() {
     } else {
       contentType='text/plain';
     }
-    console.log(filename);
-    console.log(contentType);
 
     path.exists(filename, function(exists) { 
       if(!exists) { 
+        console.log(filename+' not found');
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.write('404 Not Found\n'+filename);
         res.end();
@@ -65,12 +64,15 @@ exports.handler = (function() {
    
       fs.readFile(filename, 'binary', function(err, file) {
         if(err && err.code == 'EISDIR') {
+          console.log(filename+' is dir');
           res.writeHead(301, {'Location': 'http://'+host+uripath+'/'});
           res.end('Location: http://'+host+uripath+'/\n');
         } else if(err) {
+          console.log(filename+' err '+err);
           res.writeHead(500, {'Content-Type': 'text/plain'});
           res.end(err + '\n');
         } else {
+          console.log(filename+' ok');
           res.writeHead(200, {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Content-Type',

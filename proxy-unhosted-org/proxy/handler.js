@@ -140,6 +140,7 @@ exports.handler = (function() {
   }
 
   function serve(req, res) {
+    console.log('proxy has been hit!');
     serveProxy(req, res);
     console.log('exit sync call to serve');
   }
