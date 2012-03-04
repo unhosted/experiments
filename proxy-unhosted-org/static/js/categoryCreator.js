@@ -2,7 +2,7 @@ var categoryCreator = (function() {
   function httpCall(couchAddress, user, pass, dbName, key, value, method, cb) {
     console.log('couchPut("'+couchAddress+'", "'+user+'", "'+pass+'", "'+dbName+'", "'+key+'", '+JSON.stringify(value)+', cb);');
     var xhr = new XMLHttpRequest();
-    xhr.open(method, 'http://'+couchAddress+'/'+dbName+'/'+key, true);
+    xhr.open(method, couchAddress+'/'+dbName+'/'+key, true);
     xhr.onreadystatechange = function() {
       if(xhr.readyState == 4) {
         cb(xhr.status, xhr.responseText);
@@ -97,7 +97,7 @@ var categoryCreator = (function() {
   }
   return function(couchHost, couchUsr, couchPwd, categories, clientId, cb) {
     var pwd = randStr(40);
-    var proxy = 'http://proxy.unhosted.org/CouchDB/'+'http://proxy.unhosted.org/CouchDB/';
+    var proxy = 'http://proxy.unhosted.org/CouchDB/';
     createUser(proxy+couchHost, couchUsr, couchPwd, clientId, pwd, function() {
       console.log('user created, now creating categories:');
       createNextCategory(proxy+couchHost, couchUsr, couchPwd, categories, 0, clientId, pwd, cb);
