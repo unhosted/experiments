@@ -53,7 +53,12 @@ exports.handler = (function() {
             'Access-Control-Allow-Origin': '*'
           });
           try {
-            res.end(JSON.stringify(JSON.parse(data).storageInfo));
+            var storageInfo=JSON.parse(data).storageInfo;
+            //upgrade hack:
+            if(storageInfo.auth.indexOf('cors/auth/modal.html') {
+              storageInfo.auth = 'http://proxy.unhosted.org/OAuth.html?user_address='+encodeURIComponent(postData);
+            }
+            res.end(JSON.stringify(storageInfo));
           } catch (e) {
             res.end('undefined');
           }
