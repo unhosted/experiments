@@ -34,6 +34,7 @@ exports.config = {
     'libredocs.org/squat': '/Users/mich/Code/Node/libredocs/squat',
     'libredocs.org/createDb': '/Users/mich/Code/Node/libredocs/createDb',
     'libredocs.org/users': '/Users/mich/Code/Node/libredocs/users',
+    'libredocs.org/storeBearerToken': '/Users/mich/Code/Node/libredocs/storeBearerToken',
     'myfavouritesandwich.org/browserid-verifier': '/Users/mich/Code/experiments/nodejitsu/unhosted-org/browserid',
     'unhosted.nodejitsu.com/browserid-verifier': '/Users/mich/Code/experiments/nodejitsu/unhosted-org/browserid',
     'unhosted.org/browserid-verifier': '/Users/mich/Code/experiments/nodejitsu/unhosted-org/browserid',
