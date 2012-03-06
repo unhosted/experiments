@@ -41,8 +41,8 @@ var oauth = (function() {
       } else {
         alert('no assertion');
       }
-    }, {
-      requiredEmail: userAddress
+    //}, {
+    //  requiredEmail: userAddress
     });
   }
   function getClientIdHtml() {
