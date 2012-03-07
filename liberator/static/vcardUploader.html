@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Liberator app</title>
+    <script src="./lib/vcard.js/vcard.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+      //contacts can be of type mailto:, tel:, facebook:, skype:, twitter:, google:, linkedin:, tuenti:
+      //they have a field sameAs which is used to glue them together. so we don't create a new namespace 'to bind them all'
+      //and we don't create a bag of objects. it's naturally indexed as contacts, by type+id.
+      //there is also a field rel, which is a list of tags defining the relation of the contact method to the person, e.g. 'cell', 'home', 'preferred'.
+      //and then there's a field attr, which allows us to add attributes to any contact. these are purely informational, and can contradict attributes
+      //in glued contacts. for instance, my birthday in skype might contradict my birthday in Google Plus, in which case that's then just the info we have.
+      //so examples describing me:
+      //localStorage['contacts$mailto:michiel@unhosted.org']= JSON.stringify({
+      //  sameAs: ['facebook:604632022', 'dejong.michiel@gmail.com', 'twitter:michielbdejong'],
+      //  attr: {
+      //    'fn': 'Michiel de Jong'
+      //  },
+      //  rel: ['preferred', 'work']
+      //};:wq
+      function parseAndStore(vcardsStr) {
+        var parts = vcardsStr.split('BEGIN:VCARD');
+        for(var i =0; i<parts.length;i++) {
+          if(parts[i].indexOf('END:VCARD') != -1) {
+            parseAndStoreOne('BEGIN:VCARD'+parts[i]);
+          }
+        }
+      }
+      function parseAndStoreOne(vcardStr) {
+        var vcardObj = vCard.initialize(vcardStr);
+        var contacts = {};
+        var attr = {};
+        var sameAs=[];
+        var attrFields=['fn', 'adr', 'bday', 'photo', 'url'];
+
+        //extract attribute fields, that is, addressbook information about the person that is not a contact method (cannot be the target of a message):
+        for(var field in vcardObj) {
+          if(attrFields.indexOf(field) != -1) {
+            attr[field] = vcardObj[field];
+          }
+        }
+        //extract email addresses into mailto: contacts with rel:
+        for(var rel in vcardObj.email) {
+          for(var i=0; i<vcardObj.email[rel].length;i++) {
+            contacts['mailto:'+vcardObj.email[rel][i]]= {rel:[rel]};
+          }
+        }
+        //extract phone numbers into tel: contacts with rel:
+        for(var rel in vcardObj.tel) {
+          for(var i=0; i<vcardObj.tel[rel].length;i++) {
+            contacts['tel:'+vcardObj.tel[rel][i]]= {rel:[rel]};
+          }
+        }
+        //glue all contacts together and give them all the attributes:
+        for(var id in contacts) {
+          sameAs.push(id);
+        }
+        for(var id in contacts) {
+          var thisOne = sameAs.indexOf(id);
+
+          contacts[id].sameAs=sameAs.slice(0,thisOne).concat(sameAs.slice(thisOne+1));
+          //TODO:find a good way to store attr only once, yet still not lose track of them ever
+          contacts[id].attr=attr;
+          localStorage.setItem('contacts$'+id, JSON.stringify(contacts[id]));
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <input type="file" id="files" name="files[]" multiple />
+    <output id="list"></output>
+
+    <script>
+      function handleFileSelect(evt) {
+        var files = evt.target.files;
+        for (var i=0; i<files.length; i++) {
+          var reader = new FileReader();
+          reader.onload = (function(theFile) {
+            return function(e) {
+              parseAndStore(e.target.result);
+            };
+          })(files[i]);
+          reader.readAsText(files[i]);
+        }
+      }
+      document.getElementById('files').addEventListener('change', handleFileSelect, false);
+    </script>
+  </body>
+</html>
