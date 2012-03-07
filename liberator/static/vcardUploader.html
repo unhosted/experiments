@@ -19,8 +19,12 @@
       //  },
       //  rel: ['preferred', 'work']
       //};:wq
+      function normalizeNewlines(str) {
+        var lines=str.split('\r');
+        return lines.join('');
+      }
       function parseAndStore(vcardsStr) {
-        var parts = vcardsStr.split('BEGIN:VCARD');
+        var parts = normalizeNewlines(vcardsStr).split('BEGIN:VCARD');
         for(var i =0; i<parts.length;i++) {
           if(parts[i].indexOf('END:VCARD') != -1) {
             parseAndStoreOne('BEGIN:VCARD'+parts[i]);
