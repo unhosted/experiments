@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Liberator app</title>
+  <script src="./lib/vcard.js/vcard.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+    //contacts can be of type mailto:, tel:, facebook:, skype:, twitter:, google:, linkedin:, tuenti:
+    //they have a field sameAs which is used to glue them together. so we don't create a new namespace 'to bind them all'
+    //and we don't create a bag of objects. it's naturally indexed as contacts, by type+id.
+    //there is also a field rel, which is a list of tags defining the relation of the contact method to the person, e.g. 'cell', 'home', 'preferred'.
+    //and then there's a field attr, which allows us to add attributes to any contact. these are purely informational, and can contradict attributes
+    //in glued contacts. for instance, my birthday in skype might contradict my birthday in Google Plus, in which case that's then just the info we have.
+    //so examples describing me:
+    //localStorage['contacts$mailto:michiel@unhosted.org']= JSON.stringify({
+    //  sameAs: ['facebook:604632022', 'dejong.michiel@gmail.com', 'twitter:michielbdejong'],
+    //  attr: {
+    //    'fn': 'Michiel de Jong'
+    //  },
+    //  rel: ['preferred', 'work']
+    //};:wq
+    function importFacebookFriends(accessToken) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://graph.facebook.com/me/friends?access_token='+accessToken, true);
+      xhr.onreadystatechange=function() {
+        if(xhr.readyState==4) {
+          importFacebookObj(JSON.parse(xhr.responseText));
+        }
+      }
+      xhr.send();
+    }
+    function importFacebookObj(fbObj) {
+      for(var i=0;i<fbObj.data.length;i++) {
+        localStorage.setItem('contacts$facebook:'+fbObj.data[i].id, JSON.stringify({
+          attr: {
+            fn: fbObj.data[i].name
+          }
+        }));
+      }
+    }
+  </script>
+</head>
+<body>
+  Paste your access token here:
+  <input id="access_token">
+  <input type="submit" value="import facebook friends" onclick="importFacebookFriends(document.getElementById('access_token').value);">
+</body>
+</html>

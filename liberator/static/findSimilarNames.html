@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Liberator app</title>
+  <script src="./lib/vcard.js/vcard.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+    //contacts can be of type mailto:, tel:, facebook:, skype:, twitter:, google:, linkedin:, tuenti:
+    //they have a field sameAs which is used to glue them together. so we don't create a new namespace 'to bind them all'
+    //and we don't create a bag of objects. it's naturally indexed as contacts, by type+id.
+    //there is also a field rel, which is a list of tags defining the relation of the contact method to the person, e.g. 'cell', 'home', 'preferred'.
+    //and then there's a field attr, which allows us to add attributes to any contact. these are purely informational, and can contradict attributes
+    //in glued contacts. for instance, my birthday in skype might contradict my birthday in Google Plus, in which case that's then just the info we have.
+    //so examples describing me:
+    //localStorage['contacts$mailto:michiel@unhosted.org']= JSON.stringify({
+    //  sameAs: ['facebook:604632022', 'dejong.michiel@gmail.com', 'twitter:michielbdejong'],
+    //  attr: {
+    //    'fn': 'Michiel de Jong'
+    //  },
+    //  rel: ['preferred', 'work']
+    //};:wq
+    function findNames() {
+      var names = [], objects = {};
+      for(var i=0; i<localStorage.length;i++) {
+        var key = localStorage.key(i);
+        if(key.substring(0, 'contacts$'.length) == 'contacts$') {
+          var obj={};
+          try {
+            obj = JSON.parse(localStorage.getItem(key));
+          } catch(e) {
+            localStorage.removeItem(key);
+          }
+          if(obj.attr && obj.attr.fn) {
+            if(!objects[obj.attr.fn]) {
+              objects[obj.attr.fn]=[];
+              names.push(obj.attr.fn);
+            }
+            objects[obj.attr.fn].push(key.substring('contacts$'.length));
+          }
+        }
+      }
+      names.sort();
+      for(var i=0; i<names.length; i++) {
+        var li = document.createElement('li');
+        li.innerHTML= names[i]+':';
+        for(var j=0; j<objects[names[i]].length; j++) {
+          li.innerHTML += ' '+objects[names[i]][j];
+        }
+        document.getElementById('list').appendChild(li);
+      }
+    }
+  </script>
+</head>
+<body>
+  <input type="submit" value="find similar names" onclick="findNames();">
+  <ul id="list"></ul>
+</body>
+</html>
