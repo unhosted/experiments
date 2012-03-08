@@ -17,8 +17,8 @@ exports.handler = (function() {
     });
     redisClient.auth(userDb.pwd, function() {
        console.log('redis auth done');
-       if(cb) cb();
     });
+    if(cb) cb();
   }
   function serveLookup(req, res, postData) {
     if((typeof(postData) != 'string') || (postData.length < 5)) {
