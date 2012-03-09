@@ -1,0 +1,15 @@
+{
+  "name": "rs-com",
+  "subdomain": "rs-com",
+  "domains": [
+    "remotestoragejs.com",
+    "www.remotestoragejs.com"
+  ],
+  "scripts": {
+    "start": "server.js"
+  },
+  "version": "0.0.0-5",
+  "engines": {
+    "node": "v0.6.x"
+  }
+}
