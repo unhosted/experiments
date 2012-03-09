@@ -28,7 +28,7 @@ exports.config = {
     'appsapp.org': '/Users/mich/Code/experiments/appsapp/',
     'remotestorage.local': '/Users/mich/Code/experiments/nodejitsu/unhosted-nodejitsu-com/remoteStorage.js',
     'proxy.unhosted.org': '/Users/mich/Code/experiments/proxy-unhosted-org/static',
-    'code.local': '/Users/mich/Code'
+    'code.mc': '/Users/mich/Code'
   },
   pathHandler: {
     'libredocs.org/browserid-verifier': '/Users/mich/Code/experiments/nodejitsu/unhosted-org/browserid',
