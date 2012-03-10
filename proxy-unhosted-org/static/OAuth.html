@@ -28,15 +28,18 @@
         </div>
       </header>
       <section id="main">
-      <div id="oauth">
-        <h2><img src="img/remoteStorage-big.png" alt="remoteStorage" /></h2>
-        <p><strong id="client-id">(?)</strong>
-        requests read &amp; write access to your 
-        <span id="categories"><em>(?)</em></span>.
-        </p>
-        <input id="allow-auth" name="allow" type="submit" value="Allow"/>
-        <input id="deny-auth" name="deny" type="submit" value="Deny" />
-      </div>
+        <div id="oauth">
+          <h2><img src="img/remoteStorage-big.png" alt="remoteStorage" /></h2>
+          <p><strong id="client-id">(?)</strong>
+          requests read &amp; write access to your 
+          <span id="categories"><em>(?)</em></span>.
+          </p>
+          <input id="allow-auth" name="allow" type="submit" value="Allow"/>
+          <input id="deny-auth" name="deny" type="submit" value="Deny" />
+        </div>
+        <div id="wait" style="display:none">
+          Doing stuff, this part can take like 40 seconds easily...
+        </div>
       </section>
     </div>
     <footer>

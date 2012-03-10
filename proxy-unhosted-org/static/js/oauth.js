@@ -20,6 +20,8 @@ var oauth = (function() {
     var userAddress= gup('user_address');
     navigator.id.get(function(assertion) {
       if(assertion) {
+        document.getElementById('oauth').style.display='none';
+        document.getElementById('wait').style.display='block';
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/getPwd', true);
         xhr.onreadystatechange = function() {
