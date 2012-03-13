@@ -6,19 +6,18 @@ exports.handler = (function() {
     userDb = require('../userDb').userDb,
     hardcode = require('./hardcode').hardcode,
     redis = require('redis'),
-    url = require('url'),
-    redisClient;
+    url = require('url');
   
   function initRedis(cb) {
     console.log('initing redis');
-    redisClient = redis.createClient(userDb.port, userDb.host);
+    var redisClient = redis.createClient(userDb.port, userDb.host);
     redisClient.on("error", function (err) {
       console.log("error event - " + redisClient.host + ":" + redisClient.port + " - " + err);
     });
     redisClient.auth(userDb.pwd, function() {
        console.log('redis auth done');
     });
-    if(cb) cb();
+    cb(redisClient);
   }
   function serveLookup(req, res, postData) {
     if((typeof(postData) != 'string') || (postData.length < 5)) {
@@ -43,38 +42,39 @@ exports.handler = (function() {
     } else {
       console.log('serveGet');
       console.log(postData);
-      initRedis();
-      redisClient.get(postData, function(err, data) {
-        console.log('this came from redis:');
-        console.log(err);
-        console.log(data);
-        if(data) {
-          res.writeHead(200, {
-            'Access-Control-Allow-Origin': '*'
-          });
-          try {
-            var storageInfo=JSON.parse(data).storageInfo;
-            //upgrade hack:
-            if(storageInfo.auth.indexOf('cors/auth/modal.html') != -1) {
-              storageInfo.auth = 'http://proxy.unhosted.org/OAuth.html?user_address='+encodeURIComponent(postData);
+      initRedis(function(redisClient) {
+        redisClient.get(postData, function(err, data) {
+          console.log('this came from redis:');
+          console.log(err);
+          console.log(data);
+          if(data) {
+            res.writeHead(200, {
+              'Access-Control-Allow-Origin': '*'
+            });
+            try {
+              var storageInfo=JSON.parse(data).storageInfo;
+              //upgrade hack:
+              if(storageInfo.auth.indexOf('cors/auth/modal.html') != -1) {
+                storageInfo.auth = 'http://proxy.unhosted.org/OAuth.html?user_address='+encodeURIComponent(postData);
+              }
+              if(storageInfo.template.indexOf('proxy.libredocs.org') != -1) {
+                storageInfo.template = 'http://proxy.unhosted.org/CouchDB?'
+                    +storageInfo.template.substring('http://proxy.libredocs.org/'.length);
+              }
+              res.end(JSON.stringify(storageInfo));
+            } catch (e) {
+              res.end('undefined');
             }
-            if(storageInfo.template.indexOf('proxy.libredocs.org') != -1) {
-              storageInfo.template = 'http://proxy.unhosted.org/CouchDB?'
-                  +storageInfo.template.substring('http://proxy.libredocs.org/'.length);
-            }
-            res.end(JSON.stringify(storageInfo));
-          } catch (e) {
-            res.end('undefined');
+          } else {
+            res.writeHead(404, {
+              'Access-Control-Allow-Origin': '*'
+            });
+            res.end('null');
           }
-        } else {
-          res.writeHead(404, {
-            'Access-Control-Allow-Origin': '*'
-          });
-          res.end('null');
-        }
+        });
+        console.log('outside redisClient.get');
+        redisClient.quit();
       });
-      console.log('outside redisClient.get');
-      redisClient.quit();
     }
   }
   function serveFile(res, filename, contentType) {
