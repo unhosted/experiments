@@ -39,31 +39,48 @@ appserver->agent: app code, lib code
 -add app[app code], controller[controller code], discoverer[discoverer code], auther[auther code], client[client code]
 app->user: start screen
 controller->user: login box
+(disco)
+(auth)
+(access)
 
-generic disco-then-auth flow:
+generic part version 2: post-PC:
+-start with user[user identifier, server identifier, credentials, app identifier], agent, controller[controller code], discoverer[discoverer code], auther[auther code], client[client code]
+controller->user: login box
+user->controller: user identifier, server identifier, credentials
+(disco)
+-add app[app code]
+app->user: start screen
+(auth)
+(access)
+
+(disco):
 user->controller: user identifier, server identifier
 -foreach discovery mechanism:
   controller->discoverer: discovery mechanism, user identifier, server identifier
-  ...
+  ...(discoverer does its mechanism-specific thing)
   -if successful:
     discoverer->controller:services(list(service id, type, caps & details, list(auth mechanism id, type, caps & details)))
   -if not:
     discoverer->controller:NACK
 controller->app:grand total of (service id, type, caps) combinations discovered.
+
+(auth):
 app->controller:requested[list(service id, service params)]
 -foreach different auth option occuring in at least one service in requested
   controller->user:auth mechanism id (don't know if this makes sense, let's say this is optional info to display to the user)
   controller->auther:auth mechanism type, caps, details, list(service type, caps, params)
-  ...
+  ...(auther does its mechanism-specific thing)
   -if successful:
     auther->controller:list of service type, caps, params, credentials, status ('should work' or 'might work')
   -if not:
     auther->controller:NACK
 controller->app:grand total list of service id, type, caps, params, status ('should work' or 'might work')
+
+(access):
 -foreach action:
   app->controller: service id, action, action params
   controller->client: service id, type, caps, details, params, status, action, action params, credentials
-  ..
+  ..(client does its service- and client-specific thing)
   client->controller:result
   controller->app:result
 
