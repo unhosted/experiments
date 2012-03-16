@@ -153,32 +153,77 @@ F: reuse.
 G: revokation.
 
 
-A: the action. Notice that B may already happen in parallel
+A: the action.
+Notice that B and part of C may already happen before, or in parallel, so the app may have an indication of whether the action will succeed. This may influence steps 2, 3 and 4. We model those connections in our 'interaction design' spec.
+
+The first step establishes a session involving the user, the user-agent, and the app:
 A1) user->user-agent:
   -app id
-A2) app->client:
+It could be omitted in case the app was pre-installed with the device, in which case this step becomes implicit in the gesture of powering on a device in the first place.
+
+A2) app->user:(optional)
+  -invitation to action
+the app may display a button or an input field for instance.
+
+A3)user->app:(optional)
+  -intention gesture
+the user tells the app to take a certain action which will involve one of the user's personal data services.
+
+A4) app->client:
   -service type
   -scope
   -action
-A3) client->connector:
+the app tells teh client what it wants. presumably the app knows what type of service could complete the desired action, and what access scope would be necessary to convince the server to do that. We could define actions where the client decides how to complete them, but for now we haven't done that, because it's all alot more straightforward this way.
+
+A5) client->connector:
   -service type
   -scope
+the client will be able to execute the action, but doesn't have credentials for this scope at any service of this type at this point. so it asks the connector. That's where we go to step C: the connection. But before the connector is ready for that, it first need to go through B, the login, with the user.
+
+the app may exaggerate the scope to pre-authorize future actions, and avoid the user being annoyed by small decisions every 5 seconds. In an extreme case (which remoteStorage implements), the first action may be NOOP, so that effectively it's just a login flow (see also 'interaction design' spec).
 
 B: the login.
-B1) user->connector:
+B1) connector->user:(optional)
+  -login prompt
+B2) user->connector:
   -user id
   -server id
-  -server credentials
+  (-server credentials)
+Already giving the server credentials at this point is optional, this can also be delayed until D (the decision).
 
-C: the connection.
+C: discovery.
+this step is optional if you already know there will be no more than 1 choice.
 C1) connector->server:(through some redirections)
-  -service type, scope, client details
- 
+  -service type, scope
+C2) server->connector:
+  -service details,
+  -service label,
+  -service caps,
+
+Once A and B are complete, the connector has:
+  -server id
+  -user id
+  -server credentials
+  -requested service type
+  -requested scope
+  -requested action
+
+There will probably be some interaction where it first sends the userid, receives some pointers, including maybe already the server details and available scopes, followed later by the specific request.
+
+D) CHOICE
+it's also possible that multiple services are discovered, in which case there might be another interaction between connector and user.
+D1) connector->user: (only if the server responded with multiple options)
+  -service names
+D2) user-> connector:
+  -
 D: the decision.
 D1) server->user:
   -question
 D2) user->server:
   -answer
+  (-user credentials)
+If no user credentials were given yet in step B, and passed in step C, then the user can still give them directly in this step.
+
 
 E: the access.
 E1)server->client:
