@@ -1,61 +1,70 @@
+LEGEND
+------
+H: HELLO
+I: INTENT
+D: DISCOVER
+C: CHOOSE
+F: FEEDBACK
+S: SESSIONS
+
 Steps and substeps with a * are obligatory, all the others may be skipped.
 
 Sequence:
-[    [ (A&B&D)C | (A&B)CD ] ]    [F|]    [ Ga [[Gb[F|]]]* [Gc|Gd|] |]    ]*
+[    [ (H&I&C)D | (H&I)DC ] ]  [  [F|]    [ Sa [[Sb[F|]]]* [Sc|Sd|] |]  ]  ]*
 
 myfavouritesandwich:
-[ D3,B,A,C2,D1 | B,A,C2,D1,D3 ],D2,Ga1,[Gb4,F1]*,[ Gc1,Gc4 | ],Gd1,Gd2
+[ C3,I,H,D2,C1 | I,H,D2,C1,C3 ],C2,Sa1,[Sb4,F]*,[ Sc1,Sc4 | ],Sd1,Sd2
 
 myfavoritebeer (we're treating the IdP's certificate issuing service as a data service here), non-native, log in to IdP first, have multiple personas:
-[ D3,B,C2 | B,C2,D3 ],D1,D2,F
+[ C3,I,D2 | I,D2,C3 ],C1,C2,F
 
 web intents
-registering a web intent: D3,C2
-using a web intent: B,D1,D2,
+registering a web intent: C3,D2
+using a web intent: I,C1,C2,
 
-Note that we're actually doing step Gd wrong. the session cannot be considered to have ended until it has ended on the server, unless the client is trusted, which in general it is not. even if the app and the server are in the same trust zone, it's better for the server to not rely on the client for session end).
+Note that we're actually doing step Sd wrong. the session cannot be considered to have ended until it has ended on the server, unless the client is trusted, which in general it is not. even if the app and the server are in the same trust zone, it's better for the server to not rely on the client for session end).
 
 
-A*: HELLO
-A1) connector->user: login prompt
-A2*) user->connector: user id, server id
+H*: HELLO
+H1) connector->user: login prompt
+H2*) user->connector: user id, server id
 
-B*: INTENT:
-B1) user->user-agent: app id
-B2) app->user: invitation to action
-B3) user->app: intention gesture
-B4*) app->client:service type, scope, action
-B5*) client->connector: service type, scope, action
+I*: INTENT:
+I1) user->user-agent: app id
+I2) app->user: invitation to action
+I3) user->app: intention gesture
+I4*) app->client:service type, scope, action
+I5*) client->connector: service type, scope, action
 
-C*: DISCOVERY
-C1) connector->server: service type, scope
-C2*) server->connector: service details, service label, service caps,
+D*: DISCOVERY
+D1) connector->server: service type, scope
+D2*) server->connector: service details, service label, service caps,
 
-D) CHOICE
-D1) connector->user: service labels
-D2*) user-> connector: service label of choice
-D3*) user->server: user credentials
+C*) CHOICE
+C1) connector->user: service labels
+C2*) user-> connector: service label or 'no'
+C3*) user->server: user credentials
 
 F) FEEDBACK
 F1) server->client: response
 
-Ga) SESSION START
-Ga1*) server->client: token
+Sa) SESSION START
+Sa1*) server->client: token
 
-Gb: SESSION ACTION:
-Gb1) app->user: invitation to action
-Gb2) user->app: intention gesture
-Gb3) app->client: action
-Gb4*) client->server: action, token
+Sb: SESSION ACTION:
+Sb1) app->user: invitation to action
+Sb2) user->app: intention gesture
+Sb3) app->client: action
+Sb4*) client->server: action, token
 
-Gc: CONNECTOR-MEDIATED REVOKATION (FIXME: implement Gc2,Gc3,Gc5 in remoteStorage)
-Gc1*) user->connector: request to end session
-Gc2*) connector->server: request to end session
-Gc3*) server->connector: confirmation of session end
-Gc4) connector->client: request to end session
-Gc5) connector->user: confirmation of session end
+Sc: CONNECTOR-MEDIATED REVOKATION (EIXME: implement Sc2,Sc3,Sc5 in remoteStorage)
+Sc1*) user->connector: request to end session
+Sc2*) connector->server: request to end session
+Sc3*) server->connector: confirmation of session end
+Sc4) connector->client: request to end session
+Sc5) connector->user: confirmation of session end
 
-Gd: SERVER-SIDE REVOKATION
-Gd1) user->server: request to end session
-Gd2) server->user: confirmation of session end
-Gd3) server->client: notification of session end
+Sd: SERVER-SIDE REVOKATION
+Sd1) user->server: request to end session
+Sd2) server->user: confirmation of session end
+Sd3) server->client: notification of session end
