@@ -1,14 +1,21 @@
 Steps and substeps with a * are obligatory, all the others may be skipped.
 
 Sequence:
-[(((A&B) C (D|)) & E) (F|) ( Ga [(Gb(F|))]* (Gc|Gd|) |)]*
+[    [ [A&B&E]C[D|] | [A&B][CE | CDE | CED] ]    [F|]    [ Ga [[Gb[F|]]]* [Gc|Gd|] |]    ]*
 
 myfavouritesandwich:
-[ E2,B,A,C2,E1 | B,A,C2,E1,E2 ] E3,Ga1, [Gb4,F1]*, [ Gc1,Gc4 | ] Gd1,Gd2
+[ E2,B,A,C2,E1 | B,A,C2,E1,E2 ],E3,Ga1,[Gb4,F1]*,[ Gc1,Gc4 | ],Gd1,Gd2
+
+myfavoritebeer (we're treating the IdP's certificate issuing service as a data service here), non-native, log in to IdP first, have multiple personas:
+[ E2,B,C2 | B,C2,E2 ],[ D | E1,E3 ],F
+
+web intents
+registering a web intent: E2,C2
+using a web intent: B,D1,D2,E1,E3
 
 Note that we're actually doing step Gd wrong. the session cannot be considered to have ended until it has ended on the server, unless the client is trusted, which in general it is not. even if the app and the server are in the same trust zone, it's better for the server to not rely on the client for session end).
 
-
+Note 2: we should model D and E as one thing.
 
 A*: HELLO
 A1) connector->user: login prompt
