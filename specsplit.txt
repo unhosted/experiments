@@ -1,3 +1,20 @@
+a user address user@host 'has remoteStorage' if:
+
+personal web services is supported for user@host, with at least one of the following discovery mechanisms
+MUST webfinger
+MAY http instead of https for the host-meta
+MAYNOT single-origin for the host-meta
+MAY xrd instead of jrd for the host-meta
+MAY host-meta on host-meta.json instead of host-meta (does that comply with both host-meta and webfinger spec?)
+MAY http instead of https for the lrdd
+MAYNOT single-origin for the lrdd
+MAYNOT 11.04 format
+MAY 11.10 format
+MAY 12.04 format
+
+MUST OAuth2-implicit-grant
+MAYNOT ? instead of #
+MAY include scope feedback
 
 core "unhosted apps + user-hosted service" spec
   - unhosted app means an application that runs in the browser, with no server-side code. the app's statics are hosted, but its execution is not. it's synonymous to client-side app, and to html5 app.
@@ -126,3 +143,43 @@ app->lib:service type, action, actionParams
 lib->app:result
 
 for now, we're modelling server-initiated and bidirectional services and app-to-app services all as if they were app-initiated services, using for instance the 'callback' pattern like the one often used in javascript.
+
+A: the action.
+B: the login. (may start earlier)
+C: the connection.
+D: the decision.
+E: the grant.
+F: reuse.
+G: revokation.
+
+
+A: the action. Notice that B may already happen in parallel
+A1) user->user-agent:
+  -app id
+A2) app->client:
+  -service type
+  -scope
+  -action
+A3) client->connector:
+  -service type
+  -scope
+
+B: the login.
+B1) user->connector:
+  -user id
+  -server id
+  -server credentials
+
+C: the connection.
+C1) connector->server:(through some redirections)
+  -service type, scope, client details
+ 
+D: the decision.
+D1) server->user:
+  -question
+D2) user->server:
+  -answer
+
+E: the access.
+E1)server->client:
+  -token
