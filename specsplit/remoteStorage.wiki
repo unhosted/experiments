@@ -1,0 +1,62 @@
+[[File:RemoteStorage.png]]
+= remoteStorage specification =
+
+== Introduction ==
+
+This spec describes the "remoteStorage-2012.04" service type for [core.wiki Personal Data Services].
+
+== Server Details ==
+
+As server details, a "href" link should always be announced. This should point to a https: address (or possibly a http: address if the service is not in production yet). The service should accept HTTP commands on this address, taking into account the 'Authorization: Bearer ...' header if present, and responding with CORS headers that will allow access via XMLHttpRequest from a client-side application.
+
+== Server Caps ==
+
+The server should allow storing, retrieving, and deleting data items in categories. The server state can be describe by a table of currently stored items, (category, key) -> (value or undefined), plus a table of currently valid access grants, (token, category) -> (type or undefined). category, key, value, token, and category are all strings here. type can be 'read-only' or 'full'. category may be the empty string in the grants table, but not in the items table. HTTP commands without Authorization header will be treated as equivalent to sending the empty string as the bearer token.
+
+Caps are grouped into 3 groups: 'simple', 'webdav' and 'couchdb'.
+The 'simple' group consists of:
+    1. GET {category}/{key} -> grant(token, category) ? (item(category, key) ? 200:item(category, key) : 404):403
+    2. GET public/{category}/{key} -> item('public/'+category, key) ? 200:item('public/'+category, key) : 404
+    
+    3. GET {category}/ -> grant(token, category) || grant(token, '') ? 200:items(category)
+    4. GET public/{category}/ -> grant(token, category) || grant(token, '') ? 200:items('public/'+category)
+    5. GET / -> grant(token, '') ? 200:categories() //only return non-empty ones
+
+    6. PUT {category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 200 : 201):403 and set item(category, key) to the body contents
+    7. PUT public/{category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 200 : 201):403 and set item(category, key) to the body contents
+
+    8. DELETE {category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 410 : 404):403 and remove item(category, key)
+    9. DELETE public/{category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 410 : 404):403 and remove item(category, key)
+
+The 'webdav' group consists of:
+    1. GET {category}/{key} -> grant(token, category) ? (item(category, key) ? 200:item(category, key) : 404):403
+    2. GET public/{category}/{key} -> item('public/'+category, key) ? 200:item('public/'+category, key) : 404
+    
+    3. PROPFIND {category}/ -> grant(token, category) || grant(token, '') ? 200:toXml(items(category))
+    4. PROPFIND public/{category}/ -> grant(token, category) || grant(token, '') ? 200:toXml(items('public/'+category))
+    5. PROPFIND / -> grant(token, '') ? 200:toXml(categories()) //only return non-empty ones
+
+    6. PUT {category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 200 : 201):403 and set item(category, key) to the body contents
+    7. PUT public/{category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 200 : 201):403 and set item(category, key) to the body contents
+
+    8. DELETE {category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 410 : 404):403 and remove item(category, key)
+    9. DELETE public/{category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 410 : 404):403 and remove item(category, key)
+
+The 'couch' group consists of (note the public_ instead of public/ syntax in the HTTP commands):
+    1. GET {category}/{key} -> grant(token, category) ? (item(category, key) ? 200:item(category, key) : 404):403
+    2. GET public_{category}/{key} -> item('public/'+category, key) ? 200:item('public/'+category, key) : 404
+    
+    3. GET {category}/all_docs -> grant(token, category) || grant(token, '') ? 200:items(category)
+    4. GET public_{category}/all_docs -> grant(token, category) || grant(token, '') ? 200:items('public/'+category)
+    5. GET /all_dbs -> grant(token, '') ? 200:categories() //only return non-empty ones
+
+    6. PUT {category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 200 : 201):403, set item(category, key) to the body contents if it's a JSON hash, adding a new _rev field, and return that. if the object existed but _rev didn't match, return 409.
+    7. PUT public_{category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 200 : 201):403 and set item(category, key) to the body contents if it's a JSON hash, adding a new _rev field, and return that. if the object existed but _rev didn't match, return 409.
+
+    8. DELETE {category}/{key}?rev={rev} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 410 : 404):403 and remove item(category, key), or 409 if rev doesn't match.
+    9. DELETE public_{category}/{key}?rev={rev} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 410 : 404):403 and remove item(category, key), or 409 if rev doesn't match.
+
+== Conclusion ==
+
+It is up to the application, and beyond the scope of this specification, to implement end-to-end encryption on top of this, possibly using the Stanford Javascript Crypto Library, possibly in a WebWorker process. This text may be changed for clarity - its history is tracked by this wiki. However, the standard it describes was frozen on 31 April 2011. No superceding standard will be published until at least 9 September 2012, and this standard will not be deprecated until at least 9 September 2013.
+
