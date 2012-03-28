@@ -104,3 +104,7 @@ client.addListener('registered', function(message) {
     }, 60000);
   });
 });
+http.createServer(function(req, res) {
+  res.writeHead(200, {});
+  res.end('see #unhostedmonitor on freenode');
+}).listen(80);
