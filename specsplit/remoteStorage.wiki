@@ -95,77 +95,49 @@ baseAddress: a string, whose interpretation depends on API
 
 == APIs ==
 
-= webdav =
-
-* the server should implement WebDAV over https with CORS, and receive the token (if applicable) in an 'Authorization: Bearer '+token request header.
-* the HTTP method should be GET for getItem, PUT for setItem, DELETE for removeItem, and PROPFIND for listItems and listCategories.,
-* the path should be baseUrl '/' zone '/' category '/' key for getItem, setItem and removeItem
-* the path should be baseUrl '/' zone '/' category for listItems
-* for listCategories the client should do two PROPFIND request, and merge the results; one with path baseUrl '/private' and one with path baseUrl '/public'.
-* timeout will be conveyed as the HTTP request timing out
-* result will be conveyed by the HTTP status code in the response:
-  * 200 for 'success'
-  * 403 for 'access denied'
-  * 420 for 'back off'
-  * 500 for 'fail'
-
+TODO: make listCategories per zone, it's simpler to define for all implementations.
 
 = simple =
 
 * the server should implement WebDAV over https with CORS, and receive the token (if applicable) in an 'Authorization: Bearer '+token request header.
-* the HTTP method should be GET for getItem, PUT for setItem, DELETE for removeItem, and PROPFIND for listItems and listCategories.,
+* the HTTP method should be GET for getItem, PUT for setItem, DELETE for removeItem, and PROPFIND for listItems and listCategories.
 * the path should be baseUrl '/' zone '/' category '/' key for getItem, setItem and removeItem
-* the path should be baseUrl '/' zone '/' category for listItems
-* for listCategories the client should do two PROPFIND request, and merge the results; one with path baseUrl '/private' and one with path baseUrl '/public'.
+* the path should be baseUrl '/' zone '/' category '/' for listItems
+* for listCategories the client should do two GET request, and merge the results; one with path baseUrl '/private/' and one with path baseUrl '/public/'.
+* value argument in case of setItem will be the body of the PUT request.
+* timeout will be conveyed as the HTTP request timing out
+* result will be conveyed by the HTTP status code in the response:
+  * 200 for 'success'
+  * 403 for 'access denied'
+  * 413 for 'quota exceeded'
+  * 420 for 'back off'
+  * 500 for 'fail'
+* value in case of getItem will be the response body of the GET request.
+* array of strings for listItems and listCategories will be JSON-stringified with utf-8.
 
-As server details, a "href" link should always be announced. This should point to a https: address (or possibly a http: address if the service is not in production yet). The service should accept HTTP commands on this address, taking into account the 'Authorization: Bearer ...' header if present, and responding with CORS headers that will allow access via XMLHttpRequest from a client-side application.
+= webdav =
 
-== Server Caps ==
+* same as simple, except:
+* method for listItems and listCategories is 'PROPFIND'
+* array of strings for listItems and listCategories will be embedded inside an xml documents, as defined for WebDAV's PROPFIND method.
 
-The server should allow storing, retrieving, and deleting data items in categories. The server state can be describe by a table of currently stored items, (category, key) -> (value or undefined), plus a table of currently valid access grants, (token, category) -> (type or undefined). category, key, value, token, and category are all strings here. type can be 'read-only' or 'full'. category may be the empty string in the grants table, but not in the items table. HTTP commands without Authorization header will be treated as equivalent to sending the empty string as the bearer token.
+= couchdb =
 
-Caps are grouped into 3 groups: 'simple', 'webdav' and 'couchdb'.
-The 'simple' group consists of:
-    1. GET {category}/{key} -> grant(token, category) ? (item(category, key) ? 200:item(category, key) : 404):403
-    2. GET public/{category}/{key} -> item('public/'+category, key) ? 200:item('public/'+category, key) : 404
-    
-    3. GET {category}/ -> grant(token, category) || grant(token, '') ? 200:items(category)
-    4. GET public/{category}/ -> grant(token, category) || grant(token, '') ? 200:items('public/'+category)
-    5. GET / -> grant(token, '') ? 200:categories() //only return non-empty ones
+* same as simple, except:
+* path for listItems is baseUrl '/' zone '/' category '/all_docs'
+* path for listCategories is baseUrl '/' zone '/all_dbs'
+* the 'success' result for setItem includes a JSON-stringified hash table in the response body with a 'rev' field, whose value the client needs to store.
+* value argument in case of setItem is to be put inside a hash table as the 'value' field and JSON-stringified with utf-8. This hash table should also include the revision value as the '_rev' field.
+* if the client does not include a _rev field in the hash table for a setItem command, a 409 conflict response will result. To resolve this, the client can do a getItem to obtain the correct value to put in _rev.
+* the DELETE action has path baseUrl '/' zone '/' category '/' key '?rev=' rev
 
-    6. PUT {category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 200 : 201):403 and set item(category, key) to the body contents
-    7. PUT public/{category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 200 : 201):403 and set item(category, key) to the body contents
+== websocket ==
 
-    8. DELETE {category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 410 : 404):403 and remove item(category, key)
-    9. DELETE public/{category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 410 : 404):403 and remove item(category, key)
+* the server should expose a secure WebSocket interface on baseUrl. On here it should wait for JSON-stringified messages from the client of the form {command, args}, and send its response in a JSON-stringified message of the form {response}
 
-The 'webdav' group consists of:
-    1. GET {category}/{key} -> grant(token, category) ? (item(category, key) ? 200:item(category, key) : 404):403
-    2. GET public/{category}/{key} -> item('public/'+category, key) ? 200:item('public/'+category, key) : 404
-    
-    3. PROPFIND {category}/ -> grant(token, category) || grant(token, '') ? 200:toXml(items(category))
-    4. PROPFIND public/{category}/ -> grant(token, category) || grant(token, '') ? 200:toXml(items('public/'+category))
-    5. PROPFIND / -> grant(token, '') ? 200:toXml(categories()) //only return non-empty ones
+== sockjs ==
 
-    6. PUT {category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 200 : 201):403 and set item(category, key) to the body contents
-    7. PUT public/{category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 200 : 201):403 and set item(category, key) to the body contents
-
-    8. DELETE {category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 410 : 404):403 and remove item(category, key)
-    9. DELETE public/{category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 410 : 404):403 and remove item(category, key)
-
-The 'couch' group consists of (note the public_ instead of public/ syntax in the HTTP commands):
-    1. GET {category}/{key} -> grant(token, category) ? (item(category, key) ? 200:item(category, key) : 404):403
-    2. GET public_{category}/{key} -> item('public/'+category, key) ? 200:item('public/'+category, key) : 404
-    
-    3. GET {category}/all_docs -> grant(token, category) || grant(token, '') ? 200:items(category)
-    4. GET public_{category}/all_docs -> grant(token, category) || grant(token, '') ? 200:items('public/'+category)
-    5. GET /all_dbs -> grant(token, '') ? 200:categories() //only return non-empty ones
-
-    6. PUT {category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 200 : 201):403, set item(category, key) to the body contents if it's a JSON hash, adding a new _rev field, and return that. if the object existed but _rev didn't match, return 409.
-    7. PUT public_{category}/{key} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 200 : 201):403 and set item(category, key) to the body contents if it's a JSON hash, adding a new _rev field, and return that. if the object existed but _rev didn't match, return 409.
-
-    8. DELETE {category}/{key}?rev={rev} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item(category, key) ? 410 : 404):403 and remove item(category, key), or 409 if rev doesn't match.
-    9. DELETE public_{category}/{key}?rev={rev} -> grant(token, category)=='full' || grant(token, '')=='full' ? (item('public/'+category, key) ? 410 : 404):403 and remove item(category, key), or 409 if rev doesn't match.
+* in addition to exposing the websocket defined for the 'websocket' api, the sockjs api requires several fallback interfaces to be offered, as defined on sockjs.org. The goal of this is to give websocket-like functionality in user-agents or network environments that do not support the WebSocket protocol.
 
 == Conclusion ==
 
