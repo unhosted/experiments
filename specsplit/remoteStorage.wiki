@@ -5,7 +5,118 @@
 
 This spec describes the "remoteStorage-2012.04" service type for [core.wiki Personal Data Services].
 
-== Server Details ==
+== Functionality ==
+
+The server should maintain two tables: one with items, and one with grants.
+
+An item consists of a tuple (category, zone, key, value). There can only be zero or one items for any given combination of category, zone and key. Category, key and value should all be strings (TODO: choose between utf-8 as is common for web pages and utf-16 as is used in javascript and in localStorage). Value may be the empty string, but category and key may not. Zone can be either 'private' or 'public'.
+
+A grant is a tuple (token, scope), where token is a non-empty string, and scope can be one of ':read', ':full', category+':read', category+':full', for any string category. There may be any number of grants with a given token, and any number of grants with a given scope.
+
+== Interface towards the client ==
+
+The server should implement the following actions. Arguments called category, key, value, token should all be strings, and except for value they must all be non-empty. Arguments called zone should be either 'private' or 'public':
+
+* getPublicItem
+  arguments: category, key
+  returns: ('success', value) or result or timeout
+  Result in the second case can be one of 'not found', 'back off', 'fail'.
+  Effect: nothing
+
+  Rules for timeout and results 'back off' and 'fail' same as for getItem. Otherwise, 'not found' should be returned iff no item exists with said category, zone 'public' and key, and ('success', value) should be returned iff an item (category, 'public', key, value) exists.
+
+* getPrivateItem
+  arguments: category, key, token
+  returns: ('success', value) or result or timeout
+  Result in the second case can be one of 'not found', 'access denied', 'back off', 'fail'.
+  Effect: nothing
+
+  Rules for timeout and results 'back off' and 'fail' same as for setItem. Result 'access denied' should be returned unless a grant of either (token, ':read'), (token, ':full'), (token, category+':read') or (token, category+':full') exists. Otherwise, 'not found' should be returned iff no item exists with said category, and key, and zone 'private' and ('success', value) should be returned iff an item (category, 'private', key, value) exists.
+
+* setItem
+  arguments: category, zone, key, value, token
+  returns: result or timeout
+  Result can be one of 'success', 'access denied', 'back off', 'quota exceeded', 'fail'.
+  Effect iff result is 'success': afterwards, there will be an item (category, zone, key, value) in the items table, and no other item in there for this combination of category and key
+  Effect iff the request times out: said item might or might not have been created.
+  Effect in all other cases: nothing.
+
+  If the server is not able to complete the request, it may simply not respond. It is then up to the client to decide how long to wait before it concludes that the request has timed out, and to decide how to resolve the limbo situation that entails (probably retry, and inform the user if the request times out repeatedly). If the server cannot complete the request, but is able to send a 'fail' result, then it should do so. The server may define a maximum data capacity on either the total size of the items, or the total size of their values, or some similar measure, and if the action would exceed that capacity, reply with 'quota exceeded'. If it receives commands too frequently from the current client, or from a group of clients, it may respond with a 'back off' result. If none of these situations apply, then the response depends on the contents of the grants table.
+  If a grant exists for either (token, ':full') or (token, category+':full'), then the server should execute the command and respond with success. Otherwise, it should not execute the command, and respond with 'access denied'.
+
+* removeItem
+  arguments: category, zone, key, token
+  returns: result or timeout
+  Result can be one of 'success', 'access denied', 'back off', 'fail'.
+  Effect iff result is 'success': afterwards, no item with this category, zone and key will exist in the items table.
+  Effect iff times out: if there was such an item before, then it might or might not still be there
+  Effect otherwise: nothing
+
+  Rules for timeout and all results (except quota exceeded which is not applicable here) same as for setItem.
+
+* listItems
+  arguments: category, zone, token
+  returns: ('success', keys) or result or timeout
+  Result in the second case can be one of 'access denied', 'back off' or 'fail'.
+  Effect: nothing
+
+  Rules for timeout, back off and fail are the same as for setItem. Result 'access denied' should be returned unless a grant of either (token, ':read'), (token, ':full'), (token, category+':read') or (token, category+':full') exists, regardless of the zone. If the result is 'success', then keys should be an array of strings, being the keys of all items with that category and zone, regardless of their value.
+
+
+* listCategories
+  arguments: token
+  returns: ('success', categories) or result or timeout
+  Result in the second case can be one of 'access denied', 'back off' or 'fail'.
+  Effect: nothing
+
+  Rules for timeout, back off and fail are the same as for setItem. Result 'access denied' should be returned unless a grant of either (token, ':read'), (token, ':full') exists. If the result is 'success', then categories should be an array of strings, being at least all categories for which at least one item exists, regardless of its zone, key or value. Although this is not recommended, the server may add categories with zero items in them iff items or tokens with that category existed in the past.
+
+
+NOTE: i didn't add the 'subscribeItem,subscribeCategory,subscribe' actions here, and the corresponding subscribers table, as implemented by the CouchDB _changes feed, because i'm not sure it's useful to have optional caps. Multi-PUT might be useful to add as an optional capability, though...
+
+== Interface towards the auth&disco server ==
+
+The remoteStorage server should be pre-registered with a user's auth&disco server, with the following details:
+
+Service type: remoteStorage-2012.04
+Scopes and actions allowed for said category per scope, for category a non-empty utf-8 string:
+
+                   getItem(zone=='public') getItem(zone=='private') listItems setItem removeItem  listCategories
+----------------------------------------------------------------------------------------------------------------
+':full'               X                       X                        X         X       X           X
+category+':full'      X                       X                        X         X       X
+':read'               X                       X                        X                             X
+category+':read'      X                       X                        X
+null                  X
+
+
+API: one of: webdav,simple,couchdb,websocket,sockjs
+baseAddress: a string, whose interpretation depends on API
+
+== APIs ==
+
+= webdav =
+
+* the server should implement WebDAV over https with CORS, and receive the token (if applicable) in an 'Authorization: Bearer '+token request header.
+* the HTTP method should be GET for getItem, PUT for setItem, DELETE for removeItem, and PROPFIND for listItems and listCategories.,
+* the path should be baseUrl '/' zone '/' category '/' key for getItem, setItem and removeItem
+* the path should be baseUrl '/' zone '/' category for listItems
+* for listCategories the client should do two PROPFIND request, and merge the results; one with path baseUrl '/private' and one with path baseUrl '/public'.
+* timeout will be conveyed as the HTTP request timing out
+* result will be conveyed by the HTTP status code in the response:
+  * 200 for 'success'
+  * 403 for 'access denied'
+  * 420 for 'back off'
+  * 500 for 'fail'
+
+
+= simple =
+
+* the server should implement WebDAV over https with CORS, and receive the token (if applicable) in an 'Authorization: Bearer '+token request header.
+* the HTTP method should be GET for getItem, PUT for setItem, DELETE for removeItem, and PROPFIND for listItems and listCategories.,
+* the path should be baseUrl '/' zone '/' category '/' key for getItem, setItem and removeItem
+* the path should be baseUrl '/' zone '/' category for listItems
+* for listCategories the client should do two PROPFIND request, and merge the results; one with path baseUrl '/private' and one with path baseUrl '/public'.
 
 As server details, a "href" link should always be announced. This should point to a https: address (or possibly a http: address if the service is not in production yet). The service should accept HTTP commands on this address, taking into account the 'Authorization: Bearer ...' header if present, and responding with CORS headers that will allow access via XMLHttpRequest from a client-side application.
 
