@@ -53,10 +53,7 @@ client.addListener('registered', function(message) {
         statusCode: 201,
         dataStr: 'ok'
       }, function(err, data) {
-        if(err) {
-          reportError(data);
-        }
-        console.log(data);
+        reportError(data);
       });
     }
 
@@ -70,10 +67,7 @@ client.addListener('registered', function(message) {
         statusCode: 200,
         dataStr: str
       }, function(err, data) {
-        if(err) {
-          reportError(data);
-        }
-        console.log(data);
+        reportError(data);
       });
     }
 
@@ -87,10 +81,7 @@ client.addListener('registered', function(message) {
         statusCode: 200,
         dataStr: str
       }, function(err, data) {
-        if(err) {
-          reportError(data);
-        }
-        console.log(data);
+        reportError(data);
       });
     }
     function checkAll() {
@@ -103,7 +94,7 @@ client.addListener('registered', function(message) {
       checkHostMeta('5apps host-meta', '5apps.com', 'https://5apps.com/webfinger?q={uri}');
     }
     checkAll();
-    setInterval(checkAll, 600000);
+    setInterval(checkAll, 60000);
   });
 });
 http.createServer(function(req, res) {
