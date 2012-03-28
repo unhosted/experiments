@@ -76,10 +76,21 @@ NOTE: i didn't add the 'subscribeItem,subscribeCategory,subscribe' actions here,
 
 == Interface towards the auth&disco server ==
 
-The remoteStorage server should be pre-registered with a user's auth&disco server, with the following details:
+A remoteStorage server always belongs to one user (there may be any number of remoteStorage servers running on on physical server, but they should be agnostic of each other's existence). Given the api and baseUrl of a user's remoteStorage server, it should be pre-registered with the user's auth&disco server, with the following details:
 
-Service type: remoteStorage-2012.04
-Scopes and actions allowed for said category per scope, for category a non-empty utf-8 string:
+api: one of: webdav,simple,couchdb,websocket,sockjs
+baseAddress: a string, whose interpretation depends on API
+
+{
+  type: "remoteStorage-2012.04",
+  scopes: /.?:(read|full)/,
+  details: {
+    baseAddress: baseAddress,
+    api: api
+  }
+}
+
+Here is another overview of how actions allowed for a given category map to scopes, for category a non-empty utf-8 string where used:
 
                    getItem(zone=='public') getItem(zone=='private') listItems setItem removeItem  listCategories
 ----------------------------------------------------------------------------------------------------------------
@@ -90,8 +101,6 @@ category+':read'      X                       X                        X
 null                  X
 
 
-API: one of: webdav,simple,couchdb,websocket,sockjs
-baseAddress: a string, whose interpretation depends on API
 
 == APIs ==
 
