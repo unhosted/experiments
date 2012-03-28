@@ -3,13 +3,13 @@ var http = require('http'),
   sys = require('util'),
   irc = require('irc');
 
-var client = new irc.Client('irc.freenode.net', 'michbot', {
+var client = new irc.Client('irc.freenode.net', 'unhostedmonitor', {
   channels: ['#unhostedmonitor'],
 });
 client.addListener('registered', function(message) {
   console.log('registered: '+message);
 
-  client.join('#unhostedtest', function() {
+  client.join('#unhostedmonitor', function() {
     console.log('joined');
 
     function reportError(err) {
@@ -93,15 +93,17 @@ client.addListener('registered', function(message) {
         console.log(data);
       });
     }
-    setInterval(function() {
-      console.log('checking...');
+    function checkAll() {
+      reportError('checking...');
       checkStoreBearerToken('storeBearerToken 5apps', '{"userAddress":"michiel@5apps.com","bearerToken":"db2e83efc029a92e037f4c68bc59cf73"}');
       checkStoreBearerToken('storeBearerToken owncube', '{"userAddress":"michiel@owncube.com","bearerToken":"db2e83efc029a92e037f4c68bc59cf73"}');
       checkWebsite('unhosted.org main page', 'unhosted.org', 'Unhosted: personal data freedom');
       checkWebsite('libredocs.org main page', 'libredocs.org', 'liberate your ideas');
       checkHostMeta('OwnCube host-meta', 'owncube.com', 'template');
       checkHostMeta('5apps host-meta', '5apps.com', 'https://5apps.com/webfinger?q={uri}');
-    }, 60000);
+    }
+    checkAll();
+    setInterval(checkAll, 600000);
   });
 });
 http.createServer(function(req, res) {
