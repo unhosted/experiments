@@ -1,0 +1,133 @@
+<html>
+  <head>
+    <script>
+      function genBudgets() {
+        var ftVolBudgetBerlin = {
+          live: 1000,
+          health: 150,
+          desk: 150,
+          tax: 50
+        };
+        var ftVolBudgetStuttgart = {
+          live: 1500,
+          health: 150,
+          desk: 25,
+          tax: 75
+        };
+        var orgBudget = {
+          hosting: 1000,
+          travAccConf: 1000,
+          compCampPub: 500
+        };
+        var budgets = {};
+        for(var i=0; i<12; i++) {
+          budgets[i] = {
+            liveMich: ftVolBudgetBerlin.live,
+            liveJan: ftVolBudgetBerlin.live,
+            healthMich: ftVolBudgetBerlin.health,
+            healthJan: ftVolBudgetBerlin.health,
+            deskMich: ftVolBudgetBerlin.desk,
+            deskJan: ftVolBudgetBerlin.desk,
+            taxMich: ftVolBudgetBerlin.tax,
+            taxJan: ftVolBudgetBerlin.tax,
+            hosting: orgBudget.hosting / 12,
+            travAccConf: orgBudget.travAccConf / 12,
+            compCampPub: orgBudget.compCampPub / 12,
+            unhosted: 0,
+            BerlinerBank: 0,
+            paypal: 0,
+            nlnet: 0,
+            michiel: 0,
+            jan: 0
+          }
+          //adopt for Jan living outside Berlin May, Jun, Jul, Aug:
+          if (i >= 8) {
+            budgets[i].liveJan = ftVolBudgetStuttgart.live;
+            budgets[i].deskJan = ftVolBudgetStuttgart.desk;
+            budgets[i].taxJan = ftVolBudgetStuttgart.tax;
+          }
+        }
+        return budgets;
+      }
+      function getDeclarations() {
+        return [
+          {ower: 'compCampPub', owee: 'michiel', amount: 35, month: 0, note: '42 Unhost postcards to send with T-shirts (via Kenny): 42 * 20 CZK = 840 CZ'},
+          {ower: 'compCampPub', owee: 'michiel', amount: 80, month: 0, note: 'stamps for sending 27 T-shirt packages from Unhost: 1950 CZK'},
+          {ower: 'compCampPub', owee: 'michiel', amount: 44.30, month: 0, note: 'sending another 14 T-shirts: 2x Germany(1.45 EUR), 12x international(3.45 EUR)'},
+          {ower: 'compCampPub', owee: 'BerlinerBank', month: 0, note: 'days co-up Michiel sept', amount: 95},
+          {ower: 'unhosted', owee: 'michiel', month: 0, note: 'year one expenses excl. Krankenkasse Michiel', amount: 4613.82},
+          {ower: 'michiel', owee: 'paypal', month: 0, note: 'transaction to comdirect', amount: 4042},
+          {ower: 'compCampPub', owee: 'michiel', month: 0, note: 'sdw prints', amount: 4.50},
+          {ower: 'compCampPub', owee: 'michiel', month: 0, note: 'sdw (TODO: check exact amount)', amount: 130},
+          {ower: 'compCampPub', owee: 'michiel', month: 0, note: 'sending T-shirts (3rd batch)', amount: 40.15},
+          {ower: 'travAccConf', owee: 'michiel', month: 0, note: 'paid 185,75 in train tickets, of which 89,25 will be paid back through Jan, and 38,50 is a donation from Michiel to DS11', amount: 185.75-89.25-38.50},
+          {ower: 'jan', owee: 'michiel', month: 0, note: 'paid 185,75 in train tickets, of which 89,25 will be paid back through Jan, and 38,50 is a donation from Michiel to DS11', amount: 89.25},
+          {ower: 'hosting', owee: 'michiel', month: 0, note: '5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661', amount: 19.73},
+          {ower: 'hosting', owee: 'michiel', month: 0, note: 'TODO: check why there are two payments with the same concept here', amount: 12.43},
+          {ower: 'travAccConf', owee: 'michiel', month: 0, note: '9-9-2011 28-9-2011 (Liquidado) Pago en T-MOBILE CZECH REPUBLIK BONN', amount: 24.59},
+          {ower: 'hosting', owee: 'michiel', month: 1, note: '03/10/2011 THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos)', amount: 20.28},
+          {ower: 'hosting', owee: 'michiel', month: 1, note: '20/10/2011 GODADDY.COM EUROPE (02079792661 - Reino Unido)', amount: 7.50},
+          {ower: 'michiel', owee: 'nlnet', month: 2, note: 'received bank transfer', amount: 2800},
+          {ower: 'hosting', owee: 'michiel', month: 2, note: 'mozfest (apart from travel to UK which was already in there)', amount: 32.76},
+          {ower: 'hosting', owee: 'michiel', month: 2, note: '', amount: },
+          {ower: 'hosting', owee: 'michiel', month: 2, note: '', amount: },
+          {ower: 'hosting', owee: 'michiel', month: 2, note: '', amount: },
+          {ower: 'hosting', owee: 'michiel', month: 2, note: '', amount: },
+          {
+        ];
+      }
+      function genSpents() {
+        var spents = {};
+        for(var i=0; i < 12; i++) {
+          spents[i] = {
+            liveMich: 1000,
+            liveJan: 1000,
+            healthMich: 0,
+            healthJan: 0,
+            deskMich: 0,
+            deskJan: 0,
+            taxMich: 0,
+            taxJan: 0,
+            hosting: 0,
+            travAccConf: 0,
+            compCampPub: 0
+          }
+          //adopt for Jan living outside Berlin May, Jun, Jul, Aug:
+          if (i >= 8) {
+            spents[i].liveJan = 1500;
+          }
+        }
+        var declarations = getDeclarations();
+        for(var i=0; i < declarations.length; i++) {
+          spents[declarations[i].month][declarations[i].ower] += declarations[i].amount;
+        }
+        return spents;
+      }
+      function onLoad() {
+        var budgets = genBudgets();
+        var spents = genSpents();
+        var str = '<table border="1"><tr><td>month</td>';
+        for(var j in budgets[0]) {
+          str+='<td>'+j+'</td>';
+        }
+        str += '<td>total</td></tr>';
+        var months = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
+        for(var i=0; i<12; i++) {
+          str += '<tr><td>'+months[i]+'</td>';
+          var totalB=0, totalS=0;
+          for(var j in budgets[i]) {
+            str += '<td>'+spents[i][j]+' of '+budgets[i][j]+'</td>';
+            totalB += budgets[i][j];
+            totalS += spents[i][j];
+          }
+          str += '<td>'+totalS+' of '+totalB+'</td><tr>';
+        }
+        str += '</table>';
+        document.getElementById('output').innerHTML = str;
+      }
+    </script>
+  </head>
+  <body onload="onLoad();">
+    <div id="output"></div>
+  </body>
+</html>
