@@ -52,7 +52,7 @@
         return budgets;
       }
       function getDeclarations() {
-        return [
+        var declarations = [
           {ower: 'paypal', owee: 'unhosted', month: 0, note: 'donations received from crowd funding campaign', amount: 4042},
           {ower: 'nlnet', owee: 'unhosted', month: 1, note: 'donatin linked to milestone A', amount: 5000},
           {ower: 'nlnet', owee: 'unhosted', month: 3, note: 'donatin linked to milestone B', amount: 5000},
@@ -133,19 +133,28 @@
           {ower: 'healthJan', owee: 'jan', month: 10, note: 'health insurance june (July 15)', amount: 221.15},
           {ower: 'healthJan', owee: 'jan', month: 11, note: 'health insurance july (Aug 15)', amount: 221.15},
           {ower: 'healthJan', owee: 'jan', month: 11, note: 'health insurance aug (Sep 15)', amount: 221.15}
-          
-          
-          
           //0:sep 1:oct 2:nov 3:dec 4:jan 5:feb 6:mar 7:apr 
-        ];
           //{ower: 'hosting', owee: 'michiel', month: 5, note: '', amount: },
+        ];
+        for(var i=0; i < 12; i++) {
+          declarations.push({ower: 'liveMich', owee: 'michiel', month: i, note: 'living expenses Michiel (based on Berlin)', amount: 1000});
+          declarations.push({ower: 'liveJan', owee: 'jan', month: i, note: 'living expenses Jan (based on '+(i>8?'living outside ':'')+'Berlin)', amount: (i>8?1500:1000)});
+        }
+        //predict nlnet payments:
+        declarations.push({ower: 'michiel', owee: 'nlnet', month: 8, note: 'predicted payment milestone D', amount: 2500});
+        declarations.push({ower: 'jan', owee: 'nlnet', month: 8, note: 'predicted payment milestone D', amount: 2500});
+        declarations.push({ower: 'michiel', owee: 'nlnet', month: 10, note: 'predicted payment milestone E', amount: 2500});
+        declarations.push({ower: 'jan', owee: 'nlnet', month: 10, note: 'predicted payment milestone E', amount: 2500});
+        declarations.push({ower: 'michiel', owee: 'nlnet', month: 11, note: 'predicted payment milestone F', amount: 2500});
+        declarations.push({ower: 'jan', owee: 'nlnet', month: 11, note: 'predicted payment milestone F', amount: 2500});
+        return declarations;
       }
       function genSpents() {
         var spents = {};
         for(var i=0; i < 12; i++) {
           spents[i] = {
-            liveMich: 1000,
-            liveJan: 1000,
+            liveMich: 0,
+            liveJan: 0,
             healthMich: 0,
             healthJan: 0,
             deskMich: 0,
@@ -157,10 +166,6 @@
             compCampPub: 0,
             unhosted: 0, nlnet: 0, surfnet: 0, michiel: 0, jan: 0, paypal: 0, berlinerbank: 0
           }
-          //adopt for Jan living outside Berlin Jun, Jul, Aug:
-          if (i >= 9) {
-            spents[i].liveJan = 1500;
-          }
         }
         var declarations = getDeclarations();
         for(var i=0; i < declarations.length; i++) {
@@ -168,27 +173,55 @@
         }
         return spents;
       }
-      function onLoad() {
-        var budgets = genBudgets();
-        var spents = genSpents();
-        var str = '<table border="1"><tr><td>month</td>';
-        for(var j in budgets[0]) {
-          str+='<td>'+j+'</td>';
-        }
-        str += '<td>total</td></tr>';
-        var months = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
-        for(var i=0; i<12; i++) {
-          str += '<tr><td>'+months[i]+'</td>';
-          var totalB=0, totalS=0;
-          for(var j in budgets[i]) {
-            str += '<td>'+spents[i][j]+' of '+budgets[i][j]+'</td>';
-            totalB += budgets[i][j];
-            totalS += spents[i][j];
+      function displayTab(person) {
+        var str = '<table border="1"><tr><td>peer</td><td>note</td><td>amount</td><td>cumm</td></tr>';
+        var declarations = getDeclarations();
+        var cumm = 0;
+        for(var i=0; i<declarations.length; i++) {
+          if(declarations[i].ower == person) {
+            cumm += declarations[i].amount;
+            str += '<tr><td>'+declarations[i].owee
+              +'</td><td>'+declarations[i].note
+              +'</td><td>'+declarations[i].amount
+              +'</td><td>'+cumm
+              +'</td></tr>';
+          } else if(declarations[i].owee == person) {
+            cumm -= declarations[i].amount;
+            str += '<tr><td>'+declarations[i].ower
+              +'</td><td>'+declarations[i].note
+              +'</td><td>'+(0-declarations[i].amount)
+              +'</td><td>'+cumm
+              +'</td></tr>';
           }
-          str += '<td>'+totalS+' of '+totalB+'</td><tr>';
         }
         str += '</table>';
         document.getElementById('output').innerHTML = str;
+      }
+      function onLoad() {
+        if(location.hash.length) {
+          displayTab(location.hash.substring(1));
+        } else {
+          var budgets = genBudgets();
+          var spents = genSpents();
+          var str = '<table border="1"><tr><td>month</td>';
+          for(var j in budgets[0]) {
+            str+='<td>'+j+'</td>';
+          }
+          str += '<td>total</td></tr>';
+          var months = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
+          for(var i=0; i<12; i++) {
+            str += '<tr><td>'+months[i]+'</td>';
+            var totalB=0, totalS=0;
+            for(var j in budgets[i]) {
+              str += '<td>'+spents[i][j]+' of '+budgets[i][j]+'</td>';
+              totalB += budgets[i][j];
+              totalS += spents[i][j];
+            }
+            str += '<td>'+totalS+' of '+totalB+'</td><tr>';
+          }
+          str += '</table>';
+          document.getElementById('output').innerHTML = str;
+        }
       }
     </script>
   </head>
