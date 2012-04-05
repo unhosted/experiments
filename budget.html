@@ -38,6 +38,7 @@
             BerlinerBank: 0,
             paypal: 0,
             nlnet: 0,
+            surfnet: 0,
             michiel: 0,
             jan: 0
           }
@@ -52,6 +53,13 @@
       }
       function getDeclarations() {
         return [
+          {ower: 'paypal', owee: 'unhosted', month: 0, note: 'donations received from crowd funding campaign', amount: 4042},
+          {ower: 'nlnet', owee: 'unhosted', month: 1, note: 'donatin linked to milestone A', amount: 5000},
+          {ower: 'nlnet', owee: 'unhosted', month: 3, note: 'donatin linked to milestone B', amount: 5000},
+          {ower: 'nlnet', owee: 'unhosted', month: 5, note: 'donatin linked to milestone C', amount: 5000},
+          {ower: 'nlnet', owee: 'unhosted', month: 7, note: 'donatin linked to milestone D', amount: 5000},
+          {ower: 'nlnet', owee: 'unhosted', month: 9, note: 'donatin linked to milestone E', amount: 5000},
+          {ower: 'nlnet', owee: 'unhosted', month: 11, note: 'donatin linked to milestone F', amount: 5000},
           {ower: 'compCampPub', owee: 'michiel', amount: 35, month: 0, note: '42 Unhost postcards to send with T-shirts (via Kenny): 42 * 20 CZK = 840 CZ'},
           {ower: 'compCampPub', owee: 'michiel', amount: 80, month: 0, note: 'stamps for sending 27 T-shirt packages from Unhost: 1950 CZK'},
           {ower: 'compCampPub', owee: 'michiel', amount: 44.30, month: 0, note: 'sending another 14 T-shirts: 2x Germany(1.45 EUR), 12x international(3.45 EUR)'},
@@ -69,13 +77,35 @@
           {ower: 'hosting', owee: 'michiel', month: 1, note: '03/10/2011 THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos)', amount: 20.28},
           {ower: 'hosting', owee: 'michiel', month: 1, note: '20/10/2011 GODADDY.COM EUROPE (02079792661 - Reino Unido)', amount: 7.50},
           {ower: 'michiel', owee: 'nlnet', month: 2, note: 'received bank transfer', amount: 2800},
-          {ower: 'hosting', owee: 'michiel', month: 2, note: 'mozfest (apart from travel to UK which was already in there)', amount: 32.76},
-          {ower: 'hosting', owee: 'michiel', month: 2, note: '', amount: },
-          {ower: 'hosting', owee: 'michiel', month: 2, note: '', amount: },
-          {ower: 'hosting', owee: 'michiel', month: 2, note: '', amount: },
-          {ower: 'hosting', owee: 'michiel', month: 2, note: '', amount: },
-          {
+          {ower: 'travAccConf', owee: 'michiel', month: 2, note: 'mozfest (apart from travel to UK which was already in there)', amount: 32.76},
+          {ower: 'surfnet', owee: 'michiel', month: 2, note: 'visit to surfnet was 12+9+2 = 21 eur by train', amount: 21},
+          {ower: 'travAccConf', owee: 'michiel', month: 2, note: 'train govcert -> bearstech', amount: 47},
+          {ower: 'hosting', owee: 'michiel', month: 2, note: 'rackspace 2 nov', amount: 20.69},
+          {ower: 'hosting', owee: 'michiel', month: 3, note: 'rackspace 2 dec', amount: 23.91},
+          {ower: 'michiel', owee: 'nlnet', month: 4, note: 'received bank transfer', amount: 2500},
+          {ower: 'healthMich', owee: 'michiel', month: 4, note: 'zekur health insurance (10-11-2011..29-02-2012)', amount: 265.15},
+          {ower: 'hosting', owee: 'michiel', month: 4, note: 'rackspace 3 jan', amount: 19.12},
+          {ower: 'travAccConf', owee: 'michiel', month: 5, note: 'hostal FOSDEM', amount: 58.50},
+          {ower: 'travAccConf', owee: 'michiel', month: 5, note: 'tram in Brussels 2+2+3.50', amount: 2+2+3.50},
+          {ower: 'travAccConf', owee: 'michiel', month: 5, note: 'train BXL->NL', amount: 35.70},
+          {ower: 'surfnet', owee: 'michiel', month: 5, note: 'train+bus Terena 8+2', amount:8+2},
+          {ower: 'surfnet', owee: 'michiel', month: 5, note: 'train -> Deventer', amount: 15.80},
+          {ower: 'surfnet', owee: 'michiel', month: 5, note: 'train+bus Deventer -> Den Haag', amount: 15.20+2},
+          
+          {ower: 'michiel', owee: 'nlnet', month: 6, note: 'received bank transfer 3 Mar', amount: 2000},
+          {ower: 'michiel', owee: 'paypal', month: 5, note: 'received bank transfer -> comdirect 17 feb', amount: 740},
+          {ower: 'michiel', owee: 'paypal', month: 6, note: 'received bank transfer -> comdirect 8 mar', amount: 690},
+          {ower: 'hosting', owee: 'michiel', month: 5, note: 'rackspace 3 feb', amount: 11.07},
+          {ower: 'hosting', owee: 'michiel', month: 5, note: '29/02/2012  Pendiente de liquidar   Pago en GODADDY.COM EUROPE 02079792661', amount: 11.44},
+          {ower: 'hosting', owee: 'michiel', month: 5, note: '03/03/2012  Pendiente de liquidar   Pago en THE RACKSPACE CLOUD 210-581-0410', amount: 11.63},
+          {ower: 'nlnet', owee: 'michiel', month: 5, note: '12/03/2012  Pendiente de liquidar   Pago en VUELING AIRLINES EL PRAT DE LL', amount: 79.49}
+          
+          //0:sep 1:oct 2:nov 3:dec 4:jan 5:feb 6:mar 7:apr 
+          {ower: 'jan', owee: 'nlnet', month: 2, note: 'received bank transfer 2 Nov', amount: 2200},
+          {ower: 'jan', owee: 'nlnet', month: 4, note: 'received bank transfer 2 Jan', amount: 2500},
+          {ower: 'jan', owee: 'nlnet', month: 6, note: 'received bank transfer 2 Mar', amount: 3000}
         ];
+          //{ower: 'hosting', owee: 'michiel', month: 5, note: '', amount: },
       }
       function genSpents() {
         var spents = {};
