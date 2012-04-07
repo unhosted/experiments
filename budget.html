@@ -150,28 +150,45 @@
         return declarations;
       }
       var data = {};
-      function simulateMessage(from, to, msg) {
+      function simulateMessage(from, to, timestamp, msg) {
         if(!data[from]) {
-          data[from] = {in: {}, out: {}};
+          data[from] = {};
         }
         if(!data[to]) {
-          data[to] = {in: {}, out: {}};
+          data[to] = {};
         }
-        if(!data[from].out[to]) {
-          data[from].out[to]=[];
+        if(!data[from][to]) {
+          data[from][to]={};
         }
-        if(!data[to].in[from]) {
-          data[to].in[from]=[];
+        if(!data[to][from]) {
+          data[to][from]={};
         }
-        data[from].out[to].push(msg);
-        data[to].in[from].push(msg);
+        while(data[from][to][timestamp]) {
+          timestamp++;
+        }
+        data[from][to][timestamp]= {
+          tags: ['sent'],
+          msg: msg,
+          from: from
+          to: to
+        };
+        while(data[to][from][timestamp]) {
+          timestamp++;
+        }
+        data[to][from][timestamp]={
+          tags: ['inbox'],
+          msg: msg,
+          from: from
+          to: to
+        };
       }
       function simulateMessages() {
         var monthName = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
         var budgets = genBudgets();
         for(var i in budgets) {
+          var monthStart = new Date('9 9 2012').getTime() + i * 2635200000;
           for(var j in budgets[i]) {
-            simulateMessage('budget@unhosted.org', j+'@unhosted.org', JSON.stringify({
+            simulateMessage('budget@unhosted.org', j+'@unhosted.org', monthStart, JSON.stringify({
               subject: 'budget assignment',
               recipients: [j+'@unhosted.org'],
               body: 'The board of Unhosted e.V. hereby confirm that we have set the "'+j+'" budget for '+monthName[i]
@@ -192,7 +209,8 @@
         }
         var declarations = getDeclarations();
         for(var i=0; i<declarations.length; i++) {
-          simulateMessage(declarations[i].owee+'@unhosted.org', declarations[i].ower+'@unhosted.org', JSON.stringify({
+          var monthEnd = new Date('9 9 2012').getTime() + declarations[i].month * 2635200000;
+          simulateMessage(declarations[i].owee+'@unhosted.org', declarations[i].ower+'@unhosted.org', monthEnd, JSON.stringify({
             subject: 'declaration',
             recipients: [declarations[i].ower+'@unhosted.org'],
             body: 'Please reimburse me ('+declarations[i].owee+') '
@@ -212,39 +230,31 @@
       }
       function displayTab(person) {
         var str = '<table border="1"><tr><td>peer</td><td>note</td><td>amount</td><td>cumm</td></tr>';
-        var IOUs = [];
-        //scan the person's ingoing messages for attached IOUs
-        for(var i in data[person].in) {
-          for(var j in data[person].in[i]) {
-            var msg = JSON.parse(data[person].in[i][j]);
+        var IOUs = {};
+        //scan the person's messages for attached IOUs
+        for(var i in data[person]) {
+          for(var j in data[person][i]) {
+            var msg = JSON.parse(data[person][i][j]);
             if(msg.IOU) {
-              IOUs.push(msg.IOU);
+              IOUs[j]=msg.IOU;
             }
           }
         }
-        //scan the person's outgoing messages for attached IOUs
-        for(var i in data[person].out) {
-          for(var j in data[person].out[i]) {
-            var msg = JSON.parse(data[person].out[i][j]);
-            if(msg.IOU) {
-              IOUs.push(msg.IOU);
-            }
-          }
-        }
+        var timestamps = array_keys(IOUs).sort();
         var cumm = 0;
-        for(var i=0; i<IOUs.length; i++) {
-          if(IOUs[i].ower == person) {
-            cumm += IOUs[i].amount;
-            str += '<tr><td>'+IOUs[i].owee
-              +'</td><td>'+IOUs[i].note
-              +'</td><td>'+IOUs[i].amount
+        for(var i=timestamps.length-1; i>=0; i--) {
+          if(IOUs[timestamps[i]].ower == person) {
+            cumm += IOUs[timestamps[i]].amount;
+            str += '<tr><td>'+IOUs[timestamps[i]].owee
+              +'</td><td>'+IOUs[timestamps[i]].note
+              +'</td><td>'+IOUs[timestamps[i]].amount
               +'</td><td>'+cumm
               +'</td></tr>';
-          } else if(IOUs[i].owee == person) {
-            cumm -= IOUs[i].amount;
-            str += '<tr><td>'+IOUs[i].ower
-              +'</td><td>'+IOUs[i].note
-              +'</td><td>'+(0-IOUs[i].amount)
+          } else if(IOUs[timestamps[i]].owee == person) {
+            cumm -= IOUs[timestamps[i]].amount;
+            str += '<tr><td>'+IOUs[timestamps[i]].ower
+              +'</td><td>'+IOUs[timestamps[i]].note
+              +'</td><td>'+(0-IOUs[timestamps[i]].amount)
               +'</td><td>'+cumm
               +'</td></tr>';
           }
