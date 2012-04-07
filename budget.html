@@ -42,17 +42,18 @@
             budgets[i].taxJan = ftVolBudgetStuttgart.tax;
           }
         }
+        budgets[0].unhosted = 4613.82;
         return budgets;
       }
       function getDeclarations() {
         var declarations = [
-          {ower: 'paypal', owee: 'unhosted', month: 0, note: 'donations received from crowd funding campaign', amount: 4042},
-          {ower: 'nlnet', owee: 'unhosted', month: 1, note: 'donatin linked to milestone A', amount: 5000},
-          {ower: 'nlnet', owee: 'unhosted', month: 3, note: 'donatin linked to milestone B', amount: 5000},
-          {ower: 'nlnet', owee: 'unhosted', month: 5, note: 'donatin linked to milestone C', amount: 5000},
-          {ower: 'nlnet', owee: 'unhosted', month: 7, note: 'donatin linked to milestone D', amount: 5000},
-          {ower: 'nlnet', owee: 'unhosted', month: 9, note: 'donatin linked to milestone E', amount: 5000},
-          {ower: 'nlnet', owee: 'unhosted', month: 11, note: 'donatin linked to milestone F', amount: 5000},
+          {ower: 'paypal', owee: 'budget', month: 0, note: 'donations received from crowd funding campaign', amount: 4042},
+          {ower: 'nlnet', owee: 'budget', month: 1, note: 'donation linked to milestone A', amount: 5000},
+          {ower: 'nlnet', owee: 'budget', month: 3, note: 'donation linked to milestone B', amount: 5000},
+          {ower: 'nlnet', owee: 'budget', month: 5, note: 'donation linked to milestone C', amount: 5000},
+          {ower: 'nlnet', owee: 'budget', month: 7, note: 'donation linked to milestone D', amount: 5000},
+          {ower: 'nlnet', owee: 'budget', month: 9, note: 'donation linked to milestone E', amount: 5000},
+          {ower: 'nlnet', owee: 'budget', month: 11, note: 'donation linked to milestone F', amount: 5000},
           {ower: 'compCampPub', owee: 'michiel', amount: 35, month: 0, note: '42 Unhost postcards to send with T-shirts (via Kenny): 42 * 20 CZK = 840 CZ'},
           {ower: 'compCampPub', owee: 'michiel', amount: 80, month: 0, note: 'stamps for sending 27 T-shirt packages from Unhost: 1950 CZK'},
           {ower: 'compCampPub', owee: 'michiel', amount: 44.30, month: 0, note: 'sending another 14 T-shirts: 2x Germany(1.45 EUR), 12x international(3.45 EUR)'},
