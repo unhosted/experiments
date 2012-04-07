@@ -169,7 +169,7 @@
       function simulateMessages() {
         var monthName = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
         var budgets = genBudgets();
-        for(var i=0; i<budgets.length; i++) {
+        for(var i in budgets) {
           for(var j in budgets[i]) {
             simulateMessage('budget@unhosted.org', j+'@unhosted.org', JSON.stringify({
               subject: 'budget assignment',
@@ -180,7 +180,12 @@
               +'If we spend more than the budget on '+j+' during that '+monthName[i]+', then we have to think why that was, and issue a separate decision with its '
               +'own IOU to route the money.',
               IOU: {
-                ower: 'budget@unhosted.org'
+                ower: 'budget@unhosted.org',
+                owee: j+'@unhosted.org',
+                amount: budgets[i][j],
+                currency: 'EUR',
+                note: budgets[i][j].note,
+                signatures: ['The general meeting of Unhosted e.V, in the #unhosted IRC channel on freenode, 9 September 2011.']
               }
             }));
           }
@@ -193,30 +198,53 @@
             body: 'Please reimburse me ('+declarations[i].owee+') '
               +declarations[i].amount+' euros for the following costs I made in '
               +monthName[declarations[i].month]+':'
-              +declarations[i].note
-            })
-          );
+              +declarations[i].note,
+            IOU: {
+              ower: declarations[i].ower+'@unhosted.org',
+              owee: declarations[i].owee+'@unhosted.org',
+              amount: declarations[i].amount,
+              currency: 'EUR',
+              note: declarations[i].note,
+              signatures: [declarations[i].owee+'@unhosted.org']
+            }
+          }));
         }
       }
       function displayTab(person) {
-        simulateMessages();
-        console.log(data);
         var str = '<table border="1"><tr><td>peer</td><td>note</td><td>amount</td><td>cumm</td></tr>';
-        var declarations = getDeclarations();
+        var IOUs = [];
+        //scan the person's ingoing messages for attached IOUs
+        for(var i in data[person].in) {
+          for(var j in data[person].in[i]) {
+            var msg = JSON.parse(data[person].in[i][j]);
+            if(msg.IOU) {
+              IOUs.push(msg.IOU);
+            }
+          }
+        }
+        //scan the person's outgoing messages for attached IOUs
+        for(var i in data[person].out) {
+          for(var j in data[person].out[i]) {
+            var msg = JSON.parse(data[person].out[i][j]);
+            if(msg.IOU) {
+              IOUs.push(msg.IOU);
+            }
+          }
+        }
         var cumm = 0;
-        for(var i=0; i<declarations.length; i++) {
-          if(declarations[i].ower == person) {
-            cumm += declarations[i].amount;
-            str += '<tr><td>'+declarations[i].owee
-              +'</td><td>'+declarations[i].note
-              +'</td><td>'+declarations[i].amount
+        for(var i=0; i<IOUs.length; i++) {
+          if(IOUs[i].ower == person) {
+            cumm += IOUs[i].amount;
+            str += '<tr><td>'+IOUs[i].owee
+              +'</td><td>'+IOUs[i].note
+              +'</td><td>'+IOUs[i].amount
               +'</td><td>'+cumm
               +'</td></tr>';
-          } else if(declarations[i].owee == person) {
-            cumm -= declarations[i].amount;
-            str += '<tr><td>'+declarations[i].ower
-              +'</td><td>'+declarations[i].note
-              +'</td><td>'+(0-declarations[i].amount)
+          } else if(IOUs[i].owee == person) {
+            cumm -= IOUs[i].amount;
+            str += '<tr><td>'+IOUs[i].ower
+              +'</td><td>'+IOUs[i].note
+              +'</td><td>'+(0-IOUs[i].amount)
               +'</td><td>'+cumm
               +'</td></tr>';
           }
@@ -227,34 +255,19 @@
       function onLoad() {
         simulateMessages();
         console.log(data);
+        var str = '';
+        for(var i in data) {
+          str += '<a href="?#'+i+'" onclick="displayTab(\''+i+'\');">'+i+'</a>&nbsp;';
+        }
+        document.getElementById('navbar').innerHTML = str;
         if(location.hash.length) {
           displayTab(location.hash.substring(1));
-        } else {
-          var budgets = genBudgets();
-          var spents = genSpents();
-          var str = '<table border="1"><tr><td>month</td>';
-          for(var j in budgets[0]) {
-            str+='<td>'+j+'</td>';
-          }
-          str += '<td>total</td></tr>';
-          var monthName = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
-          for(var i=0; i<12; i++) {
-            str += '<tr><td>'+months[i]+'</td>';
-            var totalB=0, totalS=0;
-            for(var j in budgets[i]) {
-              str += '<td>'+spents[i][j]+' of '+budgets[i][j]+'</td>';
-              totalB += budgets[i][j];
-              totalS += spents[i][j];
-            }
-            str += '<td>'+totalS+' of '+totalB+'</td><tr>';
-          }
-          str += '</table>';
-          document.getElementById('output').innerHTML = str;
         }
       }
     </script>
   </head>
   <body onload="onLoad();">
+    <div id="navbar"></div>
     <div id="output"></div>
   </body>
 </html>
