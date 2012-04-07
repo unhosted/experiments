@@ -63,7 +63,7 @@
           {ower: 'compCampPub', owee: 'michiel', amount: 35, month: 0, note: '42 Unhost postcards to send with T-shirts (via Kenny): 42 * 20 CZK = 840 CZ'},
           {ower: 'compCampPub', owee: 'michiel', amount: 80, month: 0, note: 'stamps for sending 27 T-shirt packages from Unhost: 1950 CZK'},
           {ower: 'compCampPub', owee: 'michiel', amount: 44.30, month: 0, note: 'sending another 14 T-shirts: 2x Germany(1.45 EUR), 12x international(3.45 EUR)'},
-          {ower: 'deskMich', owee: 'BerlinerBank', month: 0, note: 'days co-up Michiel sept', amount: 95},
+          {ower: 'deskMich', owee: 'berlinerbank', month: 0, note: 'days co-up Michiel sept', amount: 95},
           {ower: 'unhosted', owee: 'michiel', month: 0, note: 'year one expenses excl. Krankenkasse Michiel', amount: 4613.82},
           {ower: 'michiel', owee: 'paypal', month: 0, note: 'transaction to comdirect', amount: 4042},
           {ower: 'compCampPub', owee: 'michiel', month: 0, note: 'sdw prints', amount: 4.50},
@@ -149,31 +149,58 @@
         declarations.push({ower: 'jan', owee: 'nlnet', month: 11, note: 'predicted payment milestone F', amount: 2500});
         return declarations;
       }
-      function genSpents() {
-        var spents = {};
-        for(var i=0; i < 12; i++) {
-          spents[i] = {
-            liveMich: 0,
-            liveJan: 0,
-            healthMich: 0,
-            healthJan: 0,
-            deskMich: 0,
-            deskJan: 0,
-            taxMich: 0,
-            taxJan: 0,
-            hosting: 0,
-            travAccConf: 0,
-            compCampPub: 0,
-            unhosted: 0, nlnet: 0, surfnet: 0, michiel: 0, jan: 0, paypal: 0, berlinerbank: 0
+      var data = {};
+      function simulateMessage(from, to, msg) {
+        if(!data[from]) {
+          data[from] = {in: {}, out: {}};
+        }
+        if(!data[to]) {
+          data[to] = {in: {}, out: {}};
+        }
+        if(!data[from].out[to]) {
+          data[from].out[to]=[];
+        }
+        if(!data[to].in[from]) {
+          data[to].in[from]=[];
+        }
+        data[from].out[to].push(msg);
+        data[to].in[from].push(msg);
+      }
+      function simulateMessages() {
+        var monthName = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
+        var budgets = genBudgets();
+        for(var i=0; i<budgets.length; i++) {
+          for(var j in budgets[i]) {
+            simulateMessage('budget@unhosted.org', j+'@unhosted.org', JSON.stringify({
+              subject: 'budget assignment',
+              recipients: [j+'@unhosted.org'],
+              body: 'The board of Unhosted e.V. hereby confirm that we have set the "'+j+'" budget for '+monthName[i]
+              +' to '+budgets[i][j]+' euros. This doesn\'t mean we have to spend that money. '
+              +'If we do spend this money, then we can use the attached IOU to route the payment. '
+              +'If we spend more than the budget on '+j+' during that '+monthName[i]+', then we have to think why that was, and issue a separate decision with its '
+              +'own IOU to route the money.',
+              IOU: {
+                ower: 'budget@unhosted.org'
+              }
+            }));
           }
         }
         var declarations = getDeclarations();
-        for(var i=0; i < declarations.length; i++) {
-          spents[declarations[i].month][declarations[i].ower] += declarations[i].amount;
+        for(var i=0; i<declarations.length; i++) {
+          simulateMessage(declarations[i].owee+'@unhosted.org', declarations[i].ower+'@unhosted.org', JSON.stringify({
+            subject: 'declaration',
+            recipients: [declarations[i].ower+'@unhosted.org'],
+            body: 'Please reimburse me ('+declarations[i].owee+') '
+              +declarations[i].amount+' euros for the following costs I made in '
+              +monthName[declarations[i].month]+':'
+              +declarations[i].note
+            })
+          );
         }
-        return spents;
       }
       function displayTab(person) {
+        simulateMessages();
+        console.log(data);
         var str = '<table border="1"><tr><td>peer</td><td>note</td><td>amount</td><td>cumm</td></tr>';
         var declarations = getDeclarations();
         var cumm = 0;
@@ -198,6 +225,8 @@
         document.getElementById('output').innerHTML = str;
       }
       function onLoad() {
+        simulateMessages();
+        console.log(data);
         if(location.hash.length) {
           displayTab(location.hash.substring(1));
         } else {
@@ -208,7 +237,7 @@
             str+='<td>'+j+'</td>';
           }
           str += '<td>total</td></tr>';
-          var months = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
+          var monthName = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
           for(var i=0; i<12; i++) {
             str += '<tr><td>'+months[i]+'</td>';
             var totalB=0, totalS=0;
