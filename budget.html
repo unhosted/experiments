@@ -157,25 +157,19 @@
         if(!data[to]) {
           data[to] = {};
         }
-        if(!data[from][to]) {
-          data[from][to]={};
-        }
-        if(!data[to][from]) {
-          data[to][from]={};
-        }
-        while(data[from][to][timestamp]) {
+        while(data[from][timestamp]) {
           timestamp++;
         }
-        data[from][to][timestamp]= {
+        data[from][timestamp]= {
           tags: ['sent'],
           msg: msg,
           from: from,
           to: to
         };
-        while(data[to][from][timestamp]) {
+        while(data[to][timestamp]) {
           timestamp++;
         }
-        data[to][from][timestamp]={
+        data[to][timestamp]={
           tags: ['inbox'],
           msg: msg,
           from: from,
@@ -229,38 +223,39 @@
         }
       }
       function displayTab(person) {
-        var str = '<table border="1"><tr><td>peer</td><td>note</td><td>amount</td><td>cumm</td></tr>';
+        var str = '</table>';
         var IOUs = {};
         var timestamps = [];
         //scan the person's messages for attached IOUs
         for(var i in data[person]) {
-          for(var j in data[person][i]) {
-            var msg = JSON.parse(data[person][i][j].msg);
-            if(msg.IOU) {
-              IOUs[j]=msg.IOU;
-              timestamps.push(j);
-            }
+          var msg = JSON.parse(data[person][i].msg);
+          if(msg.IOU) {
+            IOUs[i]=msg.IOU;
+            timestamps.push(i);
           }
         }
+        timestamps.sort();
         var cumm = 0;
-        for(var i=timestamps.length-1; i>=0; i--) {
+        for(var i=0; i<timestamps.length; i++) {
           if(IOUs[timestamps[i]].ower == person) {
             cumm += IOUs[timestamps[i]].amount;
-            str += '<tr><td>'+IOUs[timestamps[i]].owee
+            str = '<tr><td>'+IOUs[timestamps[i]].owee
               +'</td><td>'+IOUs[timestamps[i]].note
               +'</td><td>'+IOUs[timestamps[i]].amount
               +'</td><td>'+cumm
-              +'</td></tr>';
+              +'</td></tr>'
+              +str;
           } else if(IOUs[timestamps[i]].owee == person) {
             cumm -= IOUs[timestamps[i]].amount;
-            str += '<tr><td>'+IOUs[timestamps[i]].ower
+            str = '<tr><td>'+IOUs[timestamps[i]].ower
               +'</td><td>'+IOUs[timestamps[i]].note
               +'</td><td>'+(0-IOUs[timestamps[i]].amount)
               +'</td><td>'+cumm
-              +'</td></tr>';
+              +'</td></tr>'
+              +str;
           }
         }
-        str += '</table>';
+        str = '<table border="1"><tr><td>peer</td><td>note</td><td>amount</td><td>cumm</td></tr>'+str;
         document.getElementById('output').innerHTML = str;
       }
       function onLoad() {
