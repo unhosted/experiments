@@ -169,7 +169,7 @@
         data[from][to][timestamp]= {
           tags: ['sent'],
           msg: msg,
-          from: from
+          from: from,
           to: to
         };
         while(data[to][from][timestamp]) {
@@ -178,7 +178,7 @@
         data[to][from][timestamp]={
           tags: ['inbox'],
           msg: msg,
-          from: from
+          from: from,
           to: to
         };
       }
@@ -231,16 +231,17 @@
       function displayTab(person) {
         var str = '<table border="1"><tr><td>peer</td><td>note</td><td>amount</td><td>cumm</td></tr>';
         var IOUs = {};
+        var timestamps = [];
         //scan the person's messages for attached IOUs
         for(var i in data[person]) {
           for(var j in data[person][i]) {
-            var msg = JSON.parse(data[person][i][j]);
+            var msg = JSON.parse(data[person][i][j].msg);
             if(msg.IOU) {
               IOUs[j]=msg.IOU;
+              timestamps.push(j);
             }
           }
         }
-        var timestamps = array_keys(IOUs).sort();
         var cumm = 0;
         for(var i=timestamps.length-1; i>=0; i--) {
           if(IOUs[timestamps[i]].ower == person) {
