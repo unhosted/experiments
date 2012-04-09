@@ -162,6 +162,13 @@
           to: to
         };
       }
+      //gestures:
+      //budget: the ower tells the owee a maximum of how much they are willing to pay for a purpose if the owee (can prove that they) spent money for that purpose. the timestamp is the timestamp at which the budget is assigned, and start and end of the budget are part of the 'purpose'. 
+      //invoice: the owee requests for the ower to sign the IOU
+      //predict: purely informational; used for planning purposes only
+      //receipt: the ower confirms having received money from the owee. this type of IOU is usually used to cancel out against one that represent the debt that was settled by the transfer.
+      //balance: either party tells the other one how much they think they owe each other at that timestamp.
+
       function simulateMessages() {
         var monthName = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
         var budgets = genBudgets();
@@ -176,6 +183,7 @@
               +'If we do spend this money, then we can use the attached IOU to route the payment. '
               +'If we spend more than the budget on '+j+' during that '+monthName[i]+', then we have to think why that was, and issue a separate decision with its '
               +'own IOU to route the money.',
+              gesture: 'budget',
               IOU: {
                 ower: 'budget@unhosted.org',
                 owee: j+'@unhosted.org',
@@ -197,6 +205,7 @@
               +declarations[i].amount+' euros for the following costs I made in '
               +monthName[declarations[i].month]+':'
               +declarations[i].note,
+            gesture: 'invoice',
             IOU: {
               ower: declarations[i].ower+'@unhosted.org',
               owee: declarations[i].owee+'@unhosted.org',
@@ -213,6 +222,7 @@
           subject: 'predicted expenditure',
           recipients: [to+'@unhosted.org'],
           body: 'We predict you will probably spend '+amount+' euros on '+budget+' between now and the end of the financial year.',
+          gesture: 'predict',
           IOU: {
             ower: 'healthMich@unhosted.org',
             owee: 'michiel@unhosted.org',
@@ -222,25 +232,12 @@
           }
         }));
       }
-      function flowBack(budget, amount) {
-        simulateMessage(budget+'@unhosted.org', 'budget@unhosted.org', new Date('9 9 2012').getTime(), JSON.stringify({
-          subject: 'predicted budget flow back',
-          recipients: ['budget@unhosted.org'],
-          body: 'We now predict to spend '+1115+' euros less than originally budgetted.',
-          IOU: {
-            ower: budget+'@unhosted.org',
-            owee: 'budget@unhosted.org',
-            amount: amount,
-            currency: 'EUR',
-            note: 'predicted flowback of '+budget+' budget'
-          }
-        }));
-      }
       function requestBuyout(budget, amount) {
         simulateMessage(budget+'@unhosted.org', 'budget@unhosted.org', new Date('9 9 2012').getTime(), JSON.stringify({
           subject: 'predicted buyout',
           recipients: ['budget@unhosted.org'],
           body: 'We now predict you will have to buy us out for '+amount+' euros at the end of the financial year.',
+          gesture: 'request',
           IOU: {
             ower: 'budget@unhosted.org',
             owee: budget+'@unhosted.org',
