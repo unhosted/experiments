@@ -163,11 +163,77 @@
         };
       }
       //gestures:
-      //budget: the ower tells the owee a maximum of how much they are willing to pay for a purpose if the owee (can prove that they) spent money for that purpose. the timestamp is the timestamp at which the budget is assigned, and start and end of the budget are part of the 'purpose'. 
-      //invoice: the owee requests for the ower to sign the IOU
-      //predict: purely informational; used for planning purposes only
+      //pledge: the original meaning of a delta IOU.
+      //pledge-cond: for budgetting and contracting (e.g. conditional on handing in a relevant receipt, or completing a project to spec)
+      //invoice: the owee requests for the ower to sign pledge.
       //receipt: the ower confirms having received money from the owee. this type of IOU is usually used to cancel out against one that represent the debt that was settled by the transfer.
-      //balance: either party tells the other one how much they think they owe each other at that timestamp.
+      //balance: either party tells the other one how much they think they owe each other at that timestamp. note the very important difference between delta gestures and cumm gestures.
+      //predict: purely informational; used for planning purposes only. the timestamp can be in the future.
+      //budget: the ower tells the owee a maximum of how much they are willing to pay for a purpose if the owee (can prove that they) spent money for that purpose. the timestamp is the timestamp at which the budget is assigned, and start and end of the budget are part of the 'purpose', and also used by the budget giver and/or the budget receiver to send monthly 'predict' messages.
+
+      //IOU fields always:
+      // ower (<user@host>)
+      // owee (<user@host>)
+      // amount (<int>)
+      // currency (<string>)
+      // note (<string>)
+      // timestamp (<timestamp>)
+      // signatures {pledge:[<string>], receipt, invoice, balance, predict}
+
+      //representing a budget assignment:
+      // unique (['timestamp', 'cond'])
+      // cond (<string>)
+      // period ({start: <timestamp>, end: <timestamp>})
+      // signatures {budget:[<string>]}
+
+      //representing a claim on a budget:
+      // unique (['goods'])
+      // goods (<string>)
+      // signatures {claim:[<string>]}
+
+      //representing a receipt for a payment:
+      // unique (['timestamp'])
+      // signatures {received:[<string>]}
+
+      //representing a receipt for purchased goods:
+      // unique (['goods'])
+      // goods (<string>)
+      // signatures {owe:[<string>]}
+
+      //representing an invoice:
+      // unique (['goods'])
+      // goods (<string>)
+      // signatures {owe:[<string>]}
+
+
+//events: 
+//buy - to: amount: currency: goods:/unconditional budget-period:/timeless
+//aval - to: amount: currency: goods:/unconditional budget-period:/timeless
+//delivery goods/payment
+
+//gestures:
+//predict
+//report
+
+//interface:
+//vrm: announce something you need and would pay for
+//crm: announce something you would deliver if paid for
+//back a project
+//donate money unconditionally 
+//invest in a project
+//lend money
+//borrow money
+//define goods
+//create a project
+//promise to pay for goods you received
+//invoice for goods you delivered
+//report a payment
+
+//contract types:
+//sale
+//debt
+//budget
+//gift
 
       function simulateMessages() {
         var monthName = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
@@ -183,14 +249,20 @@
               +'If we do spend this money, then we can use the attached IOU to route the payment. '
               +'If we spend more than the budget on '+j+' during that '+monthName[i]+', then we have to think why that was, and issue a separate decision with its '
               +'own IOU to route the money.',
-              gesture: 'budget',
               IOU: {
                 ower: 'budget@unhosted.org',
                 owee: j+'@unhosted.org',
                 amount: budgets[i][j],
                 currency: 'EUR',
+                unique: ['timestamp', 'cond'],
                 note: j+' budget for '+monthName[i],
-                signatures: ['The general meeting of Unhosted e.V, in the #unhosted IRC channel on freenode, 9 September 2011.']
+                timestamp: {
+                  start: monthStart[i],
+                  end: monthEnd[i]
+                }
+                signatures: {
+                  'pledge-cond': ['The general meeting of Unhosted e.V, in the #unhosted IRC channel on freenode, 9 September 2011.']
+                }
               }
             }));
           }
