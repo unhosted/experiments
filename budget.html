@@ -230,16 +230,20 @@
 //report a payment
 
 //contract types:
-//sale
-//debt
-//budget
-//gift
+//sale (buy/sell)
+//debt (borrow/lend)
+//budget (back a project/rely on an angel)
+//gift (donate/ask for donations)
+
+//users: back a project: donate, guarantee, buy, lend.
+//projects: ask for donations, ask for guarantees, sell, borrow.
 
       function simulateMessages() {
         var monthName = ['Sep11', 'Oct11', 'Nov11', 'Dec11', 'Jan12', 'Feb12', 'Mar12', 'Apr12', 'May12', 'Jun12', 'Jul12', 'Aug12'];
         var budgets = genBudgets();
         for(var i in budgets) {
           var monthStart = new Date('9 9 2011').getTime() + i * 2635200000;
+          var monthEnd = new Date('9 9 2011').getTime() + (i+1) * 2635200000 - 1;
           for(var j in budgets[i]) {
             simulateMessage('budget@unhosted.org', j+'@unhosted.org', monthStart, JSON.stringify({
               subject: 'budget assignment',
@@ -254,15 +258,14 @@
                 owee: j+'@unhosted.org',
                 amount: budgets[i][j],
                 currency: 'EUR',
-                unique: ['timestamp', 'cond'],
+                contract: 'budget',
                 note: j+' budget for '+monthName[i],
-                timestamp: {
-                  start: monthStart[i],
-                  end: monthEnd[i]
-                }
-                signatures: {
-                  'pledge-cond': ['The general meeting of Unhosted e.V, in the #unhosted IRC channel on freenode, 9 September 2011.']
-                }
+                period: {
+                  start: monthStart,
+                  end: monthEnd
+                },
+                timestamp: monthStart,
+                signatures: ['The general meeting of Unhosted e.V, in the #unhosted IRC channel on freenode, 9 September 2011.']
               }
             }));
           }
@@ -277,47 +280,18 @@
               +declarations[i].amount+' euros for the following costs I made in '
               +monthName[declarations[i].month]+':'
               +declarations[i].note,
-            gesture: 'invoice',
             IOU: {
               ower: declarations[i].ower+'@unhosted.org',
               owee: declarations[i].owee+'@unhosted.org',
               amount: declarations[i].amount,
               currency: 'EUR',
-              note: declarations[i].note,
+              contract: 'sale',
+              goods: declarations[i].note,
+              timestamp: monthEnd,
               signatures: [declarations[i].owee+'@unhosted.org']
             }
           }));
         }
-      }
-      function predict(budget, to, amount) {
-        simulateMessage(budget+'@unhosted.org', to+'@unhosted.org', new Date('9 9 2012').getTime(), JSON.stringify({
-          subject: 'predicted expenditure',
-          recipients: [to+'@unhosted.org'],
-          body: 'We predict you will probably spend '+amount+' euros on '+budget+' between now and the end of the financial year.',
-          gesture: 'predict',
-          IOU: {
-            ower: 'healthMich@unhosted.org',
-            owee: 'michiel@unhosted.org',
-            amount: 420,
-            currency: 'EUR',
-            note: 'predicted expenditure for 6 months zekur'
-          }
-        }));
-      }
-      function requestBuyout(budget, amount) {
-        simulateMessage(budget+'@unhosted.org', 'budget@unhosted.org', new Date('9 9 2012').getTime(), JSON.stringify({
-          subject: 'predicted buyout',
-          recipients: ['budget@unhosted.org'],
-          body: 'We now predict you will have to buy us out for '+amount+' euros at the end of the financial year.',
-          gesture: 'request',
-          IOU: {
-            ower: 'budget@unhosted.org',
-            owee: budget+'@unhosted.org',
-            amount: amount,
-            currency: 'EUR',
-            note: 'requesting buyout for '+budget+' budget'
-          }
-        }));
       }
       function displayTab(person) {
         var str = '</table>';
@@ -388,17 +362,6 @@
       }
       function onLoad() {
         simulateMessages();
-        predict('healthMich', 'michiel', 420);
-        flowBack('healthMich', 1115);
-        flowBack('deskMich', 1500);
-        
-        predict('liveJan', 'jan', 1500);
-        requestBuyout('liveJan', 1500);
-        requestBuyout('healthJan', 911);
-        flowBack('deskJan', 1500);
-        
-        flowBack('hosting', 800);
-        flowBack('travAccConf', 400);
 
         console.log(data);
         var str = '';
