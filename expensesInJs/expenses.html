@@ -128,68 +128,73 @@
     'Reserve for Krankenkasse Michiel':                                -res
   });
   console.log('discrepency: wiki said -867.98 here, but correct calculation seems to be -900.68, seems related to 33 eur of things paid directly from BerlinerBank');
+
+  //START YEAR TWO:
+
+  display('money we need', {
+    'living expenses Code Communist':    12000,
+    'living expenses Design Dictator':   12000,
+    'krankenkasse Code Communist':        1800, 
+    'krankenkasse Design Dictator':       1800,
+    'desk Code Communist':                1800,
+    'desk Design Dictator':               1800,
+    'taxes Code Communist':                600,
+    'taxes Design Dictator':               600, 
+    'hosting':                            1000,
+    'competitions, campaigns, publicity':  500,
+    'pay off debt from year 1':            868,
+    'misc':                                232,
+    'travel, accomodation, conferences':  1000
+  });
+  display('money we will have', {
+    'from nlnet':                        30000,
+    'need to find':                       6000
+  });
+  var michSept = display('Michiel sept', {
+    'worked one month 9 sept - 9 oct': 1000,
+    '42 Unhost postcards to send with T-shirts (via Kenny): 42 * 20 CZK = 840 CZK': 35,
+    'stamps for sending 27 T-shirt packages from Unhost: 1950 CZK': 80,
+    'sending another 14 T-shirts: 2x Germany(1.45 EUR), 12x international(3.45 EUR)': 44.30,
+    'days co-up Michiel sept: 95 eur, paid directly from Berliner Bank': 0,
+    //'the verein already owed him 4613.82 euros for year one expenses, plus whatever he paid for Krankenkasse during the period': 4613.82,
+    'received 4042 euros from paypal to his personal bank account (comdirect)': -4042,
+  });
+  var michOct = display('Michiel oct', {
+    'worked 3/4 month 9 oct - 9 nov': 1000,
+    'paid 4,50 for sdw prints': 4.50,
+    'paid sdw (some 130 euros, will check)': 130,
+    'paid 40,15 for sending T-shirts (3rd batch)': 40.15,
+    'paid 185,75 in train tickets, of which 89,25 will be paid back through Jan, and 38,50 is a donation from Michiel to DS11': 89.25,
+    '5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661': 19.73,
+    '5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661': 12.43,
+    '9-9-2011 28-9-2011 (Liquidado) Pago en T-MOBILE CZECH REPUBLIK BONN': 24.59,
+    '03/10/2011 THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos)': 20.28,
+    '20/10/2011 GODADDY.COM EUROPE (02079792661 - Reino Unido)': 7.50
+  });
+  console.log('discrepancy: this seems to be missing entirely from the wiki');
+  var michNovDec = display('Michiel Nov/Dev', {
+    //'original summary (presumably the 1 Nov start balance?)': 3125.20,
+    'received from nlnet': -2800,
+    'mozfest (apart from travel to UK which was already in there)': 32.76,
+    'visit to surfnet was 12+9+2 = 21 eur by train': 21,
+    'train to govcert: 5,50 eur (they are not paying in the end)': 5.50,
+    'train govcert -> bearstech': 47.50,
+    'rackspace 2 nov -> 20,69 eur -> 127.45': 20.69,
+    'and also since then: rackspace 2 dec': 23.91,
+    'unemployment 9 nov - 9 jan': 2000
+   });
+   display('Michiel balance (apart from krankenkasse year one, which worked out as zero)', {
+     '9 sept 2011': 4613.82,
+     'sept': michSept,
+     'oct': michOct,
+     'nov/dec': michNovDec
+   });
+   console.log('discrepency: wiki says 2476.56 instead of 2411.18');
 </script></head><body>
-
-money we need:
-
-living expenses Code Communist:    12000 eur 
-living expenses Design Dictator:   12000 eur 
-krankenkasse Code Communist:        1800 eur 
-krankenkasse Design Dictator:       1800 eur
-desk Code Communist:                1800 eur
-desk Design Dictator:               1800 eur
-taxes Code Communist:                600 eur
-taxes Design Dictator:               600 eur 
-hosting:                            1000 eur
-competitions, campaigns, publicity:  500 eur
-pay off debt from year 1:            868 eur
-misc:                                232 eur
-travel, accomodation, conferences:  1000 eur
-                                   --------- +
-                                   36000 eur
-
-money we will have:
-
-from nlnet:                        30000 eur
-need to find:                       6000 eur
-                                   --------- +
-                                   36000 eur
-
-Michiel
-
-1000+35+80+44.30+4613.82-4042= 1731.12 + Krankenkasse
-
-    worked one month: 1000 eur+krankenkasse
-    42 Unhost postcards to send with T-shirts (via Kenny): 42 * 20 CZK = 840 CZK (35 EUR)
-    stamps for sending 27 T-shirt packages from Unhost: 1950 CZK (80 EUR)
-    sending another 14 T-shirts: 2x Germany(1.45 EUR), 12x international(3.45 EUR): 44.30 eur
-    days co-up Michiel sept: 95 eur, paid directly from Berliner Bank
-    the verein already owed him 4613.82 euros for year one expenses, plus whatever he paid for Krankenkasse during the period
-    received 4042 euros from paypal to his personal bank account (comdirect)
-    paid 4,50 for sdw prints
-    paid sdw (some 130 euros, will check)
-    paid 40,15 for sending T-shirts (3rd batch)
-    paid 185,75 in train tickets, of which 89,25 will be paid back through Jan, and 38,50 is a donation from Michiel to DS11
-    5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661 19,73 €
-    5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661 12,43 €
-    9-9-2011 28-9-2011 (Liquidado) Pago en T-MOBILE CZECH REPUBLIK BONN 24,59 €
-    03/10/2011 THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos) 20,28
-    20/10/2011 GODADDY.COM EUROPE (02079792661 - Reino Unido) 7,50
 
 Nov/Dev 2011:
 
-    original summary: 3125.20
-    received from nlnet: 2800 -> 325.20
-
-    mozfest (apart from travel to UK which was already in there) 32,76 eur
-
-    visit to surfnet was 12+9+2 = 21 eur by train
-
-    train to govcert: 5,50 eur (they are not paying in the end)
-
-    train govcert -> bearstech: 47,50 eur
-
-    rackspace 2 nov -> 20,69 eur -> 127.45 and also since then: rackspace 2 dec -> 23,91 eur unemployment nov/dec: 2000 eur -> 2023.91
+    -> 2023.91
 
 new total owed by unhosted to me: 2476.56 + health insurance (probably about 70 euros per month)
 invoice Michiel for Jan/Feb 2012:
