@@ -221,30 +221,41 @@
 
   // START JAN
 
-  display('Jan September–October', {
+  var janSepOct = display('Jan September–October', {
     //2000 + 151.73 stickers + 6.85 copyshop = 2158.58 (received 2200, owing 41.42)
     'worked two months': 2000,
     'days co-up: 14,15 sept, 3 single tickets (paid through Berliner Bank)': 0,
     '22.62 for jsconfEU party (paid through Berliner Bank)': 0,
     'stickers': 151.73,
     '188 € train: 169 to webtechcon + 19 back (paid by them)': 0,
-    '6,85 copyshop for 24 Unhost postcards': 6.85
+    '6,85 copyshop for 24 Unhost postcards': 6.85,
+    'received from nlnet': -2200
+  });
+  var janNovDec = display('Jan November–December', {
+    //: 2000 + 61.09 (7.85+7.40+6.30+4.54+35) = 2061.09 (received 2500, owed 41.42 last) owing 480.33
+    'stamps for 3 more shirts (November 10)': 7.85,
+    '(1.80+2.80+2.80) in local tickets to get to HamburgJS, to friend and back (~90 in DB tickets paid by HamburgJS, November 21)': 7.40,
+    'day pass to get to Köpenick youth meeting (Facebook presentation, 100 € payment will be donated to Unhosted e. V., November 22)': 6.30,
+    'packages and stamps for sending more shirts (December 5)': 4.54,
+    '28C3 day pass to give a lightning talk (December 30)': 35,
+    'worked two months': 2000,
+    'received from nlnet': -2500
+  });
+  var janJanFeb = display('Jan Jan/Feb', {
+    'health insurance, 215.26*4 for September–December, 221.15 after 2012 raise for January (February 15)': 1082.19,
+    'health insurance abroad': 11,
+    'liability insurance': 69.59
+  });
+  display('Jan balance', {
+    'Sep/Oct': janSepOct,
+    'Nov/Dec': janNovDec,
+    //'Jan/Feb': janJanFeb
   });
 </script></head><body>
-Jan (everything €)
-
-November–December: 2000 + 61.09 (7.85+7.40+6.30+4.54+35) = 2061.09 (received 2500, owed 41.42 last) owing 480.33
-
-    7.85 stamps for 3 more shirts (November 10)
-    7.40 (1.80+2.80+2.80) in local tickets to get to HamburgJS, to friend and back (~90 in DB tickets paid by HamburgJS, November 21)
-    6.30 day pass to get to Köpenick youth meeting (Facebook presentation, 100 € payment will be donated to Unhosted e. V., November 22)
-    4.54 packages and stamps for sending more shirts (December 5)
-    35 for 28C3 day pass to give a lightning talk (December 30)
 
 January–February: 2000 + 1082.19 + 11 + 69.59 = 3162.78 (received 3000, owed 480.33 last) owing 317.55
 
     worked two months: 2000
-    1082.19 health insurance, 215.26*4 for September–December, 221.15 after 2012 raise for January (February 15)
     health insurance abroad: 11.00 € (yearly fee)
     liability insurance: 69.59 € (yearly fee)
 
