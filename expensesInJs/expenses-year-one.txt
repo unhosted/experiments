@@ -1,0 +1,171 @@
+Expenses Year 1
+
+(approved at general meeting of Unhosted e.V., 9/9/2011 in Unhost)
+freelancer's invoice Michiel:
+
+full-time work allowance Michiel, 1 Nov 2010 - 15 Jan 2011       2500.00 EUR
+full-time work allowance Michiel, 1 Mar 2011 - 8 Sep 2011        6250.00 EUR
+office desk Michiel     co-up, april, 12-day flex                  95.00 EUR
+office desk Michiel     betahaus, july, at team desk + coffee     158.33 EUR
+                                                                ============ +
+Total owed to Michiel:                                           9003.33 EUR
+Donation by Michiel:                                             6000.00 EUR
+Received from Crisp for workshop:                                 540.00 EUR
+donations accepted in cash by Michiel:                             40.00 EUR
+                                                                ============ -
+Freelancer's invoice Michiel:                                    2423.33 EUR
+
+Reserve for Michiel
+
+reserved for Krankenkasse Michiel, 1 Mar 2011 - 8 Sep 2011:       937.00 EUR
+                                                                ============ +
+Reserve for Krankenkasse Michiel:                                 937.00 EUR
+
+freelancer's invoice Javier:
+
+office desk Javier      co-up, april, 12-day flex                  95.00 EUR
+full-time work allowance Javier, 15 Mar 2011 - 31 May 2011       2500.00 EUR
+reserved for Krankenkasse Javier, 15 Mar 2011 - 31 May 2011:      375.00 EUR
+                                                                ============ +
+Total owed to Javier:                                            2970.00 EUR
+Donation by Javier:                                              2970.00 EUR
+                                                                ============ -
+Freelancer's invoice Javier:                                        0.00 EUR
+
+Total to pay out now (see below):
+
+freelancer invoice from Michiel after own donation               2423.33 EUR
+freelancer invoice from Javier after own donation                   0.00 EUR
+DNR                                                               131.26 EUR
+hosting                                                           239.73 EUR
+online promotion                                                   77.83 EUR
+T-shirt campaign                                                  750.99 EUR
+Hacky Holidays Competition                                        248.81 EUR
+Travel                                                            372.39 EUR
+Accomodation                                                       84.44 EUR
+Conferences                                                       187.23 EUR
+Administration                                                     97.81 EUR
+                                                                ============ +
+Total to reimburse now to Michiel:                               4613.82 EUR
+
+Total to pay out later:
+
+Reserve for Krankenkasse Michiel:                                 937.00 EUR
+
+Money we have:
+
+at paypal:                                                       4077.80 EUR
+at Berliner Bank (minus 33 eur reject.js and jsconfeu):           377.03 EUR
+at flattr:                                                        195.31 EUR
+                                                                ============ +
+Total:                                                           4682.84 EUR
+Total to reimburse now to Michiel:                               4613.82 EUR
+Reserve for Krankenkasse Michiel:                                 937.00 EUR
+                                                                ============ -
+Total reserve at 9 Sept 2011:                                    -867.98 EUR
+
+Domain name registration
+
+DNR+Host 'unhosted.org' godaddy           12.08         (11 sep)
+DNR                     godaddy            7.70         (16 jan)
+DNR                     godaddy            4.45         (20 jan)
+DNR                     godaddy            7.76         (26 jan)
+DNR                     godaddy            7.45         2 mar
+DNR                     godaddy            8.67         24 mar
+DNR                     godaddy            7.24         24 mar
+DNR                     godaddy           10.86         26 mar
+DNR                     godaddy            0.07         28 mar
+DNR                     godaddy            7.10         (8 may)
+DNR                     godaddy            7.30         (24 may)
+DNR                     godaddy           29.76         (20 jul)
+DNR                     godaddy           19.27         (28 aug)
+DNR                     godaddy            1.55         (2 sep)
+
+                                       ======== +
+                                         131.26
+
+Hosting
+
+hosting                 arsys             56.64         (15 dec)
+hosting                 godaddy            4.50         (20 dec)
+hosting                 arsys             17.70         (10 jan)
+hosting                 arsys             35.40         (11 feb)
+vps hosting             rackspace          9.22         (1 may)
+vps hosting             rackspace         14.45         (3 may)
+vps hosting             rackspace         18.79         (3 jun)
+vps hosting             rackspace         15.68         (8 jul)
+vps hosting             rackspace         39.34         (3 aug)
+hosting                 rackspace         22.92         (3 sep)
+hosting                 hostgator          5.09         (3 sep)
+                                       ======== +
+                                         239.73
+
+Online promotion
+
+advertising             google adwords    43.12         (4 dec)
+advertising             google adwords    18.94         (4 jan)
+advertising             google adwords     7.85         (2 feb)
+advertising             google             7.84         3 mar
+advertising             google             0.08         4 apr
+                                       ======== +
+                                          77.83
+
+T-shirt campaign
+
+T-shirts                                 586.99
+sdw Screen-printing workshop             155.00
+50 big envelopes                           9.00 
+                                       ======== +
+                                         750.99 
+
+Hacky Holidays Competition
+
+H.H. plugserver 1       globalscale       84,74         jan
+H.H. plugserver 2       globalscale       82.07         jan
+H.H. plugserver 3       codelathe llc     82,00         jan
+                                       ======== +
+                                         248.81 
+
+Travel
+
+travel madrid-donosti   alsa                   67.62         28 jan
+bus Stockholm airport   flygbussarna           25.00         (mar)
+travel bxl-Lille-bxl    B. Rail                48.00           apr
+bus Stockholm airport   flygbussarna           24.67         (16 may)
+travel visit Jan in Stuttgart: 30+30+7.50+4.10 71.60
+travel first visit nlnet:2x5.80                10.60 eur
+travel second visit nlnet: 8+10.80+2.40+1.40   22.60 eur
+travel rmll: 152.30+15car +140gas -205mitfahr 102.30 eur
+                                            ======= +
+                                              372.39
+
+Accomodation
+
+wifi Rostock            T-mobile               19.95
+wifi stockholm          the cloud               4.49         16 mar
+hotel lille             Premier Class          40.00           apr
+campsite RMLL                                  20.00
+                                             ======= +
+                                               84.44
+
+Conferences
+
+ccc camp                                      140.00
+registration fee        FSW2011                17.23         (7 may)
+okcon                                          30.00
+reject.js                                            (13 eur, will be paid through berliner bank)
+jsconfeu-fun                                         (20 eur, will be paid through berliner bank)
+                                             ======= +
+                                              187.23
+
+Administration
+
+notary                  Seeger&Seeger          31.75         (apr)
+e.V. registry                                  53.00         (4 jul)
+setup fee               paypal                  1.50         (29 apr)
+setup fee               flattr                  8.00         (3 may)
+setup fee               Google dev              3.56         (13 may)
+                                             ======= +
+                                               97.81
+
+

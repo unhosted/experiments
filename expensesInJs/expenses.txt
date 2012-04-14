@@ -1,0 +1,128 @@
+money we need:
+
+living expenses Code Communist:    12000 eur 
+living expenses Design Dictator:   12000 eur 
+krankenkasse Code Communist:        1800 eur 
+krankenkasse Design Dictator:       1800 eur
+desk Code Communist:                1800 eur
+desk Design Dictator:               1800 eur
+taxes Code Communist:                600 eur
+taxes Design Dictator:               600 eur 
+hosting:                            1000 eur
+competitions, campaigns, publicity:  500 eur
+pay off debt from year 1:            868 eur
+misc:                                232 eur
+travel, accomodation, conferences:  1000 eur
+                                   --------- +
+                                   36000 eur
+
+money we will have:
+
+from nlnet:                        30000 eur
+need to find:                       6000 eur
+                                   --------- +
+                                   36000 eur
+
+Michiel
+
+1000+35+80+44.30+4613.82-4042= 1731.12 + Krankenkasse
+
+    worked one month: 1000 eur+krankenkasse
+    42 Unhost postcards to send with T-shirts (via Kenny): 42 * 20 CZK = 840 CZK (35 EUR)
+    stamps for sending 27 T-shirt packages from Unhost: 1950 CZK (80 EUR)
+    sending another 14 T-shirts: 2x Germany(1.45 EUR), 12x international(3.45 EUR): 44.30 eur
+    days co-up Michiel sept: 95 eur, paid directly from Berliner Bank
+    the verein already owed him 4613.82 euros for year one expenses, plus whatever he paid for Krankenkasse during the period
+    received 4042 euros from paypal to his personal bank account (comdirect)
+    paid 4,50 for sdw prints
+    paid sdw (some 130 euros, will check)
+    paid 40,15 for sending T-shirts (3rd batch)
+    paid 185,75 in train tickets, of which 89,25 will be paid back through Jan, and 38,50 is a donation from Michiel to DS11
+    5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661 19,73 €
+    5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661 12,43 €
+    9-9-2011 28-9-2011 (Liquidado) Pago en T-MOBILE CZECH REPUBLIK BONN 24,59 €
+    03/10/2011 THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos) 20,28
+    20/10/2011 GODADDY.COM EUROPE (02079792661 - Reino Unido) 7,50
+
+Nov/Dev 2011:
+
+    original summary: 3125.20
+    received from nlnet: 2800 -> 325.20
+
+    mozfest (apart from travel to UK which was already in there) 32,76 eur
+
+    visit to surfnet was 12+9+2 = 21 eur by train
+
+    train to govcert: 5,50 eur (they are not paying in the end)
+
+    train govcert -> bearstech: 47,50 eur
+
+    rackspace 2 nov -> 20,69 eur -> 127.45 and also since then: rackspace 2 dec -> 23,91 eur unemployment nov/dec: 2000 eur -> 2023.91
+
+new total owed by unhosted to me: 2476.56 + health insurance (probably about 70 euros per month)
+invoice Michiel for Jan/Feb 2012:
+
+was owed: 2476.56 eur
+received from nlnet: -2500 eur -> -23.44
+received from govcert: -81,61 eur -> -105.05
+living costs Jan, Feb: 2000 eur -> 1894.95
+zekur health insurance (10-11-2011..29-02-2012): 265,15 eur -> 2160.20 
+rackspace 3/1: 19,12 -> 2179.32
+hostal fosdem: 58,50 eur -> 2237.82
+tram in brussels: 2+2+3,50 eur -> 2245.32
+train brussels -> NL: 35,70 eur -> 2281.02
+train+bus -> Terena: 2+8=10 eur -> 2291.02
+train-> deventer: 15,80 -> 2306,82
+train deventer -> den haag: 15,20+2,00 -> 2324,02
+
+invoice Michiel for Mar/Apr 2012
+
+was owed: 2324,02
+received from paypal 740 euros (17 Feb) -> 1584,02
+received from nlnet: 2000 euros (3 March) -> -415,98
+received from paypal: 690 euros (8 March) -> -1105,98
+03/02/2012  THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos)     11,07
+29/02/2012  Pendiente de liquidar   Pago en GODADDY.COM EUROPE 02079792661  11,44€
+03/03/2012  Pendiente de liquidar   Pago en THE RACKSPACE CLOUD 210-581-0410    11,63€
+12/03/2012  Pendiente de liquidar   Pago en VUELING AIRLINES EL PRAT DE LL  79,49€ (nlnet)
+
+Jan (everything €)
+
+September–October: 2000 + 151.73 stickers + 6.85 copyshop = 2158.58 (received 2200, owing 41.42)
+
+    worked two months: 2000
+    days co-up: 14,15 sept, 3 single tickets (paid through Berliner Bank)
+    22.62 for jsconfEU party (paid through Berliner Bank)
+    151,73 stickers
+    188 € train: 169 to webtechcon + 19 back (paid by them)
+    6,85 copyshop for 24 Unhost postcards
+
+November–December: 2000 + 61.09 (7.85+7.40+6.30+4.54+35) = 2061.09 (received 2500, owed 41.42 last) owing 480.33
+
+    7.85 stamps for 3 more shirts (November 10)
+    7.40 (1.80+2.80+2.80) in local tickets to get to HamburgJS, to friend and back (~90 in DB tickets paid by HamburgJS, November 21)
+    6.30 day pass to get to Köpenick youth meeting (Facebook presentation, 100 € payment will be donated to Unhosted e. V., November 22)
+    4.54 packages and stamps for sending more shirts (December 5)
+    35 for 28C3 day pass to give a lightning talk (December 30)
+
+January–February: 2000 + 1082.19 + 11 + 69.59 = 3162.78 (received 3000, owed 480.33 last) owing 317.55
+
+    worked two months: 2000
+    1082.19 health insurance, 215.26*4 for September–December, 221.15 after 2012 raise for January (February 15)
+    health insurance abroad: 11.00 € (yearly fee)
+    liability insurance: 69.59 € (yearly fee)
+
+March–April: 2000 + 4.90 + 7.70 + 7.95 + 8.10 + 79 + 149 + 221.15 + 3.45 + 54.61 + 35.52 = 2571.38 (owed 317.55 last)
+
+    4.90 sending two shirts (March 7)
+    7.70 bus tickets (5.00+2.70) getting into Amsterdam (hitchhiked there, March 7)
+    7.95 printing Unhosted readers for Unlike Us conf attendees (March 9)
+    8.10 (3*2.70) getting to the Unlike Us conf venue (March 9–10)
+    79 €: Unlike Us Amsterdam train back (March 11)
+    149 10-day flex ticket Coworking0711 (March 15)
+    221.15 health insurance for February (March 15)
+    3.45 sending another shirt (March 17)
+    54.61 for 1000 new stickers from Flyeralarm (March 22)
+    35.52 for 2500 JS stickers (March 22)
+    projected 50 for 1000 stickers with white background this time … (April)
+
