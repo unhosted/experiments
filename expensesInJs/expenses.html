@@ -1,5 +1,14 @@
 <html><head><script>
-  var freelancersInvoiceMichiel = {
+  function display(name, items) {
+    var sum=0;
+    for(var thing in items) {
+      console.log(' >>> '+thing+': '+items[thing]);
+      sum += items[thing];
+    }
+    console.log(name+': '+sum+' EUR');
+    return sum;
+  }
+  var flMich = display('Freelancer\'s invoice Michiel', {
     'full-time work allowance Michiel, 1 Nov 2010 - 15 Jan 2011':       2500.00,
     'full-time work allowance Michiel, 1 Mar 2011 - 8 Sep 2011':        6250.00,
     'office desk Michiel     co-up, april, 12-day flex':                  95.00,
@@ -7,53 +16,35 @@
     'Donation by Michiel':                                            -6000.00,
     'Received from Crisp for workshop':                                -540.00,
     'donations accepted in cash by Michiel':                             -40.00
-    }
-  var sum=0;
-  for(var thing in freelancersInvoiceMichiel) {
-    console.log(thing+': '+freelancersInvoiceMichiel[thing]);
-    sum += freelancersInvoiceMichiel[thing];
-  }
-  console.log(sum);
+  });
+  var resMich = display('reserved for Michiel', {
+    'reserved for Krankenkasse Michiel, 1 Mar 2011 - 8 Sep 2011':       937.00
+  });
+  var flJavi = display('freelancer\'s invoice Javier', {
+    'office desk Javier      co-up, april, 12-day flex':                  95.00,
+    'full-time work allowance Javier, 15 Mar 2011 - 31 May 2011':       2500.00,
+    'reserved for Krankenkasse Javier, 15 Mar 2011 - 31 May 2011':      375.00,
+    'Donation by Javier':                                              -2970.00
+  });
+  display('Total to reimburse now to Michiel', {
+    'freelancer invoice from Michiel after own donation': flMich,
+    'freelancer invoice from Javier after own donation':  flJavi,
+    'DNR':                                                               131.26,
+    'hosting':                                                           239.73,
+    'online promotion':                                                   77.83,
+    'T-shirt campaign':                                                  750.99,
+    'Hacky Holidays Competition':                                        248.81,
+    'Travel':                                                            372.39,
+    'Accomodation':                                                       84.44,
+    'Conferences':                                                       187.23,
+    'Administration':                                                     97.81
+  });
+  display('Total to pay out later', {
+    'Reserve for Krankenkasse Michiel': resMich
+  });
 </script></head><body>
-                                                                ============ -
-Freelancer's invoice Michiel:                                    2423.33 EUR
 
-Reserve for Michiel
 
-reserved for Krankenkasse Michiel, 1 Mar 2011 - 8 Sep 2011:       937.00 EUR
-                                                                ============ +
-Reserve for Krankenkasse Michiel:                                 937.00 EUR
-
-freelancer's invoice Javier:
-
-office desk Javier      co-up, april, 12-day flex                  95.00 EUR
-full-time work allowance Javier, 15 Mar 2011 - 31 May 2011       2500.00 EUR
-reserved for Krankenkasse Javier, 15 Mar 2011 - 31 May 2011:      375.00 EUR
-                                                                ============ +
-Total owed to Javier:                                            2970.00 EUR
-Donation by Javier:                                              2970.00 EUR
-                                                                ============ -
-Freelancer's invoice Javier:                                        0.00 EUR
-
-Total to pay out now (see below):
-
-freelancer invoice from Michiel after own donation               2423.33 EUR
-freelancer invoice from Javier after own donation                   0.00 EUR
-DNR                                                               131.26 EUR
-hosting                                                           239.73 EUR
-online promotion                                                   77.83 EUR
-T-shirt campaign                                                  750.99 EUR
-Hacky Holidays Competition                                        248.81 EUR
-Travel                                                            372.39 EUR
-Accomodation                                                       84.44 EUR
-Conferences                                                       187.23 EUR
-Administration                                                     97.81 EUR
-                                                                ============ +
-Total to reimburse now to Michiel:                               4613.82 EUR
-
-Total to pay out later:
-
-Reserve for Krankenkasse Michiel:                                 937.00 EUR
 
 Money we have:
 
