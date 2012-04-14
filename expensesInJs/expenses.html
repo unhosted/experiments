@@ -184,46 +184,42 @@
     'and also since then: rackspace 2 dec': 23.91,
     'unemployment 9 nov - 9 jan': 2000
    });
-   display('Michiel balance (apart from krankenkasse year one, which worked out as zero)', {
+   console.log('discrepency: wiki says 2476.56 at 1 Jan, instead of 2479.89, so 3.33 EUR less');
+   var michJanFeb = display('invoice Michiel for Jan/Feb 2012', {
+     //'was owed': 2476.56,
+     'received from nlnet': -2500,
+     'received from govcert': -81.61,
+     'living costs 9 Jan .. 9 Mar': 2000,
+     'zekur health insurance (10-11-2011..29-02-2012)': 265.15,
+     'rackspace 3/1': 19.12,
+     'hostal fosdem': 58.50,
+     'tram in brussels': 2+2+3.50,
+     'train brussels -> NL': 35.70,
+     'train+bus -> Terena': 2+8,
+     'train-> deventer': 15.80,
+     'train deventer -> den haag': 15.20+2.00
+   });
+   console.log('discrepency: wiki says 2324.02 at 1 March, instead of 2327.25, so 3.13 EUR less');
+   var michMarApr = display('invoice Michiel for Mar/Apr 2012', {
+      'received from paypal 740 euros (17 Feb)': -740,
+      'received from nlnet: 2000 euros (3 March)': -2000,
+      'received from paypal: 690 euros (8 March)': -690,
+      '03/02/2012  THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos)':     11.07,
+      '29/02/2012  Pendiente de liquidar   Pago en GODADDY.COM EUROPE 02079792661':  11.44,
+      '03/03/2012  Pendiente de liquidar   Pago en THE RACKSPACE CLOUD 210-581-0410':    11.63,
+      '12/03/2012  Pendiente de liquidar   Pago en VUELING AIRLINES EL PRAT DE LL  79,49€ (nlnet)': 79.49,
+      'living expenses 9 Mar - 9 May': 2000
+    });
+   display('Michiel balance', {
      '9 sept 2011': 4613.82,
      'sept': michSept,
      'oct': michOct,
-     'nov/dec': michNovDec
+     'nov/dec': michNovDec,
+     'jan/feb': michJanFeb,
+     'mar/apr': michMarApr
    });
-   console.log('discrepency: wiki says 2476.56 instead of 2479.89, so 3.33 EUR less');
+
 </script></head><body>
-
-Nov/Dev 2011:
-
-    -> 2023.91
-
-new total owed by unhosted to me: 2476.56 + health insurance (probably about 70 euros per month)
-invoice Michiel for Jan/Feb 2012:
-
-was owed: 2476.56 eur
-received from nlnet: -2500 eur -> -23.44
-received from govcert: -81,61 eur -> -105.05
-living costs Jan, Feb: 2000 eur -> 1894.95
-zekur health insurance (10-11-2011..29-02-2012): 265,15 eur -> 2160.20 
-rackspace 3/1: 19,12 -> 2179.32
-hostal fosdem: 58,50 eur -> 2237.82
-tram in brussels: 2+2+3,50 eur -> 2245.32
-train brussels -> NL: 35,70 eur -> 2281.02
-train+bus -> Terena: 2+8=10 eur -> 2291.02
-train-> deventer: 15,80 -> 2306,82
-train deventer -> den haag: 15,20+2,00 -> 2324,02
-
-invoice Michiel for Mar/Apr 2012
-
-was owed: 2324,02
-received from paypal 740 euros (17 Feb) -> 1584,02
-received from nlnet: 2000 euros (3 March) -> -415,98
-received from paypal: 690 euros (8 March) -> -1105,98
-03/02/2012  THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos)     11,07
-29/02/2012  Pendiente de liquidar   Pago en GODADDY.COM EUROPE 02079792661  11,44€
-03/03/2012  Pendiente de liquidar   Pago en THE RACKSPACE CLOUD 210-581-0410    11,63€
-12/03/2012  Pendiente de liquidar   Pago en VUELING AIRLINES EL PRAT DE LL  79,49€ (nlnet)
-
 Jan (everything €)
 
 September–October: 2000 + 151.73 stickers + 6.85 copyshop = 2158.58 (received 2200, owing 41.42)
