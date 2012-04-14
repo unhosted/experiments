@@ -26,7 +26,7 @@
     'reserved for Krankenkasse Javier, 15 Mar 2011 - 31 May 2011':      375.00,
     'Donation by Javier':                                              -2970.00
   });
-  display('Total to reimburse now to Michiel', {
+  var reimb = display('Total to reimburse now to Michiel', {
     'freelancer invoice from Michiel after own donation': flMich,
     'freelancer invoice from Javier after own donation':  flJavi,
     'DNR':                                                               131.26,
@@ -39,60 +39,48 @@
     'Conferences':                                                       187.23,
     'Administration':                                                     97.81
   });
-  display('Total to pay out later', {
+  var res = display('Total to pay out later', {
     'Reserve for Krankenkasse Michiel': resMich
+  });
+  display('Money we have at 9 Sept 2011', {
+    'at paypal':                                                       4077.80,
+    'at Berliner Bank (minus 33 eur reject.js and jsconfeu)':           377.03,
+    'at flattr':                                                        195.31,
+    'Total to reimburse now to Michiel':                               -reimb,
+    'Reserve for Krankenkasse Michiel':                                -res
+  });
+  console.log('discrepency: wiki said -867.98 here, but correct calculation seems to be -900.68');
+  display('Domain name registration', {
+    'DNR+Host \'unhosted.org\' godaddy            (11 sep)': 12.08,
+    'DNR                     godaddy            (16 jan)': 7.70,
+    'DNR                     godaddy            (20 jan)': 4.45,
+    'DNR                     godaddy            (26 jan)': 7.76,
+    'DNR                     godaddy            2 mar': 7.45,
+    'DNR                     godaddy            24 mar 1': 8.67,
+    'DNR                     godaddy            24 mar 2': 7.24,
+    'DNR                     godaddy            26 mar': 10.86,
+    'DNR                     godaddy            28 mar': 0.07,
+    'DNR                     godaddy            (8 may)': 7.10,
+    'DNR                     godaddy            (24 may)': 7.30,
+    'DNR                     godaddy            (20 jul)': 29.76,
+    'DNR                     godaddy            (28 aug)': 19.27,
+    'DNR                     godaddy            (2 sep)': 1.55
+  });
+  display('Hosting', {
+    'arsys             56.64         (15 dec)': 56.64,
+    'godaddy            4.50         (20 dec)': 4.50,
+    'arsys             17.70         (10 jan)': 17.70,
+    'arsys             35.40         (11 feb)': 35.40,
+    'rackspace          9.22         (1 may)': 9.22,
+    'rackspace         14.45         (3 may)': 14.45,
+    'rackspace         18.79         (3 jun)': 18.79,
+    'rackspace         15.68         (8 jul)': 15.68,
+    'rackspace         39.34         (3 aug)': 39.34,
+    'rackspace         22.92         (3 sep)': 22.92,
+    'hostgator          5.09         (3 sep)': 5.09
   });
 </script></head><body>
 
-
-
-Money we have:
-
-at paypal:                                                       4077.80 EUR
-at Berliner Bank (minus 33 eur reject.js and jsconfeu):           377.03 EUR
-at flattr:                                                        195.31 EUR
-                                                                ============ +
-Total:                                                           4682.84 EUR
-Total to reimburse now to Michiel:                               4613.82 EUR
-Reserve for Krankenkasse Michiel:                                 937.00 EUR
-                                                                ============ -
-Total reserve at 9 Sept 2011:                                    -867.98 EUR
-
-Domain name registration
-
-DNR+Host 'unhosted.org' godaddy           12.08         (11 sep)
-DNR                     godaddy            7.70         (16 jan)
-DNR                     godaddy            4.45         (20 jan)
-DNR                     godaddy            7.76         (26 jan)
-DNR                     godaddy            7.45         2 mar
-DNR                     godaddy            8.67         24 mar
-DNR                     godaddy            7.24         24 mar
-DNR                     godaddy           10.86         26 mar
-DNR                     godaddy            0.07         28 mar
-DNR                     godaddy            7.10         (8 may)
-DNR                     godaddy            7.30         (24 may)
-DNR                     godaddy           29.76         (20 jul)
-DNR                     godaddy           19.27         (28 aug)
-DNR                     godaddy            1.55         (2 sep)
-
-                                       ======== +
-                                         131.26
-
-Hosting
-
-hosting                 arsys             56.64         (15 dec)
-hosting                 godaddy            4.50         (20 dec)
-hosting                 arsys             17.70         (10 jan)
-hosting                 arsys             35.40         (11 feb)
-vps hosting             rackspace          9.22         (1 may)
-vps hosting             rackspace         14.45         (3 may)
-vps hosting             rackspace         18.79         (3 jun)
-vps hosting             rackspace         15.68         (8 jul)
-vps hosting             rackspace         39.34         (3 aug)
-hosting                 rackspace         22.92         (3 sep)
-hosting                 hostgator          5.09         (3 sep)
-                                       ======== +
-                                         239.73
 
 Online promotion
 
