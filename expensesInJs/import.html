@@ -1,9 +1,18 @@
 <html><head><script>
+  var data = {};
   function importItems(name, owee, ower, itemsList) {
+    if(!data[owee]) {
+      data[owee]=[];
+    }
+    if(!data[ower]) {
+      data[ower]=[];
+    }
     var sum=0;
     for(var i=0; i<itemsList.length; i++) {
       console.log(' >>> '+itemsList[i][0]+', '+itemsList[i][1]);
       sum += itemsList[i][1];
+      data[owee].push([ower, itemsList[i][1]]);
+      data[ower].push([owee, -itemsList[i][1]]);
     }
     console.log(name+', '+sum+' EUR');
     return sum;
@@ -274,5 +283,13 @@
     ['Jan/Feb', janJanFeb],
     ['Mar/Apr', janMarApr]
   ]);
+  console.log(data);
+  for(var peer in data) {
+    var balance = 0;
+    for(var i=0; i<data[peer].length; i++) {
+      balance += data[peer][i][1];
+    }
+    console.log('Balance of '+peer+': '+balance);
+  }
 </script></head><body>
 
