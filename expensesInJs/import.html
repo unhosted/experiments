@@ -14,8 +14,8 @@
       }
       console.log(' >>> '+itemsList[i][0]+', '+itemsList[i][1]);
       sum += itemsList[i][1];
-      data[owee].push([ower, itemsList[i][1]]);
-      data[ower].push([owee, -itemsList[i][1]]);
+      data[owee].push([ower, itemsList[i][1], itemsList[i][0]]);
+      data[ower].push([owee, -itemsList[i][1], itemsList[i][0]]);
     }
     console.log(name+', '+sum+' EUR');
     return sum;
@@ -265,12 +265,26 @@
     ['deficit 1 Sep', -1786.90, 'deficit@unhosted.org'],
   ]);
   console.log(data);
-  for(var peer in data) {
-    var balance = 0;
-    for(var i=0; i<data[peer].length; i++) {
-      balance += data[peer][i][1];
+  function onLoad() {
+    for(var peer in data) {
+      var balance = 0;
+      for(var i=0; i<data[peer].length; i++) {
+        balance += data[peer][i][1];
+      }
+      console.log('Balance of '+peer+': '+balance);
+      document.getElementById('buttons').innerHTML += '<input type="submit" onclick="display(\''+peer+'\');" value="'+peer+' ('+balance+')">';
     }
-    console.log('Balance of '+peer+': '+balance);
   }
-</script></head><body>
-
+  function display(userAddress) {
+    var str = '<table><tr><td>peer</td><td>thing</td><td>amount</td><td>balance</td></tr>';
+    var cumm=0;
+    for(var i=0; i<data[userAddress].length; i++) {
+      cumm += data[userAddress][i][1];
+      str += '<tr><td>'+data[userAddress][i][0]+'</td><td>'+data[userAddress][i][2]+'</td><td>'+data[userAddress][i][1]+'</td><td>'+cumm+'</td></tr>';
+    }
+    document.getElementById('display').innerHTML = str + '</table>';
+  }
+</script></head><body onload="onLoad();">
+Import webcredits from unhosted book keeping for user address:
+<div id="buttons"></div>
+<div id="display"></div>
