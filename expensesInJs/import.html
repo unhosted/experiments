@@ -111,11 +111,6 @@
     ['setup fee               Google dev              3.56         (13 may)', 3.56]
   ]);
   console.log('33 euro discrepancy seems to be on purpose here');
-  var balanceYearOne = importItems('Money we have at 9 Sept 2011', 'budget@unhosted.org', 'donations@unhosted.org', [
-    ['at paypal',                                                       4077.80],
-    ['at Berliner Bank (minus 33 eur reject.js and jsconfeu)',           377.03],
-    ['at flattr',                                                        195.31],
-  ]);
   console.log('discrepency: wiki said -867.98 here, but correct calculation seems to be -900.68, seems related to 33 eur of things paid directly from BerlinerBank');
 
   //START YEAR TWO:
@@ -244,6 +239,30 @@
     ['Nov/Dec', janNovDec],
     ['Jan/Feb', janJanFeb],
     ['Mar/Apr', janMarApr]
+  ]);
+  //1 May rebudget:
+  importItems('1 May 2012 rebudget', 'donations@unhosted.org', null, [
+    ['budget spent on volunteers', -28899.08, 'volunteers@unhosted.org'],
+    ['budget spent on offices', -595.14, 'office@unhosted.org'],
+    ['budget spent on hosting', -546.43, 'hosting@unhosted.org'],
+    ['budget spent on competitions, campaigns and publicity', -1757.69, 'compcamppub@unhosted.org'],
+    ['budget spent on travel, accommodation and conferences', -1098.06, 'travaccconf@unhosted.org'],
+  ]);
+  importItems('nlnet payment expected', 'donations@unhosted.org', null, [
+    ['payment outstanding costs', 1229.82-64-81, 'michiel@unhosted.org'],
+    ['payment outstanding costs', 2064.58, 'jan@unhosted.org'],
+    ['surplus 1 May', 1850.60, 'newbudget@unhosted.org'],
+  ]);
+  importItems('budget 1 May - 9 Sep 2012', 'newbudget@unhosted.org', null, [
+    ['budget expected for ToS;DR 1 May - 9 Sep', 3.75*500.00, 'tos-dr@unhosted.org'],
+    ['budget expected for Hostbusters Unlimited 1 May - 9 Sep', 1220+3.25*1720.00, 'hostbusters@unhosted.org'],
+    ['budget expected for R&D 1 May - 9 Sep', (4.25*1070.00+2*95)/2, 'research@unhosted.org'],
+    ['budget expected for Opentabs 1 May - 9 Sep', (4.25*1070.00+2*95)/2, 'opentabs@unhosted.org'],
+    ['budget expected for generic hosting 1 May - 9 Sep', 4.25*20+30, 'hosting@unhosted.org'],
+    ['budget expected for generic publicity 1 May - 9 Sep', 100, 'publicity@unhosted.org'],
+    ['expected from nlnet 1 July', -5000, 'expected@nlnet.nl'],
+    ['expected from nlnet 1 Sep', -5000, 'expected@nlnet.nl'],
+    ['deficit 1 Sep', -1786.90, 'deficit@unhosted.org'],
   ]);
   console.log(data);
   for(var peer in data) {
