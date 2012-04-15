@@ -4,11 +4,14 @@
     if(!data[owee]) {
       data[owee]=[];
     }
-    if(!data[ower]) {
-      data[ower]=[];
-    }
     var sum=0;
     for(var i=0; i<itemsList.length; i++) {
+      if(!ower && itemsList[i].length >= 3) {
+        ower = itemsList[i][2];
+      }
+      if(!data[ower]) {
+        data[ower]=[];
+      }
       console.log(' >>> '+itemsList[i][0]+', '+itemsList[i][1]);
       sum += itemsList[i][1];
       data[owee].push([ower, itemsList[i][1]]);
@@ -17,26 +20,19 @@
     console.log(name+', '+sum+' EUR');
     return sum;
   }
-  var flMich = importItems('Freelancer\'s invoice Michiel', 'michiel@unhosted.org', 'budget@unhosted.org', [
-    ['full-time work allowance Michiel, 1 Nov 2010 - 15 Jan 2011',       2500.00],
-    ['full-time work allowance Michiel, 1 Mar 2011 - 8 Sep 2011',        6250.00],
-    ['office desk Michiel     co-up, april, 12-day flex',                  95.00],
-    ['office desk Michiel     betahaus, july, at team desk + coffee',     158.33],
-    ['Donation by Michiel',                                            -6000.00],
-    ['Received from Crisp for workshop',                                -540.00],
-    ['donations accepted in cash by Michiel',                             -40.00]
+  var flMich = importItems('Freelancer\'s invoice Michiel', 'michiel@unhosted.org', null, [
+    ['full-time work allowance Michiel, 1 Nov 2010 - 15 Jan 2011',       2500.00, 'volunteers@unhosted.org'],
+    ['full-time work allowance Michiel, 1 Mar 2011 - 8 Sep 2011',        6250.00, 'volunteers@unhosted.org'],
+    ['office desk Michiel     co-up, april, 12-day flex',                  95.00, 'office@unhosted.org'],
+    ['office desk Michiel     betahaus, july, at team desk + coffee',     158.33, 'office@unhosted.org'],
+    ['Donation by Michiel',                                            -6000.00, 'donations@unhosted.org'],
+    ['Received from Crisp for workshop',                                -540.00, 'donations@unhosted.org'],
+    ['donations accepted in cash by Michiel',                             -40.00, 'donations@unhosted.org']
   ]);
-  var resMich = importItems('reserved for Michiel', 'savings@unhosted.org', 'budget@unhosted.org', [
-    ['reserved for Krankenkasse Michiel, 1 Mar 2011 - 8 Sep 2011',       937.00]
-  ]);
-  var flJavi = importItems('freelancer\'s invoice Javier', 'edokoa@unhosted.org', 'budget@unhosted.org', [
-    ['office desk Javier      co-up, april, 12-day flex',                  95.00],
-    ['full-time work allowance Javier, 15 Mar 2011 - 31 May 2011',       2500.00],
-    ['reserved for Krankenkasse Javier, 15 Mar 2011 - 31 May 2011',      375.00],
-    ['Donation by Javier',                                              -2970.00]
-  ]);
-  var res = importItems('Total to pay out later', null, null, [
-    ['Reserve for Krankenkasse Michiel', resMich]
+  var flJavi = importItems('freelancer\'s invoice Javier', 'edokoa@unhosted.org', null, [
+    ['office desk Javier      co-up, april, 12-day flex',                  95.00, 'office@unhosted.org'],
+    ['full-time work allowance Javier, 15 Mar 2011 - 31 May 2011',       2500.00, 'volunteers@unhosted.org'],
+    ['Donation by Javier',                                              -2595.00, 'donations@unhosted.org']
   ]);
   var dnr = importItems('Domain name registration', 'michiel@unhosted.org', 'hosting@unhosted.org', [
     ['DNR+Host \'unhosted.org\' godaddy            (11 sep)', 12.08],
@@ -107,7 +103,7 @@
     ['reject.js                                            (13 eur, will be paid through berliner bank)', 13],
     ['jsconfeu-fun                                         (20 eur, will be paid through berliner bank)', 20]
   ]);
-  var adm = importItems('Administration', 'michiel@unhosted.org', 'misc@unhosted.org', [
+  var adm = importItems('Administration', 'michiel@unhosted.org', 'office@unhosted.org', [
     ['notary                  Seeger&Seeger          31.75         (apr)', 31.75],
     ['e.V. registry                                  53.00         (4 jul)', 53],
     ['setup fee               paypal                  1.50         (29 apr)', 1.5],
@@ -115,113 +111,79 @@
     ['setup fee               Google dev              3.56         (13 may)', 3.56]
   ]);
   console.log('33 euro discrepancy seems to be on purpose here');
-  var reimb = importItems('Total to reimburse now to Michiel', null, null, [
-    ['freelancer invoice from Michiel after own donation', flMich],
-    ['freelancer invoice from Javier after own donation',  flJavi],
-    ['DNR',                                                              dnr],
-    ['hosting',                                                          hosting],
-    ['online promotion',                                                 promo],
-    ['T-shirt campaign',                                                 campaign],
-    ['Hacky Holidays Competition',                                       HH],
-    ['Travel',                                                           travel],
-    ['Accomodation',                                                     acc],
-    ['Conferences',                                                      conf],
-    ['Administration',                                                   adm],
-    ['paid directly from BerlinerBank', -33]
-  ]);
   var balanceYearOne = importItems('Money we have at 9 Sept 2011', 'budget@unhosted.org', 'donations@unhosted.org', [
     ['at paypal',                                                       4077.80],
     ['at Berliner Bank (minus 33 eur reject.js and jsconfeu)',           377.03],
     ['at flattr',                                                        195.31],
-    //['Total to reimburse now to Michiel',                               -reimb],
-    //['Reserve for Krankenkasse Michiel',                                -res]
   ]);
   console.log('discrepency: wiki said -867.98 here, but correct calculation seems to be -900.68, seems related to 33 eur of things paid directly from BerlinerBank');
 
   //START YEAR TWO:
 
-  importItems('money we need', null, null, [
-    ['living expenses Code Communist',    12000],
-    ['living expenses Design Dictator',   12000],
-    ['krankenkasse Code Communist',        1800],
-    ['krankenkasse Design Dictator',       1800],
-    ['desk Code Communist',                1800],
-    ['desk Design Dictator',               1800],
-    ['taxes Code Communist',                600],
-    ['taxes Design Dictator',               600],
-    ['hosting',                            1000],
-    ['competitions, campaigns, publicity',  500],
-    ['pay off debt from year 1',            868],
-    ['misc',                                232],
-    ['travel, accomodation, conferences',  1000]
-  ]);
-  importItems('money we will have', null, null, [
-    ['from nlnet',                        30000],
-    ['need to find',                       6000]
-  ]);
-  var michSept = importItems('Michiel sept', 'michiel@unhosted.org', 'budget@unhosted.org', [
-    ['worked one month 9 sept - 9 oct', 1000],
-    ['42 Unhost postcards to send with T-shirts (via Kenny): 42 * 20 CZK = 840 CZK', 35],
-    ['stamps for sending 27 T-shirt packages from Unhost: 1950 CZK', 80],
-    ['sending another 14 T-shirts: 2x Germany(1.45 EUR), 12x international(3.45 EUR)', 44.30],
-    ['days co-up Michiel sept: 95 eur, paid directly from Berliner Bank', 0],
+  var michSept = importItems('Michiel sept', 'michiel@unhosted.org', null, [
+    ['worked one month 9 sept - 9 oct', 1000, 'volunteers@unhosted.org'],
+    ['42 Unhost postcards to send with T-shirts (via Kenny): 42 * 20 CZK = 840 CZK', 35, 'compcamppub@unhosted.org'],
+    ['stamps for sending 27 T-shirt packages from Unhost: 1950 CZK', 80, 'compcamppub@unhosted.org'],
+    ['sending another 14 T-shirts: 2x Germany(1.45 EUR), 12x international(3.45 EUR)', 44.30, 'compcamppub@unhosted.org'],
+    ['days co-up Michiel sept: 95 eur, paid directly from Berliner Bank', 0, 'office@unhosted.org'],
     //'the verein already owed him 4613.82 euros for year one expenses, plus whatever he paid for Krankenkasse during the period', 4613.82],
-    ['received 4042 euros from paypal to his personal bank account (comdirect)', -4042],
+    ['received 4042 euros from paypal to his personal bank account (comdirect)', -4042, 'donations@unhosted.org'],
   ]);
-  var michOct = importItems('Michiel oct', 'michiel@unhosted.org', 'budget@unhosted.org', [
-    ['worked 3/4 month 9 oct - 9 nov', 1000],
-    ['paid 4,50 for sdw prints', 4.50],
-    ['paid sdw (some 130 euros, will check)', 130],
-    ['paid 40,15 for sending T-shirts (3rd batch)', 40.15],
-    ['paid 185,75 in train tickets, of which 89,25 will be paid back through Jan, and 38,50 is a donation from Michiel to DS11', 89.25],
-    ['5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661', 19.73],
-    ['5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661', 12.43],
-    ['9-9-2011 28-9-2011 (Liquidado) Pago en T-MOBILE CZECH REPUBLIK BONN', 24.59],
-    ['03/10/2011 THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos)', 20.28],
-    ['20/10/2011 GODADDY.COM EUROPE (02079792661 - Reino Unido)', 7.50],
-    ['flyeralarm stickers pay-on-delivery', 68.71]
+  var michOct = importItems('Michiel oct', 'michiel@unhosted.org', null, [
+    ['worked 3/4 month 9 oct - 9 nov', 1000, 'volunteers@unhosted.org'],
+    ['paid 4,50 for sdw prints', 4.50, 'compcamppub@unhosted.org'],
+    ['paid sdw (some 130 euros, will check)', 130, 'compcamppub@unhosted.org'],
+    ['paid 40,15 for sending T-shirts (3rd batch)', 40.15, 'compcamppub@unhosted.org'],
+    ['paid 185,75 in train tickets, of which 89,25 will be paid back through Jan, and 38,50 is a donation from Michiel to DS11', 89.25, 'travaccconf@unhosted.org'],
+    ['5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661', 19.73, 'hosting@unhosted.org'],
+    ['5-9-2011 28-9-2011 (Liquidado) Pago en GODADDY.COM EUROPE 02079792661', 12.43, 'hosting@unhosted.org'],
+    ['9-9-2011 28-9-2011 (Liquidado) Pago en T-MOBILE CZECH REPUBLIK BONN', 24.59, 'travaccconf@unhosted.org'],
+    ['03/10/2011 THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos)', 20.28, 'hosting@unhosted.org'],
+    ['20/10/2011 GODADDY.COM EUROPE (02079792661 - Reino Unido)', 7.50, 'hosting@unhosted.org'],
+    ['flyeralarm stickers pay-on-delivery', 68.71, 'compcamppub@unhosted.org']
   ]);
   console.log('discrepancy: this seems to be missing entirely from the wiki');
-  var michNovDec = importItems('Michiel Nov/Dev', 'michiel@unhosted.org', 'budget@unhosted.org', [
+  var michNovDec = importItems('Michiel Nov/Dev', 'michiel@unhosted.org', null, [
     //'original summary (presumably the 1 Nov start balance?)', 3125.20],
-    ['received from nlnet', -2800],
-    ['mozfest (apart from travel to UK which was already in there)', 32.76],
-    ['visit to surfnet was 12+9+2 = 21 eur by train', 21],
-    ['train to govcert: 5,50 eur (they are not paying in the end)', 5.50],
-    ['train govcert -> bearstech', 47.50],
-    ['rackspace 2 nov -> 20,69 eur -> 127.45', 20.69],
-    ['and also since then: rackspace 2 dec', 23.91],
-    ['unemployment 9 nov - 9 jan', 2000]
+    ['received from nlnet', -2800, 'donations@unhosted.org'],
+    ['mozfest (apart from travel to UK which was already in there)', 32.76, 'travaccconf@unhosted.org'],
+    ['visit to surfnet was 12+9+2 = 21 eur by train', 21, 'pilot@surfnet.nl'],
+    ['train to govcert: 5,50 eur (they are not paying in the end)', 5.50, 'travaccconf@unhosted.org'],
+    ['train govcert -> bearstech', 47.50, 'travaccconf@unhosted.org'],
+    ['rackspace 2 nov -> 20,69 eur -> 127.45', 20.69, 'hosting@unhosted.org'],
+    ['and also since then: rackspace 2 dec', 23.91, 'hosting@unhosted.org'],
+    ['unemployment 9 nov - 9 jan', 2000, 'volunteers@unhosted.org']
   ]);
   console.log('discrepency: wiki says 2476.56 at 1 Jan, instead of 2479.89, so 3.33 EUR less');
-  var michJanFeb = importItems('invoice Michiel for Jan/Feb 2012', 'michiel@unhosted.org', 'budget@unhosted.org', [
+  var michJanFeb = importItems('invoice Michiel for Jan/Feb 2012', 'michiel@unhosted.org', null, [
     //'was owed', 2476.56],
-    ['received from nlnet', -2500],
-    ['received from govcert', -81.61],
-    ['living costs 9 Jan .. 9 Mar', 2000],
-    ['zekur health insurance (10-11-2011..29-02-2012)', 265.15],
-    ['rackspace 3/1', 19.12],
-    ['hostal fosdem', 58.50],
-    ['tram in brussels', 2+2+3.50],
-    ['train brussels -> NL', 35.70],
-    ['train+bus -> Terena', 2+8],
-    ['train-> deventer', 15.80],
-    ['train deventer -> den haag', 15.20+2.00]
+    ['received from nlnet', -2500, 'donations@unhosted.org'],
+    ['received from govcert', -81.61, 'travaccconf@unhosted.org'],
+    ['living costs 9 Jan .. 9 Mar', 2000, 'volunteers@unhosted.org'],
+    ['zekur health insurance (10-11-2011..29-02-2012)', 265.15, 'volunteers@unhosted.org'],
+    ['rackspace 3/1', 19.12, 'hosting@unhosted.org'],
+    ['hostal fosdem', 58.50, 'travaccconf@unhosted.org'],
+    ['tram in brussels', 2+2+3.50, 'travaccconf@unhosted.org'],
+    ['train brussels -> NL', 35.70, 'travaccconf@unhosted.org'],
+    ['train+bus -> Terena', 2+8, 'pilot@surfnet.nl'],
+    ['train-> deventer', 15.80, 'pilot@surfnet.nl'],
+    ['train deventer -> den haag', 15.20+2.00, 'pilot@surfnet.nl']
   ]);
   console.log('discrepency: wiki says 2324.02 at 1 March, instead of 2327.25, so 3.13 EUR less');
-  var michMarApr = importItems('invoice Michiel for Mar/Apr 2012', 'michiel@unhosted.org', 'budget@unhosted.org', [
-    ['received from paypal 740 euros (17 Feb)', -740],
-    ['received from nlnet: 2000 euros (3 March)', -2000],
-    ['received from paypal: 690 euros (8 March)', -690],
-    ['03/02/2012  THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos)',     11.07],
-    ['29/02/2012  Pendiente de liquidar   Pago en GODADDY.COM EUROPE 02079792661',  11.44],
-    ['03/03/2012  Pendiente de liquidar   Pago en THE RACKSPACE CLOUD 210-581-0410',    11.63],
-    ['12/03/2012  Pendiente de liquidar   Pago en VUELING AIRLINES EL PRAT DE LL  79,49€ (nlnet)', 79.49],
-    ['03/04/2012  Pendiente de liquidar   Pago en THE RACKSPACE CLOUD 210-581-0410',    17.64],
-    ['12-4-2012   Pendiente de liquidar   Pago en DB BAHN A-NR RFEHTO INTERNET', 81],
-    ['12-4-2012   Pendiente de liquidar   Pago en HOSTELBOOKERS.COM 0207 4061800', 4.62],
-    ['S-bahn tickets Hamburg: 7x1.85', 12.95],
-    ['living expenses 9 Mar - 9 May', 2000]
+  var michMarApr = importItems('invoice Michiel for Mar/Apr 2012', 'michiel@unhosted.org', null, [
+    ['received from paypal 740 euros (17 Feb)', -740, 'donations@unhosted.org'],
+    ['received from nlnet: 2000 euros (3 March)', -2000, 'donations@unhosted.org'],
+    ['received from paypal: 690 euros (8 March)', -690, 'donations@unhosted.org'],
+    ['03/02/2012  THE RACKSPACE CLOUD (210-581-0410 - Estados Unidos)',     11.07, 'hosting@unhosted.org'],
+    ['29/02/2012  Pendiente de liquidar   Pago en GODADDY.COM EUROPE 02079792661',  11.44, 'hosting@unhosted.org'],
+    ['03/03/2012  Pendiente de liquidar   Pago en THE RACKSPACE CLOUD 210-581-0410',    11.63, 'hosting@unhosted.org'],
+    ['12/03/2012  Pendiente de liquidar   Pago en VUELING AIRLINES EL PRAT DE LL  79,49€ (nlnet)', 79.49, 'travaccconf@unhosted.org'],
+    ['03/04/2012  Pendiente de liquidar   Pago en THE RACKSPACE CLOUD 210-581-0410',    17.64, 'hosting@unhosted.org'],
+    ['12-4-2012   Pendiente de liquidar   Pago en DB BAHN A-NR RFEHTO INTERNET', 81, 'hackfest@libredocs.org'],
+    ['12-4-2012   Pendiente de liquidar   Pago en HOSTELBOOKERS.COM 0207 4061800', 4.62, 'travaccconf@unhosted.org'],
+    ['14-4-2012 hostel 2 nights for Hamburg LO hackfest', 50, 'travaccconf@unhosted.org'],
+    ['S-bahn tickets Hamburg: 7x1.85', 12.95, 'travaccconf@unhosted.org'],
+    ['living expenses 9 Mar - 9 May', 2000, 'volunteers@unhosted.org']
   ]);
   importItems('Michiel balance', null, null, [
     ['9 sept 2011', 4613.82],
@@ -236,46 +198,46 @@
 
   var janSepOct = importItems('Jan September–October', 'jan@unhosted.org', 'budget@unhosted.org', [
     //2000 + 151.73 stickers + 6.85 copyshop = 2158.58 (received 2200, owing 41.42)
-    ['worked two months', 2000],
-    ['days co-up: 14,15 sept, 3 single tickets (paid through Berliner Bank)', 0],
-    ['22.62 for jsconfEU party (paid through Berliner Bank)', 0],
-    ['stickers', 151.73],
-    ['188 € train: 169 to webtechcon + 19 back (paid by them)', 0],
-    ['of webtechcon money, 89.25 was for Michiel\'s travel costs', -89.25],
-    ['6,85 copyshop for 24 Unhost postcards', 6.85],
-    ['received from nlnet', -2200]
+    ['worked two months', 2000, 'volunteers@unhosted.org'],
+    ['days co-up: 14,15 sept, 3 single tickets (paid through Berliner Bank)', 0, 'office@unhosted.org'],
+    ['22.62 for jsconfEU party (paid through Berliner Bank)', 0, 'compcamppub@unhosted.org'],
+    ['stickers', 151.73, 'compcamppub@unhosted.org'],
+    ['188 € train: 169 to webtechcon + 19 back (paid by them)', 0, 'travaccconf@unhosted.org'],
+    ['of webtechcon money, 89.25 was for Michiel\'s travel costs', -89.25, 'travaccconf@unhosted.org'],
+    ['6,85 copyshop for 24 Unhost postcards', 6.85, 'compcamppub@unhosted.org'],
+    ['received from nlnet', -2200, 'donations@unhosted.org']
   ]);
   var janNovDec = importItems('Jan November–December', 'jan@unhosted.org', 'budget@unhosted.org', [
     //: 2000 + 61.09 (7.85+7.40+6.30+4.54+35) = 2061.09 (received 2500, owed 41.42 last) owing 480.33
-    ['stamps for 3 more shirts (November 10)', 7.85],
-    ['(1.80+2.80+2.80) in local tickets to get to HamburgJS, to friend and back (~90 in DB tickets paid by HamburgJS, November 21)', 7.40],
-    ['day pass to get to Köpenick youth meeting (Facebook presentation, 100 € payment will be donated to Unhosted e. V., November 22)', 6.30],
-    ['received donation for unhosted from Koepenick', -100],
-    ['packages and stamps for sending more shirts (December 5)', 4.54],
-    ['28C3 day pass to give a lightning talk (December 30)', 35],
-    ['worked two months', 2000],
-    ['received from nlnet', -2500]
+    ['stamps for 3 more shirts (November 10)', 7.85, 'compcamppub@unhosted.org'],
+    ['(1.80+2.80+2.80) in local tickets to get to HamburgJS, to friend and back (~90 in DB tickets paid by HamburgJS, November 21)', 7.40, 'travaccconf@unhosted.org'],
+    ['day pass to get to Köpenick youth meeting (Facebook presentation, 100 € payment will be donated to Unhosted e. V., November 22)', 6.30, 'travaccconf@unhosted.org'],
+    ['received donation for unhosted from Koepenick', -100, 'donations@unhosted.org'],
+    ['packages and stamps for sending more shirts (December 5)', 4.54, 'compcamppub@unhosted.org'],
+    ['28C3 day pass to give a lightning talk (December 30)', 35, 'tracaccconf@unhosted.org'],
+    ['worked two months', 2000, 'volunteers@unhosted.org'],
+    ['received from nlnet', -2500, 'donations@unhosted.org']
   ]);
-  var janJanFeb = importItems('Jan Jan/Feb', 'jan@unhosted.org', 'budget@unhosted.org', [
-    ['health insurance, 215.26*4 for September–December, 221.15 after 2012 raise for January (February 15)', 1082.19],
-    ['health insurance abroad', 11],
-    ['liability insurance', 69.59],
-    ['worked two months', 2000],
-    ['received from nlnet', -3000]
+  var janJanFeb = importItems('Jan Jan/Feb', 'jan@unhosted.org', null, [
+    ['health insurance, 215.26*4 for September–December, 221.15 after 2012 raise for January (February 15)', 1082.19, 'volunteers@unhosted.org'],
+    ['health insurance abroad', 11, 'volunteers@unhosted.org'],
+    ['liability insurance', 69.59, 'volunteers@unhosted.org'],
+    ['worked two months', 2000, 'volunteers@unhosted.org'],
+    ['received from nlnet', -3000, 'donations@unhosted.org']
   ]);
-  var janMarApr = importItems('Jan March/April', 'jan@unhosted.org', 'budget@unhosted.org', [
-    ['sending two shirts (March 7)', 4.90],
-    ['bus tickets (5.00+2.70) getting into Amsterdam (hitchhiked there, March 7)', 7.70],
-    ['7.95 printing Unhosted readers for Unlike Us conf attendees (March 9)', 7.95],
-    ['8.10 (3*2.70) getting to the Unlike Us conf venue (March 9–10)', 8.10],
-    ['79 €: Unlike Us Amsterdam train back (March 11)', 79],
-    ['149 10-day flex ticket Coworking0711 (March 15)', 149],
-    ['221.15 health insurance for February (March 15)', 221.15],
-    ['3.45 sending another shirt (March 17)', 3.45],
-    ['54.61 for 1000 new stickers from Flyeralarm (March 22)', 54.61],
-    ['35.52 for 2500 JS stickers (March 22)', 35.52],
-    //'projected 50 for 1000 stickers with white background this time … (April)', 50],
-    ['worked two months', 2000]
+  var janMarApr = importItems('Jan March/April', 'jan@unhosted.org', null, [
+    ['sending two shirts (March 7)', 4.90, 'compcamppub@unhosted.org'],
+    ['bus tickets (5.00+2.70) getting into Amsterdam (hitchhiked there, March 7)', 7.70, 'travaccconf@unhosted.org'],
+    ['7.95 printing Unhosted readers for Unlike Us conf attendees (March 9)', 7.95, 'compcamppub@unhosted.org'],
+    ['8.10 (3*2.70) getting to the Unlike Us conf venue (March 9–10)', 8.10, 'travaccconf@unhosted.org'],
+    ['79 €: Unlike Us Amsterdam train back (March 11)', 79, 'travaccconf@unhosted.org'],
+    ['149 10-day flex ticket Coworking0711 (March 15)', 149, 'office@unhosted.org'],
+    ['221.15 health insurance for February (March 15)', 221.15, 'taxes@unhosted.org'],
+    ['3.45 sending another shirt (March 17)', 3.45, 'compcamppub@unhosted.org'],
+    ['54.61 for 1000 new stickers from Flyeralarm (March 22)', 54.61, 'compcamppub@unhosted.org'],
+    ['35.52 for 2500 JS stickers (March 22)', 35.52, 'compcamppub@unhosted.org'],
+    //'projected 50 for 1000 stickers with white background this time … (April)', 50, 'compcamppub@unhosted.org'],
+    ['worked two months', 2000, 'volunteers@unhosted.org']
   ]);
   importItems('Jan balance', null, null, [
     ['Sep/Oct', janSepOct],
