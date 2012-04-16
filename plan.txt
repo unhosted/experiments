@@ -1,0 +1,19 @@
+Jan:
+- login form into todomvc, libre docs, tutorial
+- fix Inspector Gadget
+- website with latest info, map of the movement
+
+- libre docs -> document list and also for other files (with xmartin)
+- remotestoragejs: basic, plus optional dialog, plus optional sync
+- address book app
+
+Michiel:
+- 2 days: borg, 2 days: servers, 2 days: Opentabs
+- two weeks: optimize ownCloud entirely
+- OpenPhoto
+- Substance
+- lamp server
+- the Locker project
+- Opentabs
+- sockethub
+- move to new spec
