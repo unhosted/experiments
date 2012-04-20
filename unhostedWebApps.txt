@@ -1,0 +1,15 @@
+the web as a software platform: unhosted web apps.
+unhosted = data on the wire (no server-side html generation), offline-capable, client-side (business logic), and optionally: packaged 
+bit.ly/frontend-dev-baseline
+5apps
+WebIntents
+personal data services: remoteStorage, sockethub
+implementing cloud sync: openmvc
+get your remoteStorage (5apps/OwnCube/IrisCouch/surfnet)
+make your app social: vcard importer
+using photos: OpenPhoto
+bridges to web2.0: the Locker project
+other topics: freedom from monopolies, non-profit movement, e2ee, ToS;DR, apptorrent, BrowserID
+
+- ask Jan about Unhosted Goes West post
+- tell azool about OpenOffice Cloud project
