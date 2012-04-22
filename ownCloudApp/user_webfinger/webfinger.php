@@ -23,9 +23,9 @@ if(substr($userName, 0, 5) == 'acct:') {
 	$userName = substr($userName, 5);
 }
 if(isset($_SERVER['HTTPS'])) {
-	$baseAddress = 'https://'.$_SERVER['SERVER_NAME'].'/apps/remoteStorage/';
+	$baseAddress = 'https://'.$_SERVER['SERVER_NAME'].$WEBROOT.'/apps/remoteStorage/';
 } else {
-	$baseAddress = 'http://'.$_SERVER['SERVER_NAME'].'/apps/remoteStorage/';
+	$baseAddress = 'http://'.$_SERVER['SERVER_NAME'].$WEBROOT.'/apps/remoteStorage/';
 }
 echo "<";
 ?>
