@@ -1,11 +1,12 @@
 exports.config = {
   port: 80,
   redirect: {
-    'www.libredocs.org' : 'http://libredocs.org',
-    'www.libredoc.org' : 'http://libredocs.org',
-    'libredoc.org' : 'http://libredocs.org'
+    'www.libredocs.org' : 'libredocs.org',
+    'www.libredoc.org' : 'libredocs.org',
+    'libredoc.org' : 'libredocs.org'
   },
   handler: {
+    'proxy.unhosted.org': '/home/ubuntu/experiments/proxy-unhosted-org',
     'libredocs.org': '/home/ubuntu/libredocs',
     'proxy.libredocs.org': '/home/ubuntu/libredocs/proxy',
     'jan.libredocs.org': '/home/jan/libredocs',
