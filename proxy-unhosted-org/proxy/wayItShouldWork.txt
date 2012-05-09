@@ -1,0 +1,30 @@
+if you have a cookie:
+  if you have a token:
+    it is given to you.
+    you get redirected.
+  else:
+    you get the allow/decline dialog.
+    if you click 'allow':
+      a token is created, stored, and given to you.
+      you get redirected.
+    if you click 'decline':
+      you get redirected with an error.
+else:
+  if we have an account for your user address:
+    you get a BrowserID button with requiredEmail prefilled that says 'allow' and also a decline button.
+    if you click 'allow':
+      if you get through BrowserID successfully:
+	if you have a token:
+          it is given to you.
+          you get cookied.
+          you get redirected.
+	else:
+          a token is created, stored, and given to you.
+          you get cookied.
+          you get redirected.
+      else:
+        you get an error message with a 'register' link and a 'close' button.
+    if you click 'decline':
+      you get redirected with an error.
+  else:
+    you get an error message with a 'register' link and a 'close' button.
