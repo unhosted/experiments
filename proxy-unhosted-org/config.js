@@ -14,6 +14,7 @@ exports.config = {
     'proxy.unhosted.org/host-meta': './proxy',
     'proxy.unhosted.org/webfinger': './proxy',
     //fakefinger:
+    'proxy.unhosted.org/irisCouchCheck': './fakefinger',
     'proxy.unhosted.org/lookup': './fakefinger',
     'proxy.unhosted.org/setUser': './fakefinger',
     'proxy.unhosted.org/setHostDefault': './fakefinger',

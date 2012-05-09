@@ -61,6 +61,9 @@ exports.handler = (function() {
                 storageInfo.template = 'http://proxy.unhosted.org/CouchDB?'
                     +storageInfo.template.substring('http://proxy.libredocs.org/'.length);
               }
+              storageInfo.auth = {
+                href: storageInfo.auth
+              };
               res.end(JSON.stringify(storageInfo));
             } catch (e) {
               res.end('undefined');
@@ -115,7 +118,7 @@ exports.handler = (function() {
       // 3 - fakefinger lookup
       var urlObj = url.parse(req.url, true);
       console.log(urlObj);
-      if(urlObj.pathname=='/lookup') {
+      if(urlObj.pathname=='/lookup' || urlObj.pathname=='/irisCouchCheck') {
         serveLookup(req, res, urlObj.query['q']);
       } else if(urlObj.pathname=='/browserid2pwd') {
         serveIrisPwdService(req, res, dataStr, urlObj.query['subdomain']);
