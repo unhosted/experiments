@@ -17,12 +17,14 @@ exports.handler = (function() {
   }
   function mayRead(authorizationHeader, path) {
     if(authorizationHeader) {
-      var scopes = tokens[authorizationHeader];
+      var scopes = tokens[authorizationHeader.substring('Bearer '.length)];
       if(scopes) {
         for(var i=0; i<scopes.length; i++) {
           var scopeParts = scopes[i].split(':');
           if(path.substring(0, scopeParts[0].length)==scopeParts[0]) {
             return true;
+          } else {
+            console.log(path.substring(0, scopeParts[0].length)+' != '+ scopeParts[0]);
           }
         }
       }
@@ -33,7 +35,7 @@ exports.handler = (function() {
   }
   function mayWrite(authorizationHeader, path) {
     if(authorizationHeader) {
-      var scopes = tokens[authorizationHeader];
+      var scopes = tokens[authorizationHeader.substring('Bearer '.length)];
       if(scopes) {
         for(var i=0; i<scopes.length; i++) {
           var scopeParts = scopes[i].split(':');
@@ -45,6 +47,7 @@ exports.handler = (function() {
     }
   }
   function writeJson(res, obj, origin) {
+    console.log(obj);
     res.writeHead(200, {
       'access-control-allow-origin': (origin?origin:'*'),
       'access-control-allow-headers': 'Content-Type, Authorization, Origin',
@@ -60,6 +63,27 @@ exports.handler = (function() {
     res.write('<!DOCTYPE html lang="en"><head><title>'+config.host+'</title><meta charset="utf-8"></head><body>'+html+'</body></html>');
     res.end();
   }
+  function give404(res, origin) {
+    console.log('404');
+    console.log(data);
+    res.writeHead(404, {
+      'access-control-allow-origin': (origin?origin:'*'),
+      'access-control-allow-headers': 'Content-Type, Authorization, Origin',
+      'content-type': 'application/json'
+    });
+    res.end();
+  }
+  function computerSaysNo(res, origin) {
+    console.log('COMPUTER_SAYS_NO');
+    console.log(tokens);
+    res.writeHead(401, {
+      'access-control-allow-origin': (origin?origin:'*'),
+      'access-control-allow-headers': 'Content-Type, Authorization, Origin',
+      'content-type': 'application/json'
+    });
+    res.end();
+  }
+
   function toHtml(str) {
     return str
       .replace(/&/g, '&amp;')
@@ -68,6 +92,7 @@ exports.handler = (function() {
       .replace(/"/g, '&quot;');
   }
   function webfinger(urlObj, res) {
+    console.log('WEBFINGER');
     if(urlObj.query['resource']) {
       userAddress = urlObj.query['resource'].substring('acct:'.length);
       userName = userAddress.split('@')[0];
@@ -85,6 +110,7 @@ exports.handler = (function() {
     });
   }
   function oauth(urlObj, res) {
+    console.log('OAUTH');
     var scopes = decodeURIComponent(urlObj.query['scope']).split(' '),
       clientId = decodeURIComponent(urlObj.query['client_id']),
       redirectUri = decodeURIComponent(urlObj.query['redirect_uri']),
@@ -98,7 +124,7 @@ exports.handler = (function() {
     if(clientId != clientIdToMatch) {
       writeHtml(res, 'we do not trust this combination of client_id and redirect_uri');
     } else {
-      var userName = urlObj.pathname.substring('/auth/');
+      var userName = urlObj.pathname.substring('/auth'.length);
       createToken(userName, scopes, function(token) {
         writeHtml(res, '<a href="'+toHtml(redirectUri)+'#access_token='+toHtml(token)+'">Allow</a>');
       });
@@ -107,14 +133,25 @@ exports.handler = (function() {
   function storage(req, urlObj, res) {
     var path=urlObj.pathname.substring('/storage'.length);
     if(req.method=='OPTIONS') {
+      console.log('OPTIONS');
       writeJson(res, null, req.headers.origin);
     } else if(req.method=='GET') {
+      console.log('GET');
       if(mayRead(req.headers.authorization, path)) {
-        writeJson(res, data[path], req.headers.origin);
+        if(!data[path]) {
+          if(path.substr(-1)=='/') {
+            writeJson(res, [], req.headers.origin);
+          } else {
+            give404(res, req.headers.origin);
+          }
+        } else {
+          writeJson(res, data[path], req.headers.origin);
+        }
       } else {
-        computerSaysNo();
+        computerSaysNo(res, req.headers.origin);
       }
     } else if(req.method=='PUT') {
+      console.log('PUT');
       if(mayWrite(req.headers.authorization, path)) {
         var dataStr = '';
         req.on('data', function(chunk) {
@@ -134,9 +171,10 @@ exports.handler = (function() {
           writeJson(res, null, req.headers.origin);
         });
       } else {
-        computerSaysNo();
+        computerSaysNo(res, req.headers.origin);
       }
     } else if(req.method=='DELETE') {
+      console.log('DELETE');
       if(mayWrite(req.headers.authorization, path)) {
           delete data[path];
           var pathParts=path.split('/');
@@ -146,8 +184,11 @@ exports.handler = (function() {
           }
           writeJson(res, null, req.headers.origin);
       } else {
-        computerSaysNo();
+        computerSaysNo(res, req.headers.origin);
       }
+    } else {
+      console.log('ILLEGAL '+req.method);
+      computerSaysNo(res, req.headers.origin);
     }
   }
   function serve(req, res, staticsMap) {
@@ -159,9 +200,11 @@ exports.handler = (function() {
       } else if(urlObj.pathname.substring(0, '/auth/'.length) == '/auth/') {
         return oauth(urlObj, res);
       }
-    } else if(urlObj.pathname.substring(0, '/storage/'.length) == '/storage/') {
+    }
+    if(urlObj.pathname.substring(0, '/storage/'.length) == '/storage/') {
       storage(req, urlObj, res);
     } else {
+      console.log('UNKNOWN');
       writeJson(res, urlObj.query);
     }
   }
