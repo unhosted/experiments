@@ -38,7 +38,7 @@ exports.handler = (function() {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
   }
-  function webfinger(urlObj) {
+  function webfinger(urlObj, res) {
     if(urlObj.query['resource']) {
       userAddress = urlObj.query['resource'].substring('acct:'.length);
       userName = userAddress.split('@')[0];
@@ -55,7 +55,7 @@ exports.handler = (function() {
       }]
     });
   }
-  function oauth(urlObj) {
+  function oauth(urlObj, res) {
     var scopes = decodeURIComponent(urlObj.query['scope']).split(' '),
       clientId = decodeURIComponent(urlObj.query['client_id']),
       redirectUri = decodeURIComponent(urlObj.query['redirect_uri']),
@@ -126,9 +126,9 @@ exports.handler = (function() {
     console.log(urlObj);
     if(req.method == 'GET') {
       if(urlObj.pathname == '/.well-known/host-meta.json') {//TODO: implement rest of webfinger
-        return webfinger(urlObj);
+        return webfinger(urlObj, res);
       } else if(urlObj.pathname.substring(0, '/auth/'.length) == '/auth/') {
-        return oauth(urlObj);
+        return oauth(urlObj, res);
       }
     } else if(urlObj.pathname.substring(0, '/storage/'.length) == '/storage/') {
       storage(req, urlObj, res);
