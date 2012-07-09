@@ -7,6 +7,7 @@ exports.config = {
     'useraddress.net': 'http://proxy.unhosted.org'
   },
   handler: {
+    'mich.rs': '/Users/mich/Code/experiments/mich.rs',
     'myfavouritesandwich.org': '/Users/mich/Code/experiments/nodejitsu/mfs',
     'unhosted.org': '/Users/mich/Code/experiments/nodejitsu/unhosted-org',
     'proxy.unhosted.org': '/Users/mich/Code/experiments/proxy-unhosted-org',
