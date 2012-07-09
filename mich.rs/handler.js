@@ -51,6 +51,7 @@ exports.handler = (function() {
     res.writeHead(200, {
       'access-control-allow-origin': (origin?origin:'*'),
       'access-control-allow-headers': 'Content-Type, Authorization, Origin',
+      'access-control-allow-methods': 'GET, PUT, DELETE',
       'content-type': 'application/json'
     });
     res.write(JSON.stringify(obj));
@@ -69,6 +70,7 @@ exports.handler = (function() {
     res.writeHead(404, {
       'access-control-allow-origin': (origin?origin:'*'),
       'access-control-allow-headers': 'Content-Type, Authorization, Origin',
+      'access-control-allow-methods': 'GET, PUT, DELETE',
       'content-type': 'application/json'
     });
     res.end();
@@ -79,6 +81,7 @@ exports.handler = (function() {
     res.writeHead(401, {
       'access-control-allow-origin': (origin?origin:'*'),
       'access-control-allow-headers': 'Content-Type, Authorization, Origin',
+      'access-control-allow-methods': 'GET, PUT, DELETE',
       'content-type': 'application/json'
     });
     res.end();
@@ -133,7 +136,7 @@ exports.handler = (function() {
   function storage(req, urlObj, res) {
     var path=urlObj.pathname.substring('/storage'.length);
     if(req.method=='OPTIONS') {
-      console.log('OPTIONS');
+      console.log('OPTIONS '+req.headers.origin);
       writeJson(res, null, req.headers.origin);
     } else if(req.method=='GET') {
       console.log('GET');
