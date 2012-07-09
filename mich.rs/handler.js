@@ -163,8 +163,8 @@ exports.handler = (function() {
         req.on('end', function(chunk) {
           data[path]=dataStr;
           var pathParts=path.split('/');
-          var timestamp=123;
-          while(pathParts.length) {
+          var timestamp=new Date().getTime();;
+          while(pathParts.length > 2) {
             var thisPart = pathParts.pop();
             if(!data[pathParts.join('/')+'/']) {
               data[pathParts.join('/')+'/'] = {};
