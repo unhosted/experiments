@@ -15,6 +15,35 @@ exports.handler = (function() {
       cb(token);
     });
   }
+  function mayRead(authorizationHeader, path) {
+    if(authorizationHeader) {
+      var scopes = tokens[authorizationHeader];
+      if(scopes) {
+        for(var i=0; i<scopes.length; i++) {
+          var scopeParts = scopes[i].split(':');
+          if(path.substring(0, scopeParts[0].length)==scopeParts[0]) {
+            return true;
+          }
+        }
+      }
+    } else {
+      var pathParts = path.split('/');
+      return (pathParts[0]=='' && pathParts[2]=='public' && path.substr(-1) != '/');
+    }
+  }
+  function mayWrite(authorizationHeader, path) {
+    if(authorizationHeader) {
+      var scopes = tokens[authorizationHeader];
+      if(scopes) {
+        for(var i=0; i<scopes.length; i++) {
+          var scopeParts = scopes[i].split(':');
+          if(scopeParts.length==2 && scopeParts[1]=='rw' && path.substring(0, scopeParts[0].length)==scopeParts[0]) {
+            return true;
+          }
+        }
+      }
+    }
+  }
   function writeJson(res, obj, origin) {
     res.writeHead(200, {
       'access-control-allow-origin': (origin?origin:'*'),
