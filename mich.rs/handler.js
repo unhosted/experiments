@@ -52,7 +52,8 @@ exports.handler = (function() {
       'access-control-allow-origin': (origin?origin:'*'),
       'access-control-allow-headers': 'Content-Type, Authorization, Origin',
       'access-control-allow-methods': 'GET, PUT, DELETE',
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      'last-modified': 'Wed, 11 Jul 2012, 12:00:00'
     });
     res.write(JSON.stringify(obj));
     res.end();
@@ -71,7 +72,8 @@ exports.handler = (function() {
       'access-control-allow-origin': (origin?origin:'*'),
       'access-control-allow-headers': 'Content-Type, Authorization, Origin',
       'access-control-allow-methods': 'GET, PUT, DELETE',
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      'last-modified': 'Wed, 11 Jul 2012, 12:00:00'
     });
     res.end();
   }
@@ -82,7 +84,8 @@ exports.handler = (function() {
       'access-control-allow-origin': (origin?origin:'*'),
       'access-control-allow-headers': 'Content-Type, Authorization, Origin',
       'access-control-allow-methods': 'GET, PUT, DELETE',
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      'last-modified': 'Wed, 11 Jul 2012, 12:00:00'
     });
     res.end();
   }
