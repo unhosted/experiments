@@ -23,8 +23,14 @@ exports.handler = (function() {
       console.log('found handler:'+config.pathHandler[host + uripath]);
       return require(config.pathHandler[host + uripath]+'/handler').handler.serve(req, res, config.pathHandler[host + uripath]);
     } else if (config.handler && config.handler[host]) {
-      console.log('found handler:'+config.handler[host]);
-      return require(config.handler[host]+'/handler').handler.serve(req, res, config.handler[host]);
+      var module;
+      if(config.handler[host].substr(-3) == '.js') {
+        module = config.handler[host].substring(0, config.handler[host].length-3);
+      } else {
+        module = config.handler[host]+'/handler';
+      }
+      console.log('found handler:'+module);
+      return require(module).handler.serve(req, res, config.handler[host]);
     } else if(config.path && config.path[host + uripath]) {
       filename = config.path[host + uripath];
     } else if(config.host && config.host[host]) {
@@ -45,6 +51,8 @@ exports.handler = (function() {
       contentType='image/gif';
     } else if(/\.png$/g.test(uripath)) {
       contentType='image/png';
+    } else if(/\.svg$/g.test(uripath)) {
+      contentType='image/svg+xml';
     } else {
       contentType='text/plain';
     }
