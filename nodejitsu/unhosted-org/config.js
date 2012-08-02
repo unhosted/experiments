@@ -17,7 +17,7 @@ exports.config = {
     'apptorrent.org': 'http://unhosted.org',
     'milosurdie.info': 'http://unhosted.org',
     
-    'myfavouritesandwich.org': 'https://myfavouritesandwich.org',
+    'myfavouritesandwich.org': 'https://5apps.com/apps/4f71eb4cc4393415f500003f',
     
     'www.unhosted.org': 'http://unhosted.org'
   },
