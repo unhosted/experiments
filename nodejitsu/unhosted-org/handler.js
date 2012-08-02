@@ -18,6 +18,7 @@ exports.handler = (function() {
         res.writeHead(200, {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': 'Content-Type',
+          'Cache-Control': 'max-age=3600, must-revalidate',
           'Content-Type': contentType
         });
         res.write(file, 'binary');
