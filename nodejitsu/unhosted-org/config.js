@@ -23,6 +23,8 @@ exports.config = {
   },
   host: {
     'unhosted.org': 'website/',
+    '2011.unhosted.org': 'website/sub/2011/',
+    '2012.unhosted.org': 'website/sub/2012/',
     'charing-t.unhosted.org': 'website/'
   },
   default: '../../domains/apptorrent.net/'
